@@ -6,8 +6,9 @@ function sendCommand (command) {
 }
 /**
  * @param {Object} query
+ * @param {number} time
  */
-async function sendQuery (query) {
+async function sendQuery (query, time) {
 
 }
 /**
