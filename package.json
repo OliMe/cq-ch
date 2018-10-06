@@ -1,0 +1,26 @@
+{
+  "name": "cqrs-bus",
+  "version": "0.0.1",
+  "description": "CQRS (Command Query Responsibility Segregation) bus for interaction between microservices on the frontend",
+  "main": "index.js",
+  "author": "Dmitri Vizgin aka OliMe <dvzphp@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "lint": "eslint --cache --ext .js ./",
+    "test": "jest --coverage && yarn lint"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "eslint": "^5.6.1",
+    "eslint-config-standart": "^0.2.0",
+    "eslint-plugin-flowtype": "^2.50.3",
+    "eslint-plugin-jest": "^21.24.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "flow": "^0.2.3",
+    "flow-bin": "^0.82.0",
+    "jest": "^23.6.0",
+    "size-limit": "^0.20.1"
+  }
+}

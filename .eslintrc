@@ -1,0 +1,72 @@
+{
+    "parserOptions": {
+        "ecmaVersion": 6,
+        "ecmaFeatures": {
+            "jsx": false
+        }
+    },
+    "extends": ["standard"],
+    "plugins": ["flowtype", "jest"],
+    "globals": {
+        "jest": true
+    },
+    "rules": {
+        "max-len": [
+          "error",
+          120
+        ],
+        "object-curly-spacing": ["error", "always"],
+        "arrow-parens": ["error", "as-needed"],
+        "require-jsdoc": ["error", {
+            "require": {
+                "FunctionDeclaration": true,
+                "MethodDefinition": true,
+                "ClassDeclaration": false,
+                "ArrowFunctionExpression": false,
+                "FunctionExpression": false
+            }
+        }],
+        "valid-jsdoc": ["error", {
+            "requireReturn": false,
+            "requireParamDescription": false,
+            "requireReturnType": false,
+            "requireReturnDescription": false,
+            "prefer": {
+              "return": "returns"
+            },
+            "preferType": {
+              "Null": "null",
+              "Undefined": "undefined",
+              "Boolean": "boolean",
+              "Number": "number",
+              "String": "string",
+              "Symbol": "symbol",
+              "object": "Object",
+              "array": "Array",
+              "function": "Function",
+              "date": "Date"
+            }
+        }],
+        "no-var": "error",
+        "one-var": "off",
+        "camelcase": "off",
+        "no-console": ["error"],
+        "comma-dangle": ["error", {
+            "arrays": "ignore",
+            "objects": "always-multiline",
+            "imports": "always-multiline",
+            "exports": "always-multiline",
+            "functions": "ignore"
+        }],
+        "multiline-comment-style": ["error", "starred-block"],
+        "no-restricted-globals": ["error", "fdescribe"],
+        "no-debugger": "error",
+        "jest/no-focused-tests": "error",
+        "jest/no-disabled-tests": "warn"
+    },
+    "env": {
+        "browser": true,
+        "jest": true,
+        "commonjs": true
+    }
+}
