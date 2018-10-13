@@ -1,2 +1,7 @@
 # Test directory
 coverage
+tests
+# Build directories
+es
+dist
+lib

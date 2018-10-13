@@ -1,14 +1,16 @@
 {
+    "parser": "babel-eslint",
     "parserOptions": {
         "ecmaVersion": 6,
         "ecmaFeatures": {
             "jsx": false
         }
     },
-    "extends": ["standard"],
+    "extends": ["eslint:recommended", "plugin:jest/recommended", "plugin:flowtype/recommended"],
     "plugins": ["flowtype", "jest"],
     "globals": {
-        "jest": true
+        "jest": true,
+        "process": true
     },
     "rules": {
         "max-len": [

@@ -2,16 +2,34 @@
   "name": "cqrs-bus",
   "version": "0.0.1",
   "description": "CQRS (Command Query Responsibility Segregation) bus for interaction between microservices on the frontend",
-  "main": "index.js",
+  "main": "lib/cqrs-bus.js",
+  "unpkg": "dist/cqrs-bus.js",
+  "module": "es/cqrs-bus.js",
   "author": "Dmitri Vizgin aka OliMe <dvzphp@gmail.com>",
   "license": "MIT",
   "private": false,
   "scripts": {
     "lint": "eslint --cache --ext .js ./",
-    "test": "jest --coverage && yarn lint"
+    "pretest": "yarn build",
+    "test": "cross-env NODE_ENV=test jest --coverage && yarn lint",
+    "build:es5": "cross-env BABEL_ENV=es5 rollup -c",
+    "build:es6": "cross-env BABEL_ENV=es6 rollup -c",
+    "build": "yarn build:es5 && yarn build:es6",
+    "prepublish": "yarn build"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
+    "@babel/cli": "^7.0.0",
+    "@babel/core": "^7.1.0",
+    "@babel/node": "^7.0.0",
+    "@babel/plugin-external-helpers": "^7.0.0",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-flow": "^7.0.0",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-eslint": "^10.0.1",
+    "babel-jest": "^23.6.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
+    "babel-preset-flow": "^6.23.0",
+    "cross-env": "^5.2.0",
     "eslint": "^5.6.1",
     "eslint-config-standart": "^0.2.0",
     "eslint-plugin-flowtype": "^2.50.3",
@@ -19,8 +37,21 @@
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
     "flow": "^0.2.3",
-    "flow-bin": "^0.82.0",
+    "flow-bin": "^0.83.0",
     "jest": "^23.6.0",
+    "rollup": "^0.66.5",
+    "rollup-plugin-babel": "^4.0.3",
+    "rollup-plugin-commonjs": "^9.1.8",
+    "rollup-plugin-node-resolve": "^3.4.0",
+    "rollup-plugin-replace": "^2.1.0",
+    "rollup-plugin-terser": "^3.0.0",
     "size-limit": "^0.20.1"
+  },
+  "jest": {
+    "watchman": false
+  },
+  "dependencies": {
+    "detect-node": "^2.0.4",
+    "event-target-shim": "^3.0.2"
   }
 }
