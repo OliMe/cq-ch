@@ -1,40 +1,51 @@
 import nodeResolve from 'rollup-plugin-node-resolve'
 import babel from 'rollup-plugin-babel'
-import replace from 'rollup-plugin-replace'
 import commonjs from 'rollup-plugin-commonjs'
 import { terser } from 'rollup-plugin-terser'
+import builtins from 'rollup-plugin-node-builtins'
+import globals from 'rollup-plugin-node-globals';
+import pkg from './package.json'
+
 const BABEL_ENV = process.env.BABEL_ENV
+
+const makeExternalPredicate = externalsArr => {
+  if (externalsArr.length === 0) {
+    return () => false
+  }
+  const externalPattern = new RegExp(`^(${externalsArr.join('|')})($|/)`)
+  return id => externalPattern.test(id)
+}
+
+const externals = makeExternalPredicate([
+  ...Object.keys(pkg.dependencies || {}),
+  ...Object.keys(pkg.peerDependencies || {}),
+])
+
 const config = {
   cjs: {
     input: 'src/index.js',
     output: { file: 'lib/cqrs-bus.js', format: 'cjs', indent: false },
     plugins: [
-      replace({
-        'process.env.NODE_ENV': JSON.stringify('development'),
-      }),
-      babel()
+      babel(),
+      globals(),
     ],
-    external: [ 'event-target-shim' ],
+    external: externals,
   },
   esDev: {
     input: 'src/index.js',
     output: { file: 'es/cqrs-bus.js', format: 'es', indent: false },
     plugins: [
-      replace({
-        'process.env.NODE_ENV': JSON.stringify('development'),
-      }),
-      babel()
+      babel(),
+      builtins(),
     ],
-    external: [ 'event-target-shim' ],
+    external: externals,
   },
   esProd: {
     input: 'src/index.js',
     output: { file: 'es/cqrs-bus.min.js', format: 'es', indent: false },
     plugins: [
-      replace({
-        'process.env.NODE_ENV': JSON.stringify('production'),
-      }),
       babel(),
+      builtins(),
       nodeResolve({
         jsnext: true,
       }),
@@ -47,7 +58,7 @@ const config = {
         },
       })
     ],
-    external: [ 'event-target-shim' ],
+    external: externals,
   },
   umdDev: {
     input: 'src/index.js',
@@ -57,9 +68,7 @@ const config = {
       name: 'CQRSBus',
     },
     plugins: [
-      replace({
-        'process.env.NODE_ENV': JSON.stringify('development'),
-      }),
+      builtins(),
       nodeResolve(),
       babel({
         exclude: '**/node_modules/**',
@@ -75,9 +84,7 @@ const config = {
       name: 'CQRSBus',
     },
     plugins: [
-      replace({
-        'process.env.NODE_ENV': JSON.stringify('production'),
-      }),
+      builtins(),
       nodeResolve(),
       babel({
         exclude: '**/node_modules/**',

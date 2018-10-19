@@ -1,14 +1,18 @@
 // @flow
-import TargetWrapper from './target-wrapper'
 import { EventTarget as EventTargetShim } from 'event-target-shim'
-import { Channel } from '../../types';
 
-export default class BrowserChannel extends TargetWrapper implements Channel {
-    target: EventTarget
+export default class EventTargetChannel {
+    target: EventTarget | EventTargetShim
+    /**
+     * 
+     */
+    constructor () {
+        this.target = this.createTarget()
+    }
     /**
      * @returns {EventTarget|EventTargetShim}
      */
-    createTarget (): EventTarget {
+    createTarget (): EventTarget | EventTargetShim {
         let constructor = EventTargetShim
         if (typeof EventTarget === 'function') {
             constructor = EventTarget

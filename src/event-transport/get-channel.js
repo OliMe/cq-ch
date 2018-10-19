@@ -1,19 +1,18 @@
-import ChannelAdapter from "./channel/channel-adapter";
+import EventTargetChannel from "./channel/event-target-channel";
 
 // @flow
 /**
  * 
  * @param {Function} type
- * @returns {EventTarget}
+ * @returns {EventTargetChannel}
  */
-export default function getChannel(type: string): ChannelAdapter {
-    const globalScope = typeof window !== 'undefined' ? window : global
-    if (typeof globalScope.CQRSBus === 'undefined') {
-        globalScope.CQRSBus = {}
+export default function getChannel(type: string): EventTargetChannel {
+    if (typeof window.CQRSBus === 'undefined') {
+        window.CQRSBus = {}
     }
-    if (typeof globalScope.CQRSBus[type] === 'undefined') {
-        globalScope.CQRSBus[type] = new ChannelAdapter
+    if (typeof window.CQRSBus[type] === 'undefined') {
+        window.CQRSBus[type] = new EventTargetChannel
     }
 
-    return globalScope.CQRSBus[type]
+    return window.CQRSBus[type]
 }
