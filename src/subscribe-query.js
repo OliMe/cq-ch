@@ -1,15 +1,13 @@
 // @flow
 import getChannel from './event-transport/get-channel'
 import { TYPE_QUERY } from './constants'
+import { checkArguments, getCfgCreator } from './helpers/argument-checker'
+import { subscribeCfg } from './arguments.cfg'
 /**
  * @param {string} type
  * @param {Function} listener
  */
 export default function subscribeQuery (type: string, listener: Function) {
-    if (typeof listener !== 'function') {
-        throw new TypeError(
-            `Failed to execute 'subscribeQuery': 2 arguments required, but only ${arguments.length} present.`
-        )
-    }
+    checkArguments(arguments, getCfgCreator(subscribeQuery.name, subscribeCfg)(arguments))
     getChannel(TYPE_QUERY).on(type, listener)
 }
