@@ -5,3 +5,5 @@ tests
 es
 dist
 lib
+# Example directory
+examples

@@ -37,3 +37,16 @@ export const subscribeCfg = (functionName: string, args: Array<any>): Array<Arra
         }
     ]
 ]
+
+export const sendCfg = (functionName: string, args: Array<any>): Array<Array<Object>> => [
+    [
+        {
+            validator: ([, list: Array<any>]) => {
+                return list && list.length && list.length >= 1
+            },
+            error: new TypeError (
+                `Failed to execute '${functionName}': 2 arguments required, but only ${args.length} present.`
+            ),
+        },
+    ]
+]
