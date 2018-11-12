@@ -48,11 +48,7 @@ export const request = state => {
    * @returns {Object} Новые данные.
    */
   export const setCurrent = (state, { current }) => {
-    return { ...state, current }
-  }
-
-  export const getSettlement = state => {
-    return { ...state, ...{}}
+    return { ...state, { current: current.id }}
   }
   
   export const reducer = createReducer(INITIAL_STATE, {

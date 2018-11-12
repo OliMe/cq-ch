@@ -11,7 +11,7 @@ export class SettlementFormConnector extends Component {
   
     /** @inheritDoc */
     init () {
-      this.props.getSettlement()
+      this.props.getSettlementList()
     }
   
     /** @inheritDoc */
@@ -22,11 +22,20 @@ export class SettlementFormConnector extends Component {
   
   const mapDispatchToProps = dispatch => {
     return {
-      getSettlement: id => dispatch(SettlementAction.getSettlement(id)),
       getSettlementList: (name, id) => dispatch(SettlementAction.request(name, id)),
     }
   }
+
+  const getSettlement = (list, id = null) => {
+    let result = list[0]
+    if (id) {
+      result = list.find(value => value.id = id)
+    }
+    return result
+  }
   
-  const mapStateToProps = state => ({ ...state })
+  const mapStateToProps = state => ({
+    settlement: getSettlement(state.list, state.current)
+  })
   
   export default connect(mapStateToProps, mapDispatchToProps)(SettlementFormConnector)
