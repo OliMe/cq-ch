@@ -88,9 +88,6 @@ class SettlementForm extends Component {
               children={this.props.name || ''}
             />
           </span>
-          {this.props.error && this.props.error.settlement_id &&
-            <div className='error-message js-block-error'>{this.props.error.settlement_id}</div>
-          }
         </div>
       )
     }
