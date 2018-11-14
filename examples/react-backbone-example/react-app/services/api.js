@@ -1,5 +1,5 @@
 import apisauce from 'apisauce'
-const BASE_URL = 'https://www.sima-land.ru/api/'
+const BASE_URL = 'https://cors-anywhere.herokuapp.com/https://www.sima-land.ru/api/'
 
 const create = () => {
   const api = apisauce.create({
@@ -8,8 +8,6 @@ const create = () => {
       'Accept': 'application/json',
       'Cache-Control': 'no-cache',
       'Content-Type': 'application/json; charset=UTF-8',
-      'Referer': 'https://www.sima-land.ru/',
-      'Origin': 'https://www.sima-land.ru/',
     },
     timeout: 20000,
   })
