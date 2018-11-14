@@ -48,7 +48,7 @@ export const request = state => {
    * @returns {Object} Новые данные.
    */
   export const setCurrent = (state, { current }) => {
-    return { ...state, { current: current }}
+    return { ...state, ...{ current: current }}
   }
   
   export const reducer = createReducer(INITIAL_STATE, {
