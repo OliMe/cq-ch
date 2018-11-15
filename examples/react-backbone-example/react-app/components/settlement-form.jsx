@@ -80,12 +80,11 @@ class SettlementForm extends Component {
           <span className={this.state.isField ? ' not_display' : ''}>
             <span
               className='link link_pseudo'
-              id='checkout-settlement-name'
               onClick={async () => {
                 await this.setState({ isField: true, value: '' })
                 await this.fieldNode.focus()
               }}
-              children={this.props.name || ''}
+              children={this.props.settlement.current.name || ''}
             />
           </span>
         </div>

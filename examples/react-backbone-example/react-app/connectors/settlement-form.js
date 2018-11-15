@@ -42,13 +42,13 @@ const getSettlement = (list, id = 0) => {
   }
 }
 /** @inheritDoc */
-const mapStateToProps = state => ({
-  ...state,
-  ...{
+const mapStateToProps = state => {
+  return {
+    ...state,
     settlement: {
-      current: get(state, 'settlement.current', null) || getSettlement(state.list),
+      current: { ...(get(state, 'settlement.current', null) || getSettlement(get(state, 'settlement.list', null))) },
     }
-  },
-})
+  }
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(SettlementFormConnector)
