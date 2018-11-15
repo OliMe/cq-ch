@@ -20,6 +20,7 @@ class SettlementForm extends Component {
      * @returns {ReactElement} Компонент поля для ввода списка
      */
     renderField () {
+      console.log(this.props)
       return (
         <span className='input_wrapper_inline input_wrapper-choose_city'>
           <Autocomplete
@@ -84,7 +85,7 @@ class SettlementForm extends Component {
                 await this.setState({ isField: true, value: '' })
                 await this.fieldNode.focus()
               }}
-              children={this.props.settlement.current.name || ''}
+              children={`${this.props.settlement.current.name || ''}${(this.props.settlement.current.region && ` (${this.props.settlement.current.region})`) || ''}`}
             />
           </span>
         </div>

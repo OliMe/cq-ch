@@ -46,6 +46,7 @@ const mapStateToProps = state => {
   return {
     ...state,
     settlement: {
+      ...get(state, 'settlement', null),
       current: { ...(get(state, 'settlement.current', null) || getSettlement(get(state, 'settlement.list', null))) },
     }
   }

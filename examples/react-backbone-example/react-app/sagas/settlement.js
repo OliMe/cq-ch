@@ -11,12 +11,27 @@ export const selectSettlementId = state => get(state, 'settlement.current.id', n
  * @param {Object} query Параметры запроса.
  */
 export function * getSettlementList (api, query) {
+  let headers = null
+  if (!(query.id || query.name)) {
+    query = {
+      ...query,
+      detect_by_ip: 1
+    }
+    const response = yield call(api.getIp)
+    if (response.ok && response.data.ip) {
+      headers = {
+        headers: {
+          'x-client-ip': response.data.ip
+        }
+      }
+    }
+  }
   query = {
     ...query,
     type: undefined,
     perPage: 10,
   }
-  const response = yield call(api.getSettlementList, query)
+  const response = yield call(api.getSettlementList, query, headers)
   if (response.ok) {
     yield put(Action.success(response.data.items))
     if (query.id) {
