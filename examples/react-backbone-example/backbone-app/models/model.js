@@ -30,7 +30,7 @@ var app = app || {};
       this.afterRun(data, options);
     },
     /**
-     * Save the passed options if they are included in the additionalOptions array
+     * Save passed options if they are included in the additionalOptions array
      * @param {Object} options Оptions
      */
     attachOptions: function (options) {

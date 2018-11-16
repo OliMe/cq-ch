@@ -11,22 +11,22 @@ var app = app || {};
     additionalOptions: [],
 
     /**
-     * Выполняется перед инициализацией.
-     * @param {Object} data Данные, переданные в конструктор.
+     * Run before initialization.
+     * @param {Object} data Data passed to constructor
      * @abstract
      */
     beforeRun: function (data) {},
 
     /**
-     * Инициализирует представление.
-     * @param {Object} data Данные, переданные в конструктор.
+     * Initialize view.
+     * @param {Object} data Data passed to constructor
      * @abstract
      */
     run: function (data) {},
 
     /**
-     * Выполняется после инициализации.
-     * @param {Object} data Данные, переданные в конструктор.
+     * Run after initialization.
+     * @param {Object} data Data passed to constructor
      * @abstract
      */
     afterRun: function (data) {},
@@ -41,8 +41,8 @@ var app = app || {};
     },
 
     /**
-     * Обновляет содержимое элемента при наличии шаблона.
-     * @param {Object} [data] Объект с данными для передачи в шаблон.
+     * Updates element inner html if template exists.
+     * @param {Object} [data] Object with data to pass in template function.
      * @abstract
      */
     render: function (data) {
@@ -53,8 +53,7 @@ var app = app || {};
     },
 
     /**
-     * Сохраняем переданные опции,
-     * если они входят в массив attachedOptions
+     * Save passed options if they are included in the additionalOptions array
      * @param {Object} options Опции
      */
     attachOptions: function (options) {
@@ -70,8 +69,8 @@ var app = app || {};
     },
 
     /**
-     * Показывает/скрывает элемент вью за указанное время
-     * @param {Number} time Время за которое показывается/скрывается элемент вью
+     * Show/hide view`s element during the specified time.
+     * @param {Number} time Time for show or hide element
      */
     toggle: function (time) {
       time = isNaN(time)
@@ -84,7 +83,7 @@ var app = app || {};
     },
 
     /**
-     * Удаляет вид и все дочерние виды.
+     * Remove view and all child views.
      */
     remove: function () {
       if (this.childViews) {
@@ -94,14 +93,14 @@ var app = app || {};
     },
 
     /**
-     * Рекурсивно удаляет дочерние виды.
+     * Remove child views recursively.
      * @protected
      */
     _removeChildViews: function () {
       for (var view in this.childViews) {
         if (this.childViews.hasOwnProperty(view)) {
           if (_.isArray(this.childViews[view])) {
-            // Если массив, убираем вложенность и применяем remove() ко всем элементам
+            // If Array, flat it and apply remove() to all elements
             _.flatten(this.childViews[view]).forEach(function (item) {
               item.remove();
             });
