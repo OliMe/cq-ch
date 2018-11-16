@@ -1,1 +1,5 @@
-console.log(456)
+var app = app || {};
+
+$(function(){
+    'use strict'
+})
