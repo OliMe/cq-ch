@@ -1,5 +1,5 @@
 var app = app || {};
 
-$(function(){
+$(function () {
     'use strict'
 })

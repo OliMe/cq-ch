@@ -9,6 +9,7 @@ require('./models/model.js');
 require('./collections/collection.js');
 require('./views/view.js');
 // App entities
+require('./models/ip.js');
 require('./models/settlement.js');
 require('./collections/settlements.js');
 require('./views/settlement-form.js');
