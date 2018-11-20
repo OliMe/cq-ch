@@ -15,7 +15,7 @@ var app = app || {};
       'keyup .settlement-search': 'changeName',
       'focusout .settlement-search': 'toggleIsField',
     },
-    additionalOptions: ['ip'],
+    additionalOptions: ['ip', 'listTemplate'],
     run: function () {
       this.listenTo(this.ip, 'sync', this.onIpSync);
       this.listenTo(this.collection, 'sync', this.onSync);
@@ -43,7 +43,6 @@ var app = app || {};
       }
     },
     render: function () {
-      console.error(this.name, this.current.toJSON(), this.collection.toJSON(), this.isField);
       app.View.prototype.render.apply(this, [{
         name: this.name,
         current: this.current.toJSON(), 
