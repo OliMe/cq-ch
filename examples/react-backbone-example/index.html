@@ -13,6 +13,22 @@
   <div id="react-app"></div>
   <hr>
   <div id="backbone-app"></div>
+  <script type="text/template" id='settlement-form-template'>
+    <% if (isField) { %>
+      <input class="settlement-search" type="search" value="<%- name %>"/>
+      <% if (list && list.length) { %>
+        <ul class="settlement-list">
+          <% for (var i = 0; i < list.length; i += 1) { %>
+            <li data-settlement-id="<%= list[i].id %>"><%= list[i].name%> (<%= list[i].region %>)</li>
+          <% } %>
+        </ul>
+      <% } %>
+    <% } else { %>
+      <% if (current) { %>
+        <span class="current-settlement"><%= current.name %> (<%= current.region %>)</span> 
+      <% } %>
+    <% } %>
+  </script>
   <script defer type="text/javascript" src="build/vendor.js"></script>
   <script defer type="text/javascript" src="build/runtime.js"></script>
   <script defer type="text/javascript" src="build/backbone-app.js"></script>
