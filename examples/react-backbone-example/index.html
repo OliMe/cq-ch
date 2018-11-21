@@ -16,11 +16,7 @@
   <script type="text/template" id='settlement-form-template'>
     <% if (isField) { %>
       <input class="settlement-search" type="search"/>
-      <% if (list) { %>
-        <ul class="settlement-list">
-          <%= list %>
-        </ul>
-      <% } %>
+      <ul class="settlement-list"></ul>
     <% } else { %>
       <% if (current) { %>
         <span class="current-settlement"><%= current.name %> (<%= current.region %>)</span> 

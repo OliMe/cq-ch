@@ -8,5 +8,6 @@ $(function () {
         ip: new app.Ip(),
         collection: new app.Settlements(),
         template: app.helpers.TemplateHelper.getTemplate('#settlement-form-template'),
+        listTemplate: app.helpers.TemplateHelper.getTemplate('#settlement-list-template'),
     });
 })

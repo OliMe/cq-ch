@@ -45,10 +45,11 @@ var app = app || {};
      * @param {Object} [data] Object with data to pass in template function.
      * @abstract
      */
-    render: function (data) {
+    render: function (data, template) {
       data = data || {};
-      if(_.isFunction(this.template)) {
-        this.$el.html(this.template(data));
+      template = template || this.template;
+      if(_.isFunction(template)) {
+        return template(data);
       }
     },
 

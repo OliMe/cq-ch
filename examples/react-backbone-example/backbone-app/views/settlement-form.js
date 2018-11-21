@@ -29,29 +29,52 @@ var app = app || {};
       if (!this.current) {
         this.current = collection.at(0);
       }
-      this.trigger('render');
+      var renderPayload = {
+        data: {
+          current: this.current.toJSON(),
+          isField: this.isField,
+        },
+        template: this.template,
+        dest: this.$el,
+      }
+      if (this.name) {
+        renderPayload = {
+          data: {
+            list: this.collection.toJSON()
+          },
+          template: this.listTemplate,
+          dest: this.$('.settlement-list')
+        }
+      }
+      this.trigger('render', renderPayload);
     },
     toggleIsField: function () {
       this.isField = !this.isField;
       this.collection.reset(null, { silent: true });
-      this.trigger('render');
-    },
-    changeName: function (e) {
-      this.name = this.$(e.currentTarget).val();
-      if (this.name.length > 2) {
-        this.collection.fetchByName(this.name);
-      }
-    },
-    render: function () {
-      app.View.prototype.render.apply(this, [{
-        name: this.name,
-        current: this.current.toJSON(), 
-        list: this.collection.toJSON(), 
-        isField: this.isField
-      }]);
+      this.trigger('render', {
+        data: {
+          current: this.current.toJSON(),
+          isField: this.isField,
+        },
+        template: this.template,
+        dest: this.$el,
+      });
       if (this.isField) {
         this.$('.settlement-search').focus();
+      } else {
+        this.name = '';
       }
+    },
+    changeName: function (e) {
+      if (this.name !== this.$(e.currentTarget).val() && this.$(e.currentTarget).val().length > 2) {
+        this.name = this.$(e.currentTarget).val();
+        if (this.name.length > 2) {
+          this.collection.fetchByName(this.name);
+        }
+      }
+    },
+    render: function (payload) {
+      payload.dest.html(app.View.prototype.render.apply(this, [payload.data, payload.template]));
     },
   });
 })();
