@@ -20,9 +20,7 @@ class SettlementForm extends Component {
      * @returns {ReactElement} Компонент поля для ввода списка
      */
     renderField () {
-      console.log(this.props)
       return (
-        <span className='input_wrapper_inline input_wrapper-choose_city'>
           <Autocomplete
             inputProps={{
               autoComplete: 'nope',
@@ -59,7 +57,6 @@ class SettlementForm extends Component {
               this.setState({ value: settlement.name, isField: false })
             }}
           />
-        </span>
       )
     }
   
@@ -78,7 +75,7 @@ class SettlementForm extends Component {
       return (
         <div className='b-section_title'>
           {Boolean(this.state.isField) && this.renderField()}
-          <span className={this.state.isField ? ' not_display' : ''}>
+          {!this.state.isField && (<span>
             <span
               className='link link_pseudo'
               onClick={async () => {
@@ -87,7 +84,7 @@ class SettlementForm extends Component {
               }}
               children={`${this.props.settlement.current.name || ''}${(this.props.settlement.current.region && ` (${this.props.settlement.current.region})`) || ''}`}
             />
-          </span>
+          </span>)}
         </div>
       )
     }
