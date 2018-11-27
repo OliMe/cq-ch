@@ -7,11 +7,9 @@ var app = app || {};
    * View for settlement form
    */
   app.SettlementForm = app.View.extend({
-    isField: false,
-    current: null,
-    name: '',
     events: {
       'click .current-settlement': 'toggleIsField',
+      'click .settlement-list li': 'selectCurrent',
       'keyup .settlement-search': 'changeName',
       'focusout .settlement-search': 'toggleIsField',
     },
@@ -26,18 +24,18 @@ var app = app || {};
       this.collection.fetchByIp(ip.get('ip'));
     },
     onSync: function (collection) {
-      if (!this.current) {
-        this.current = collection.at(0);
+      if (!this.model.get('current')) {
+        this.model.set({ current: collection.at(0) });
       }
       var renderPayload = {
         data: {
-          current: this.current.toJSON(),
-          isField: this.isField,
+          current: this.model.get('current').toJSON(),
+          isField: this.model.get('isField'),
         },
         template: this.template,
         dest: this.$el,
       }
-      if (this.name) {
+      if (this.model.get('name')) {
         renderPayload = {
           data: {
             list: this.collection.toJSON()
@@ -49,29 +47,42 @@ var app = app || {};
       this.trigger('render', renderPayload);
     },
     toggleIsField: function () {
-      this.isField = !this.isField;
-      this.collection.reset(null, { silent: true });
-      this.trigger('render', {
-        data: {
-          current: this.current.toJSON(),
-          isField: this.isField,
-        },
-        template: this.template,
-        dest: this.$el,
-      });
-      if (this.isField) {
-        this.$('.settlement-search').focus();
-      } else {
-        this.name = '';
-      }
+      this.timer && clearTimeout(this.timer);
+      this.timer = setTimeout(function () {
+        this.model.set({ isField: !this.model.get('isField') });
+        this.collection.reset(null, { silent: true });
+        this.trigger('render', {
+          data: {
+            current: this.model.get('current').toJSON(),
+            isField: this.model.get('isField'),
+          },
+          template: this.template,
+          dest: this.$el,
+        });
+        if (this.model.get('isField')) {
+          this.$('.settlement-search').focus();
+        } else {
+          this.model.set({name: ''});
+        }
+      }.bind(this), 150);
     },
     changeName: function (e) {
-      if (this.name !== this.$(e.currentTarget).val() && this.$(e.currentTarget).val().length > 2) {
-        this.name = this.$(e.currentTarget).val();
-        if (this.name.length > 2) {
-          this.collection.fetchByName(this.name);
+      if (this.model.get('name') !== this.$(e.currentTarget).val() && this.$(e.currentTarget).val().length > 2) {
+        this.model.set({ name: this.$(e.currentTarget).val() });
+        if (this.model.get('name').length > 2) {
+          this.collection.fetchByName(this.model.get('name'));
         }
       }
+    },
+    selectCurrent: function (e) {
+      var selectedSettlementId = this.$(e.currentTarget).data('settlement-id');
+      if (selectedSettlementId) {
+        var current = this.collection.get(selectedSettlementId);
+        if (current && current instanceof app.Settlement) {
+          this.model.set({ current: current });
+        }
+      }
+      this.toggleIsField();
     },
     render: function (payload) {
       payload.dest.html(app.View.prototype.render.apply(this, [payload.data, payload.template]));
