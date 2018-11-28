@@ -18,15 +18,17 @@ var app = app || {};
       this.listenTo(this.ip, 'sync', this.onIpSync);
       this.listenTo(this.collection, 'sync', this.onSync);
       this.listenTo(this, 'render', this.render);
+      this.listenTo(this.model, 'change', this.initRender);
+      CQRSBus.subscribeCommand('SET_SETTLEMENT', this.setSettlementListener.bind(this));
       this.ip.fetch();
     },
     onIpSync: function (ip) {
       this.collection.fetchByIp(ip.get('ip'));
     },
-    onSync: function (collection) {
-      if (!this.model.get('current')) {
-        this.model.set({ current: collection.at(0) });
-      }
+    setSettlementListener: function (event) {
+      this.model.set({current: new app.Settlement(event.detail.payload)});
+    },
+    initRender: function () {
       var renderPayload = {
         data: {
           current: this.model.get('current').toJSON(),
@@ -46,23 +48,21 @@ var app = app || {};
       }
       this.trigger('render', renderPayload);
     },
+    onSync: function (collection) {
+      if (!this.model.get('current')) {
+        this.model.set({ current: collection.at(0) });
+      }
+      this.model.set({ isFetch: false });
+    },
     toggleIsField: function () {
       this.timer && clearTimeout(this.timer);
       this.timer = setTimeout(function () {
         this.model.set({ isField: !this.model.get('isField') });
         this.collection.reset(null, { silent: true });
-        this.trigger('render', {
-          data: {
-            current: this.model.get('current').toJSON(),
-            isField: this.model.get('isField'),
-          },
-          template: this.template,
-          dest: this.$el,
-        });
-        if (this.model.get('isField')) {
-          this.$('.settlement-search').focus();
+        if (!this.model.get('isField')) {
+          this.model.set({ name: '' });
         } else {
-          this.model.set({name: ''});
+          this.$('.settlement-search').focus();
         }
       }.bind(this), 150);
     },
@@ -70,6 +70,7 @@ var app = app || {};
       if (this.model.get('name') !== this.$(e.currentTarget).val() && this.$(e.currentTarget).val().length > 2) {
         this.model.set({ name: this.$(e.currentTarget).val() });
         if (this.model.get('name').length > 2) {
+          this.model.set({ isFetch: true });
           this.collection.fetchByName(this.model.get('name'));
         }
       }

@@ -1,6 +1,7 @@
 import get from 'lodash/get'
 import { call, put, select } from 'redux-saga/effects'
 import { Creators as Action } from '../redux/settlement'
+import { sendCommand } from '../../../../es/cqrs-bus'
 
 export const selectSettlementId = state => get(state, 'settlement.current.id', null)
 
@@ -46,10 +47,11 @@ export function * getSettlementList (api, query) {
 /**
  * Обновляет необходимые поля в store в соответствии с выбранным населенным пунктом.
  * @generator
- * @param {Object} param Дополнительные GET параметры для типов доставок.
+ * @param {Object} action 
  */
-export function * setSettlement (param) {
-  const { settlement } = param
-  yield put(Action.setCurrent(settlement))
-  yield put(Action.purge())
+export function * declareSettlement ({ current }) {
+  yield call(sendCommand, {
+    type: 'SET_SETTLEMENT',
+    payload: current
+  })
 }

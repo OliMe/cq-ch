@@ -5,7 +5,7 @@
  * @param {Object} conf 
  */
 export function checkArguments (args: Array<any>, conf: Array<Array<Object>>): void {
-    args.forEach((arg: any, index: number) => {
+    Array.from(args).forEach((arg: any, index: number) => {
         const argCheckConfList: Array<Object> = conf[index]
         if (argCheckConfList && argCheckConfList instanceof Array) {
             argCheckConfList.forEach(argCheckConf => {
