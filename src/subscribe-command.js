@@ -9,5 +9,7 @@ import { subscribeCfg } from './arguments.cfg'
  */
 export default function subscribeCommand (type: string, listener: Function) {
     checkArguments(arguments, getCfgCreator(subscribeCommand.name, subscribeCfg)(arguments))
-    getChannel(TYPE_COMMAND).on(type, listener)
+    getChannel(TYPE_COMMAND).on(type, (event: CustomEvent) => {
+        listener(event.detail)
+    })
 }

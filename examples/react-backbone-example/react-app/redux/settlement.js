@@ -5,6 +5,7 @@ export const { Types, Creators } = createActions({
   success: ['list'],
   purge: null,
   setCurrent: ['current'],
+  appMounted: null,
 }, { prefix: 'settlement/' })
 
 export const INITIAL_STATE = {
@@ -51,9 +52,14 @@ export const setCurrent = (state, { current }) => {
   return { ...state, ...{ current: current } }
 }
 
+export const appMounted = state => {
+  return { ...state }
+}
+
 export const reducer = createReducer(INITIAL_STATE, {
   [Types.REQUEST]: request,
   [Types.SUCCESS]: success,
   [Types.PURGE]: purge,
   [Types.SET_CURRENT]: setCurrent,
+  [Types.APP_MOUNTED]: appMounted,
 })

@@ -42,5 +42,9 @@ var app = app || {};
         }.bind(this));
       }
     },
+    fetch: function () {
+      this.set({isFetching: true})
+      return Backbone.Model.prototype.fetch.apply(this, arguments);
+    }
   });
 })(jQuery);

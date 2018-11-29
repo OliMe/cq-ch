@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import SettlementForm from '../components/settlement-form'
 import { connect } from 'react-redux'
 import { Creators as SettlementAction } from '../redux/settlement'
+import { Creators as AppAction } from '../redux/app'
 
 export class SettlementFormConnector extends Component {
   /** @inheritDoc */
@@ -12,7 +13,7 @@ export class SettlementFormConnector extends Component {
 
   /** @inheritDoc */
   init() {
-    this.props.getSettlementList()
+    this.props.appMounted()
   }
 
   /** @inheritDoc */
@@ -25,6 +26,7 @@ const mapDispatchToProps = dispatch => {
   return {
     getSettlementList: (name, id) => dispatch(SettlementAction.request(name, id)),
     setSettlement: (settlement) => dispatch(SettlementAction.setCurrent(settlement)),
+    appMounted: () => dispatch(AppAction.mounted()),
   }
 }
 /**

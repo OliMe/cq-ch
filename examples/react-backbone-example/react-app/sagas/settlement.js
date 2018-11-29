@@ -1,9 +1,11 @@
 import get from 'lodash/get'
-import { call, put, select } from 'redux-saga/effects'
-import { Creators as Action } from '../redux/settlement'
-import { sendCommand } from '../../../../es/cqrs-bus'
+import { call, put, select, take } from 'redux-saga/effects'
+import { eventChannel } from 'redux-saga'
+import { Types, Creators as Action } from '../redux/settlement'
+import { sendCommand, subscribeCommand } from '../../../../es/cqrs-bus'
 
 export const selectSettlementId = state => get(state, 'settlement.current.id', null)
+export const selectUserIp = state => get(state, 'user.ip', null)
 
 /**
  * Получение информации о городах из API.
@@ -11,19 +13,15 @@ export const selectSettlementId = state => get(state, 'settlement.current.id', n
  * @param {Object} api Объект API-методов.
  * @param {Object} query Параметры запроса.
  */
-export function * getSettlementList (api, query) {
+export function* getSettlementList(api, query) {
   let headers = null
   if (!(query.id || query.name)) {
     query = {
-      ...query,
       detect_by_ip: 1
     }
-    const response = yield call(api.getIp)
-    if (response.ok && response.data.ip) {
-      headers = {
-        headers: {
-          'x-client-ip': response.data.ip
-        }
+    headers = {
+      headers: {
+        'x-client-ip': yield select(selectUserIp)
       }
     }
   }
@@ -44,14 +42,28 @@ export function * getSettlementList (api, query) {
   }
 }
 
+function createSettlementCommandChannel() {
+  return eventChannel(emit => {
+    const commandHandler = command => {
+      emit(command)
+    }
+    subscribeCommand(Types.SET_CURRENT, commandHandler)
+    return () => { }
+  })
+}
+
+export function* watchOnCommands() {
+  const commandChannel = createSettlementCommandChannel()
+  while (true) {
+    yield put(yield take(commandChannel))
+  }
+}
+
 /**
  * Обновляет необходимые поля в store в соответствии с выбранным населенным пунктом.
  * @generator
  * @param {Object} action 
  */
-export function * declareSettlement ({ current }) {
-  yield call(sendCommand, {
-    type: 'SET_SETTLEMENT',
-    payload: current
-  })
+export function* declareSettlement(action) {
+  yield call(sendCommand, action)
 }
