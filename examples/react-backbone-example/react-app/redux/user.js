@@ -1,13 +1,18 @@
 import { createActions, createReducer } from 'reduxsauce'
 
 export const { Types, Creators } = createActions({
-    request: null,
+    request: ['resolver'],
+    getUserIp: null,
     success: ['ip'],
 }, { prefix: 'user/' })
 
 export const INITIAL_STATE = {
     isFetching: false,
     ip: undefined,
+}
+
+export const getUserIp = state => {
+    return { ...state }
 }
 
 /**
@@ -32,4 +37,5 @@ export const success = (state, { ip }) => {
 export const reducer = createReducer(INITIAL_STATE, {
     [Types.REQUEST]: request,
     [Types.SUCCESS]: success,
+    [Types.GET_USER_IP]: getUserIp,
 })

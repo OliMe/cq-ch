@@ -16,6 +16,12 @@ var app = app || {};
     additionalOptions: ['ip', 'listTemplate', 'bus'],
     queries: {},
     run: function () {
+      this.bus.sendQuery({ type: 'user/GET_USER_IP' }, 10000).then(function (ip) {
+        this.ip.set({ip: ip});
+      }.bind(this), function(reason) {
+        console.log('backbone error', reason)
+        this.ip.fetch();
+      }.bind(this));
       this.bus.subscribeCommand('settlement/SET_CURRENT', this.setCurrentListener.bind(this));
       this.bus.subscribeQuery('user/GET_USER_IP', function (query) {
         if (this.ip.get('ip')) {
@@ -27,7 +33,7 @@ var app = app || {};
           this.ip.fetch();
         }
       }.bind(this))
-      this.listenTo(this.ip, 'sync', this.onIpSync);
+      this.listenTo(this.ip, 'change:ip', this.onIpChange);
       this.listenTo(this.collection, 'sync', this.onSync);
       this.listenTo(this, 'render', this.render);
       this.listenTo(this.model, 'change', this.initRender);
@@ -37,9 +43,8 @@ var app = app || {};
           current: this.model.get('current').toJSON(),
         });
       });
-      this.ip.fetch();
     },
-    onIpSync: function (ip) {
+    onIpChange: function (ip) {
       this.collection.fetchByIp(ip.get('ip'));
     },
     setCurrentListener: function (command) {
