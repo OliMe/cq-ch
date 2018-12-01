@@ -2,7 +2,8 @@
 import getChannel from './event-transport/get-channel'
 import { TYPE_QUERY } from './constants'
 
-const channel = function* (types: Array<any>, context: string) {
+const channel = function (types: Array<any>, context: string) {
+    let taker: Function
 }
 /**
  * 
