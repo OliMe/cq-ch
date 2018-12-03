@@ -17,7 +17,8 @@ export function * sagas () {
     takeLatest(SettlementTypes.REQUEST, settlement.getSettlementList, api),
     takeLatest(UserTypes.SUCCESS, settlement.getSettlementList, api),
     takeLatest(UserTypes.REQUEST, user.requestUserIp, api),
-    takeEvery(UserTypes.GET_USER_IP, user.getUserIp),
+    takeLatest(UserTypes.GET_USER_IP, user.getUserIp),
+    takeEvery(UserTypes.QUERY_USER_IP, user.respondOnQueryUserIp),
     takeEvery(SettlementTypes.SET_CURRENT, settlement.declareSettlement),
     takeEvery(AppTypes.MOUNTED, appMountedSaga),
   ]

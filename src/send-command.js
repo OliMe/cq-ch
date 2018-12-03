@@ -1,5 +1,5 @@
 // @flow
-import getChannel from './event-transport/get-channel'
+import getTransport from './event-transport/get-transport'
 import { TYPE_COMMAND } from './constants'
 
 type Command = {
@@ -12,5 +12,5 @@ type Command = {
 export default function sendCommand(command: Command): void {
     const { type } = command
     let clonedCommand: Command = { ...command }
-    getChannel(TYPE_COMMAND).trigger(type, clonedCommand)
+    getTransport(TYPE_COMMAND).trigger(type, clonedCommand)
 }

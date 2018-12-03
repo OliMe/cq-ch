@@ -1,5 +1,5 @@
 // @flow
-import getChannel from './event-transport/get-channel'
+import getTransport from './event-transport/get-transport'
 import { TYPE_QUERY } from './constants'
 
 type Query = {
@@ -20,7 +20,7 @@ export default async function sendQuery(query: Query, time: number = 200): Promi
         if (typeof payload === 'object' && payload.constructor === Object) {
             clonedQuery.payload = payload
         }
-        getChannel(TYPE_QUERY).trigger(query.type, clonedQuery)
+        getTransport(TYPE_QUERY).trigger(query.type, clonedQuery)
         if (time) {
             setTimeout(() => {
                 reject('Time to answer exhausted.')

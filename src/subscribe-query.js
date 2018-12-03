@@ -1,5 +1,5 @@
 // @flow
-import getChannel from './event-transport/get-channel'
+import getTransport from './event-transport/get-transport'
 import { TYPE_QUERY } from './constants'
 import { checkArguments, getCfgCreator } from './helpers/argument-checker'
 import { subscribeCfg } from './arguments.cfg'
@@ -9,7 +9,7 @@ import { subscribeCfg } from './arguments.cfg'
  */
 export default function subscribeQuery (type: string, listener: Function) {
     checkArguments(arguments, getCfgCreator(subscribeQuery.name, subscribeCfg)(arguments))
-    getChannel(TYPE_QUERY).on(type, (event: CustomEvent) => {
+    getTransport(TYPE_QUERY).on(type, (event: CustomEvent) => {
         listener(event.detail)
     })
 }

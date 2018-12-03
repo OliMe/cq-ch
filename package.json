@@ -15,6 +15,7 @@
     "build:es5": "cross-env BABEL_ENV=es5 rollup -c",
     "build:es6": "cross-env BABEL_ENV=es6 rollup -c",
     "build": "yarn build:es5 && yarn build:es6",
+    "build:examples": "yarn build && cd ./examples/react-backbone-example/ && yarn build",
     "prepublish": "yarn build"
   },
   "devDependencies": {

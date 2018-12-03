@@ -1,8 +1,9 @@
 import { createActions, createReducer } from 'reduxsauce'
 
 export const { Types, Creators } = createActions({
-    request: ['resolver'],
+    request: null,
     getUserIp: null,
+    queryUserIp: null,
     success: ['ip'],
 }, { prefix: 'user/' })
 
@@ -12,6 +13,10 @@ export const INITIAL_STATE = {
 }
 
 export const getUserIp = state => {
+    return { ...state }
+}
+
+export const queryUserIp = state => {
     return { ...state }
 }
 
@@ -38,4 +43,5 @@ export const reducer = createReducer(INITIAL_STATE, {
     [Types.REQUEST]: request,
     [Types.SUCCESS]: success,
     [Types.GET_USER_IP]: getUserIp,
+    [Types.QUERY_USER_IP]: queryUserIp,
 })

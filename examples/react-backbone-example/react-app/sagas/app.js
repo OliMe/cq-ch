@@ -4,7 +4,7 @@ import { watchOnQueries as watchOnUserQueries } from './user'
 import { Types, Creators as UserAction } from '../redux/user'
 
 export function* appMountedSaga() {
-    yield put(UserAction.getUserIp())
     yield call(watchOnUserQueries)
     yield call(watchOnSettlementCommands)
+    yield put(UserAction.getUserIp())
 }

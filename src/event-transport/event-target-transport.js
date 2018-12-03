@@ -1,12 +1,12 @@
 // @flow
 import { EventTarget as EventTargetShim } from 'event-target-shim'
 
-export default class EventTargetChannel {
+export default class EventTargetTransport {
     target: EventTarget | EventTargetShim
     listeners: Object
     eventQueue: Object
     /**
-     * 
+     * Create instance of EventTargetTransport
      */
     constructor() {
         this.listeners = {}

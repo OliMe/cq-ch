@@ -16,20 +16,29 @@ var app = app || {};
     additionalOptions: ['ip', 'listTemplate', 'bus'],
     queries: {},
     run: function () {
-      var ip = this.bus.request(['user/GET_USER_IP'], 'backbone-app/user')('user/GET_USER_IP', {})
-      if (ip) {
-        console.log(ip)
-      }
-      this.bus.subscribeCommand('settlement/SET_CURRENT', this.setCurrentListener.bind(this));
-      var resolver = this.bus.respond(['user/GET_USER_IP'], 'backbone-app/user')('user/GET_USER_IP')().resolver
-      if (this.ip.get('ip')) {
-        resolver(this.ip.get('ip'));
-      } else {
-        this.listenToOnce(this.ip, 'change:ip', function (model) {
-          resolver(model.get('ip'));
-        })
+      this.bus.request(['user/QUERY_USER_IP'], 'backbone-app/user')({ type: 'user/QUERY_USER_IP' }, 2000).then(function (ip) {
+        this.ip.set({ ip: ip })
+      }.bind(this), function (reason) {
+        console.log('backbone-app', reason);
         this.ip.fetch();
-      }
+      }.bind(this));
+      this.bus.subscribeCommand('settlement/SET_CURRENT', this.setCurrentListener.bind(this));
+      var channel = this.bus.respond(['user/QUERY_USER_IP'], 'backbone-app/user')('user/QUERY_USER_IP');
+      setInterval(function () {
+        var promise = channel();
+        if (promise && promise instanceof Promise) {
+          promise.then(function (query) {
+            if (this.ip.get('ip')) {
+              query.resolve(this.ip.get('ip'));
+            } else {
+              this.listenToOnce(this.ip, 'change:ip', function (model) {
+                query.resolve(model.get('ip'));
+              })
+              this.ip.fetch();
+            }
+          }.bind(this));
+        }
+      }.bind(this), 0);
       this.listenTo(this.ip, 'change:ip', this.onIpChange);
       this.listenTo(this.collection, 'sync', this.onSync);
       this.listenTo(this, 'render', this.render);
