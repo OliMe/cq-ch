@@ -45,12 +45,17 @@ export default class EventTargetChannel {
      * @param {string} type 
      * @param {Function} callback 
      */
-    on(type: string, callback: Function): void {
-        this.listeners[type] = true
-        this.target.addEventListener(type, callback)
-        if (this.eventQueue[type] && this.eventQueue[type].length) {
-            this.eventQueue[type].forEach(event => {
-                callback(event)
+    on(type: string | Array<string>, callback: Function): void {
+        type = (typeof type === 'string' ? [type] : type)
+        if (Array.isArray(type)) {
+            type.forEach(type => {
+                this.listeners[type] = true
+                this.target.addEventListener(type, callback)
+                if (this.eventQueue[type] && this.eventQueue[type].length) {
+                    this.eventQueue[type].forEach(event => {
+                        callback(event)
+                    })
+                }
             })
         }
     }

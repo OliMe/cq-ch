@@ -2,7 +2,10 @@ import get from 'lodash/get'
 import { call, put, select, take } from 'redux-saga/effects'
 import { eventChannel } from 'redux-saga'
 import { Types, Creators as Action } from '../redux/user'
-import { sendQuery, subscribeQuery } from '../../../../es/cqrs-bus'
+import { respond, request } from '../../../../es/cqrs-bus'
+
+const requestFn = request([Types.GET_USER_IP], 'react-app/user')
+const respondFn = respond([Types.GET_USER_IP], 'react-app/user')
 
 export const selectUserIp = state => get(state, 'user.ip', null)
 
@@ -10,7 +13,7 @@ export function* getUserIp({ resolver }) {
     let ip = yield select(selectUserIp)
     try {
         if (!ip) {
-            ip = yield call(sendQuery, Action.getUserIp(), 10000)
+            ip = yield call(requestFn, Types.GET_USER_IP, Action.getUserIp(), 10000)
         }
     } catch (e) {
         console.log('react error', e)
@@ -38,21 +41,12 @@ export function* requestUserIp(api, { resolver }) {
     }
 }
 
-function createUserQueryChannel() {
-    return eventChannel(emit => {
-        const queryHandler = query => {
-            emit(query)
-        }
-        subscribeQuery(Types.GET_USER_IP, queryHandler)
-        return () => { }
-    })
-}
-
 export function* watchOnQueries() {
-    const queryChannel = createUserQueryChannel()
-    while (true) {
-        const action = yield take(queryChannel)
-        console.log(action)
-        yield put(action)
-    }
+    const getUserIpQuery = respondFn(Types.GET_USER_IP)
+    console.log(getUserIpQuery())
+    // while (true) {
+        // const {query: action, resolver} = yield call(getUserIpQuery)
+        // console.log(action)
+        // yield put(action)
+    // }
 }

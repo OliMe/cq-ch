@@ -16,23 +16,20 @@ var app = app || {};
     additionalOptions: ['ip', 'listTemplate', 'bus'],
     queries: {},
     run: function () {
-      this.bus.sendQuery({ type: 'user/GET_USER_IP' }, 10000).then(function (ip) {
-        this.ip.set({ip: ip});
-      }.bind(this), function(reason) {
-        console.log('backbone error', reason)
-        this.ip.fetch();
-      }.bind(this));
+      var ip = this.bus.request(['user/GET_USER_IP'], 'backbone-app/user')('user/GET_USER_IP', {})
+      if (ip) {
+        console.log(ip)
+      }
       this.bus.subscribeCommand('settlement/SET_CURRENT', this.setCurrentListener.bind(this));
-      this.bus.subscribeQuery('user/GET_USER_IP', function (query) {
-        if (this.ip.get('ip')) {
-          query.resolver(this.ip.get('ip'));
-        } else {
-          this.listenToOnce(this.ip, 'change:ip', function (model) {
-            query.resolver(model.get('ip'));
-          })
-          this.ip.fetch();
-        }
-      }.bind(this))
+      var resolver = this.bus.respond(['user/GET_USER_IP'], 'backbone-app/user')('user/GET_USER_IP')().resolver
+      if (this.ip.get('ip')) {
+        resolver(this.ip.get('ip'));
+      } else {
+        this.listenToOnce(this.ip, 'change:ip', function (model) {
+          resolver(model.get('ip'));
+        })
+        this.ip.fetch();
+      }
       this.listenTo(this.ip, 'change:ip', this.onIpChange);
       this.listenTo(this.collection, 'sync', this.onSync);
       this.listenTo(this, 'render', this.render);
