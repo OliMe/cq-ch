@@ -3,16 +3,24 @@ var app = app || {};
 (function () {
     'use strict';
 
-    var ExternalInterface = _.extend({
+    var ExternalInterface = app.Model.extend({
+        additionalOptions: ['config', 'context', 'bus'],
         handlers: {},
+        run: function () {
+            if (this.config && this.context) {
+                this.register(this.config, this.context);
+            }
+        },
         register: function (config, context) {
             if (_.isPlainObject(config)) {
                 for (var section in config) {
                     if (config.hasOwnProperty(section)) {
-                        this.initHandlers(section, config, context)
+                        console.log(config[section]);
+                        this.initHandlers(section, config[section], context)
                     }
                 }
             }
+            this.runHandlers()
         },
         initHandlers: function (section, config, context) {
             if (_.isPlainObject(config)) {
@@ -47,42 +55,50 @@ var app = app || {};
                 }
             }
         },
-        run: function () {
-            runners = {
-                command: function (handlers) {
-                    handlers.forEach(function (handler) {
-                        if (!handler.running) {
-                            handler.running = true;
-                            handler.handler(handler.channel);
-                        }
-                    });
-                },
-                execute: function (handlers) {
-                    var notRunning = handlers.filter(function (value) {
-                        return !value.running;
-                    });
-                    if (notRunning.length) {
-                        return setInterval(function () {
-                            notRunning.forEach(function (value) {
-                                value.handler(handler.channel)
-                            });
-                        }, 0);
-                    }
-                },
-                request: function (handlers) {
-
-                },
-                respond: function (handlers) {
-
+        _putRunner: function (handlers) {
+            handlers.forEach(function (handler) {
+                if (!handler.running) {
+                    handler.running = true;
+                    handler.handler(handler.channel);
                 }
+            });
+        },
+        _takeRunner: function (handlers) {
+            var notRunning = handlers.filter(function (value) {
+                return !value.running;
+            });
+            if (notRunning.length) {
+                return setInterval(function () {
+                    notRunning.forEach(function (handler) {
+                        handler.running = true;
+                        handler.handler(handler.channel)
+                    });
+                }, 0);
+            }
+        },
+        runHandlers: function () {
+            var runners = {
+                command: this._putRunner,
+                execute: this._takeRunner,
+                request: this._putRunner,
+                respond: this._takeRunner,
+            }
+            for (var section in this.handlers) {
+                runners[section](this.handlers[section])
             }
         },
         _getBusFunctionForSection(section) {
-            return _.isFunction(CQRSBus[section]) && CQRSBus[section];
+            return _.isFunction(this.bus[section]) && this.bus[section];
         },
         _prepareChannel(section, type, channel) {
             return ['execute', 'respond'].includes(section) ? channel(type) : channel;
         }
-    }, Backbone.Events);
-
+    });
+    var instance;
+    app.declareInterface = function (config, context, bus) {
+        if (!instance) {
+            instance = new ExternalInterface({}, {config: config, context: context, bus: bus});
+        }
+        return instance;
+    }
 })();

@@ -20,9 +20,9 @@ var app = app || {};
         fragment = '/' + paramSymbol + parameters + paramUnionSymbol + expand;
       return Backbone.Model.prototype.url.apply(this, arguments) + fragment;
     },
-    beforeRun: function (data, options) {},
-    run: function (data, options) {},
-    afterRun: function (data, options) {},
+    beforeRun: function (data, options) { },
+    run: function (data, options) { },
+    afterRun: function (data, options) { },
     initialize: function (data, options) {
       this.attachOptions(options);
       this.beforeRun(data, options);
@@ -43,8 +43,18 @@ var app = app || {};
       }
     },
     fetch: function () {
-      this.set({isFetching: true})
+      this.set({ isFetching: true })
       return Backbone.Model.prototype.fetch.apply(this, arguments);
+    },
+    createHandler: function (section, type) {
+      if (
+        this.handlers
+        && _.isPlainObject(this.handlers)
+        && _.isPlainObject(this.handlers[section])
+        && _.isFunction(this.handlers[section][type])
+      ) {
+        return this.handlers[section][type].bind(this)
+      }
     }
   });
 })(jQuery);

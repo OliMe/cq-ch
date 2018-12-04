@@ -9,7 +9,9 @@ require('./helpers/template-helper.js');
 require('./models/model.js');
 require('./collections/collection.js');
 require('./views/view.js');
+require('./external/external-interface.js');
 // App entities
+require('./models/form-model.js');
 require('./models/ip.js');
 require('./models/settlement.js');
 require('./collections/settlements.js');

@@ -2,15 +2,15 @@ var app = app || {};
 
 $(function () {
     'use strict'
-    var formModel = new app.Model({ isField: false, current: null, name: '' }),
+    var formModel = new app.FormModel({ isField: false, current: null, name: '' }),
         ipModel = new app.Ip(),
-        externalInterfaceCfg = {
+        interfaceConfig = {
             command: {
                 types: ['settlement/SET_CURRENT'],
                 handlers: [
                     {
                         type: 'settlement/SET_CURRENT',
-                        creator: formModel.createHandler
+                        creator: formModel.createHandler.bind(formModel)
                     }
                 ]
             },
@@ -19,7 +19,7 @@ $(function () {
                 handlers: [
                     {
                         type: 'settlement/SET_CURRENT',
-                        creator: formModel.createHandler
+                        creator: formModel.createHandler.bind(formModel)
                     }
                 ]
             },
@@ -28,7 +28,7 @@ $(function () {
                 handlers: [
                     {
                         type: 'user/QUERY_USER_IP',
-                        creator: ipModel.createRequestHandler
+                        creator: ipModel.createHandler.bind(ipModel)
                     }
                 ]
             },
@@ -37,16 +37,16 @@ $(function () {
                 handlers: [
                     {
                         type: 'user/QUERY_USER_IP',
-                        creator: ipModel.createRespondHandler
+                        creator: ipModel.createHandler.bind(ipModel)
                     }
                 ]
             }
         };
+    app.declareInterface(interfaceConfig, 'backbone-app', CQRSBus);
     new app.SettlementForm({
         el: '#backbone-app',
-        ip: new app.Ip(),
-        bus: CQRSBus,
-        model: new app.Model({ isField: false, current: null, name: '' }),
+        ip: ipModel,
+        model: formModel,
         collection: new app.Settlements(),
         template: app.helpers.TemplateHelper.getTemplate('#settlement-form-template'),
         listTemplate: app.helpers.TemplateHelper.getTemplate('#settlement-list-template'),

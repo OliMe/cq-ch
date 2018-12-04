@@ -4,34 +4,44 @@ var app = app || {};
     'use strict';
 
     var SET_CURRENT = 'settlement/SET_CURRENT';
-    var COMMAND_SECTION = 'command';
 
     /**
-     * Model for settlements
+     * Model for SettlementForm
      */
     app.FormModel = app.Model.extend({
-        handlers: (function () {
-            var handlers = {};
-            handlers[COMMAND_SECTION] = {};
-            handlers[COMMAND_SECTION][SET_CURRENT] = function (putCommand) {
-                this.listenTo(this, 'change:current', function (putCommand) {
-                    putCommand({
-                        type: SET_CURRENT,
-                        current: this.get('current').toJSON(),
+        handlers: {
+            command: {
+                'settlement/SET_CURRENT': function (putCommand) {
+                    this.listenTo(this, 'change:current', function () {
+                        putCommand({
+                            type: SET_CURRENT,
+                            current: this.get('current').toJSON(),
+                        });
                     });
-                });
-            };
-            return handlers;
-        })(),
-        createHandler: function (section, type) {
-            if (
-                this.handlers
-                && _.isPlainObject(this.handlers)
-                && _.isPlainObject(this.handlers[section])
-                && _.isFunction(this.handlers[section][type])
-            ) {
-                return this.handlers[section][type].bind(this)
+                }
+            },
+            execute: {
+                'settlement/SET_CURRENT': function (takeCommand) {
+                    var promise = takeCommand();
+                    if (promise && promise instanceof Promise) {
+                        promise.then(this.setCurrentListener.bind(this), function (reason) {
+                            console.log(reason)
+                        });
+                    }
+                }
             }
-        }
+        },
+        setCurrentListener: function (command) {
+            if (
+                command.current
+                && command.current.id
+                && (
+                    !this.get('current')
+                    || this.get('current').get('id') !== command.current.id
+                )
+            ) {
+                this.set({ current: new app.Settlement(command.current) });
+            }
+        },
     });
 })();
