@@ -16,16 +16,26 @@ var app = app || {};
     additionalOptions: ['ip', 'listTemplate', 'bus'],
     queries: {},
     run: function () {
-      this.bus.request(['user/QUERY_USER_IP'], 'backbone-app/user')({ type: 'user/QUERY_USER_IP' }, 2000).then(function (ip) {
+      var putCommand = this.bus.command(['settlement/SET_CURRENT'], 'backbone-app/settlement'),
+        putQuery = this.bus.request(['user/QUERY_USER_IP'], 'backbone-app/user'),
+        takeCommand = this.bus.execute(['settlement/SET_CURRENT'], 'backbone-app/settlement')(),
+        takeQuery = this.bus.respond(['user/QUERY_USER_IP'], 'backbone-app/user')();
+      putQuery({ type: 'user/QUERY_USER_IP' }, 2000).then(function (ip) {
         this.ip.set({ ip: ip })
       }.bind(this), function (reason) {
         console.log('backbone-app', reason);
         this.ip.fetch();
       }.bind(this));
-      this.bus.subscribeCommand('settlement/SET_CURRENT', this.setCurrentListener.bind(this));
-      var channel = this.bus.respond(['user/QUERY_USER_IP'], 'backbone-app/user')('user/QUERY_USER_IP');
       setInterval(function () {
-        var promise = channel();
+        var promise = takeCommand();
+        if (promise && promise instanceof Promise) {
+          promise.then(this.setCurrentListener.bind(this), function (reason) {
+            console.log(reason)
+          })
+        }
+      }.bind(this), 0);
+      setInterval(function () {
+        var promise = takeQuery();
         if (promise && promise instanceof Promise) {
           promise.then(function (query) {
             if (this.ip.get('ip')) {
@@ -44,7 +54,7 @@ var app = app || {};
       this.listenTo(this, 'render', this.render);
       this.listenTo(this.model, 'change', this.initRender);
       this.listenTo(this.model, 'change:current', function () {
-        this.bus.sendCommand({
+        putCommand({
           type: 'settlement/SET_CURRENT',
           current: this.model.get('current').toJSON(),
         });
