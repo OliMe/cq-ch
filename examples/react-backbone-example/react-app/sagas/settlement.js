@@ -2,8 +2,10 @@ import get from 'lodash/get'
 import { call, put, select, take } from 'redux-saga/effects'
 import { eventChannel } from 'redux-saga'
 import { Types, Creators as Action } from '../redux/settlement'
-import { sendCommand, subscribeCommand } from '../../../../es/cqrs-bus'
+import { command, execute } from '../../../../es/cqrs-bus'
 
+const executeChannelFactory = execute([Types.SET_CURRENT], 'react-app/settlement')
+const putCommand = command([Types.SET_CURRENT], 'react-app/settlement')
 export const selectSettlementId = state => get(state, 'settlement.current.id', null)
 export const selectUserIp = state => get(state, 'user.ip', null)
 
@@ -42,20 +44,10 @@ export function* getSettlementList(api, query) {
   }
 }
 
-function createSettlementCommandChannel() {
-  return eventChannel(emit => {
-    const commandHandler = command => {
-      emit(command)
-    }
-    subscribeCommand(Types.SET_CURRENT, commandHandler)
-    return () => { }
-  })
-}
-
 export function* watchOnCommands() {
-  const commandChannel = createSettlementCommandChannel()
+  const takeCommand = executeChannelFactory()
   while (true) {
-    yield put(yield take(commandChannel))
+    yield put(yield call(takeCommand))
   }
 }
 
@@ -65,5 +57,5 @@ export function* watchOnCommands() {
  * @param {Object} action 
  */
 export function* declareSettlement(action) {
-  yield call(sendCommand, action)
+  yield call(putCommand, action)
 }

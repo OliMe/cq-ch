@@ -20,15 +20,18 @@ export function* respondOnQueryUserIp({ resolve }) {
 
 export function* getUserIp({ resolve }) {
     let ip = yield select(selectUserIp)
-    try {
-        if (!ip) {
-            ip = yield call(requestFn, Action.queryUserIp(), 200)
+    if (ip) {
+        yield put(Action.success(ip))
+    } else {
+        try {
+            ip = yield call(requestFn, Action.queryUserIp(), 2000)
             if (ip) {
                 yield put(Action.success(ip))
             }
+        } catch (reason) {
+            console.log(reason)
+            yield put(Action.request(resolve))
         }
-    } catch (e) {
-        yield put(Action.request(resolve))
     }
 }
 
@@ -44,8 +47,8 @@ export function* requestUserIp(api) {
 }
 
 export function* watchOnQueries() {
-    const getUserIpQuery = respondFn(Types.QUERY_USER_IP)
+    const takeUserIpQuery = respondFn(Types.QUERY_USER_IP)
     while (true) {
-        yield put(yield call(getUserIpQuery))
+        yield put(yield call(takeUserIpQuery))
     }
 }
