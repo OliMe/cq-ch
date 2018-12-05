@@ -15,7 +15,6 @@ var app = app || {};
             if (_.isPlainObject(config)) {
                 for (var section in config) {
                     if (config.hasOwnProperty(section)) {
-                        console.log(config[section]);
                         this.initHandlers(section, config[section], context)
                     }
                 }
