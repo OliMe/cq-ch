@@ -1,8 +1,8 @@
 // @flow
-import { EventTarget as EventTargetShim } from 'event-target-shim'
+import createEventTarget from '../helpers/event-target-creator'
 
 export default class EventTargetTransport {
-    target: EventTarget | EventTargetShim
+    target: EventTarget
     listeners: Object
     eventQueue: Object
     /**
@@ -11,17 +11,7 @@ export default class EventTargetTransport {
     constructor() {
         this.listeners = {}
         this.eventQueue = {}
-        this.target = this.createTarget()
-    }
-    /**
-     * @returns {EventTarget|EventTargetShim}
-     */
-    createTarget(): EventTarget | EventTargetShim {
-        let constructor = EventTargetShim
-        if (typeof EventTarget === 'function') {
-            constructor = EventTarget
-        }
-        return new constructor
+        this.target = createEventTarget()
     }
     /**
      * 

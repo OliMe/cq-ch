@@ -1,0 +1,16 @@
+body, html {
+    padding: 0px;
+    margin: 0px;
+}
+.not_display {
+    display: none;
+}
+
+header, footer, main {
+    padding: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+main h1 {
+    margin: 0px;
+}

@@ -1,27 +1,36 @@
 <!DOCTYPE html>
 <html>
- <head>
-   <title>CQRS iteraction example</title>
-   <meta charset="utf-8">
-   <script type='text/javascript'>
-   var app = {
-    entryScript: 'https://cors-anywhere.herokuapp.com/'
-   };
-   </script>
-   <link href="build/backbone-app.css" rel="stylesheet">
-   <link href="build/react-app.css" rel="stylesheet">
- </head>
- <body>
-  <div id="react-app"></div>
-  <hr>
-  <div id="backbone-app"></div>
+
+<head>
+  <title>CQRS iteraction example</title>
+  <meta charset="utf-8">
+  <script type='text/javascript'>
+    var app = {
+      entryScript: 'https://cors-anywhere.herokuapp.com/'
+    };
+  </script>
+  <link href="main.css" rel="stylesheet">
+</head>
+
+<body>
+  <header>
+    <div id="react-app"></div>
+  </header>
+  <main>
+    <section>
+      <h1>Some content...</h1>
+    </section>
+  </main>
+  <footer>
+    <div id="backbone-app"></div>
+  </footer>
   <script type="text/template" id='settlement-form-template'>
     <% if (isField) { %>
-      <input class="settlement-search" type="search"/>
+      <label for="backbone-settlement-search">Your city:</label> <input class="settlement-search" type="search" id="backbone-settlement-search"/>
       <ul class="settlement-list"></ul>
     <% } else { %>
       <% if (current) { %>
-        <span class="current-settlement"><%= current.name %> (<%= current.region %>)</span> 
+        <span>Your city:</span> <span class="current-settlement"><%= current.name %> (<%= current.region %>)</span> 
       <% } %>
     <% } %>
   </script>
@@ -36,5 +45,6 @@
   <script type="text/javascript" src="build/runtime.js"></script>
   <script type="text/javascript" src="build/react-app.js"></script>
   <script type="text/javascript" src="build/backbone-app.js"></script>
- </body> 
+</body>
+
 </html>

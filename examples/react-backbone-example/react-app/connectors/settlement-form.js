@@ -25,6 +25,7 @@ export class SettlementFormConnector extends Component {
 const mapDispatchToProps = dispatch => {
   return {
     getSettlementList: (name, id) => dispatch(SettlementAction.request(name, id)),
+    clearList: () => dispatch(SettlementAction.purge()),
     setSettlement: (settlement) => dispatch(SettlementAction.setCurrent(settlement)),
     appMounted: () => dispatch(AppAction.mounted()),
   }

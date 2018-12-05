@@ -67,12 +67,14 @@ var app = app || {};
                 return !value.running;
             });
             if (notRunning.length) {
-                return setInterval(function () {
+                var runner = function () {
                     notRunning.forEach(function (handler) {
                         handler.running = true;
                         handler.handler(handler.channel)
                     });
-                }, 0);
+                    setTimeout(runner, 0)
+                }
+                runner()
             }
         },
         runHandlers: function () {

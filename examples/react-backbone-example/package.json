@@ -5,10 +5,9 @@
   "author": "Dmitri Vizgin",
   "license": "MIT",
   "scripts": {
-    "build": "NODE_ENV=production parallel-webpack -p --config ./webpack.config.js && yarn file-copier",
+    "build": "NODE_ENV=production parallel-webpack -p --config ./webpack.config.js",
     "dev": "NODE_ENV=dev webpack --progress=true --config ./webpack.config.js",
-    "watch": "yarn dev --watch",
-    "file-copier": "node ./scripts/file-copier.js"
+    "watch": "yarn dev --watch"
   },
   "browserslist": [
     "last 15 versions",

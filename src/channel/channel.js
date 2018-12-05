@@ -1,14 +1,15 @@
 // @flow
+import Queue from './queue'
+
 export default class Channel {
-    puts: Array<any>
-    takes: Array<Function>
+    puts: Queue
+    takes: Queue
     /**
      * Create instance of Channel
      */
     constructor () {
-        this.puts = []
-        this.takes = []
-        this._schedule()
+        this.puts = new Queue(this._putListener.bind(this))
+        this.takes = new Queue()
     }
     /**
      * Send value to channel
@@ -16,7 +17,7 @@ export default class Channel {
      */
     put (value: any) {
         if (value !== undefined) {
-            this.puts.push(value)
+            this.puts.put(value)
         }
     }
     /**
@@ -24,18 +25,17 @@ export default class Channel {
      */
     async take (): Promise<any> {
         return new Promise(resolve => {
-            this.takes.push(resolve)
+            this.takes.put(resolve)
         })
     }
     /**
      * Bind puts to takes
      */
-    _schedule () {
-        setTimeout(this._schedule.bind(this), 0)
+    _putListener () {
         if (this.takes.length) {
             if (this.puts.length) {
-                const take = this.takes.shift()
-                const put = this.puts.shift()
+                const take = this.takes.take()
+                const put = this.puts.take()
                 take(put)
             }
         }
