@@ -6,11 +6,20 @@ var app = app || {};
     var ExternalInterface = app.Model.extend({
         additionalOptions: ['config', 'context', 'bus'],
         handlers: {},
+        /**
+         * Обрабатываем конфиг, запускаем обработчики интерфейса
+         */
         run: function () {
             if (this.config && this.context) {
                 this.register(this.config, this.context);
             }
         },
+        /**
+         * Обрабатываем конфигурацию внешнего интерфейса, регистрируем хэндлеры
+         * 
+         * @param {Object} config Конфигурация интерфейса
+         * @param {string} context Контекст интерфейса
+         */
         register: function (config, context) {
             if (_.isPlainObject(config)) {
                 for (var section in config) {
@@ -21,6 +30,13 @@ var app = app || {};
             }
             this.runHandlers()
         },
+        /**
+         * Инициализируем хэндлеры для отправки команд и запросов
+         * 
+         * @param {string} section Раздел интерфейса (команды, обработки команд, запрос, обработки запросов)
+         * @param {Object} config Раздел конфигурации с параметрами
+         * @param {string} context Контекст интерфейса
+         */
         initHandlers: function (section, config, context) {
             if (_.isPlainObject(config)) {
                 var types = config.types,
@@ -77,6 +93,9 @@ var app = app || {};
                 runner()
             }
         },
+        /**
+         * Запуск инициализированных хэндлеров
+         */
         runHandlers: function () {
             var runners = {
                 command: this._putRunner,

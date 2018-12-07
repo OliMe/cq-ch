@@ -21,27 +21,23 @@ class SettlementForm extends Component {
    */
   renderField() {
     return (
-      <div>
+      <div className='container'>
         <label>Your city:</label>&nbsp;
         <Autocomplete
           inputProps={{
             autoComplete: 'nope',
-            className: 'input_styled js-settlement',
             onBlur: () => this.setState({ isField: false }),
           }}
           renderMenu={items => (
-            <div className='b-popup popup-autocomplete' children={items} />
+            <ul className='b-popup' children={items} />
           )}
           renderItem={({ name, type, region }, isHighlighted) => (
-            <div className='p'>
-              <span className={`font-small link link_no-underline${isHighlighted ? ' link_active' : ''}`}>
-                {type === 'village' && 'д.'} {name} ({region})
-                </span>
-            </div>
+            <li className={`link link_no-underline${isHighlighted ? ' link_active' : ''}`}>
+              {type === 'village' && 'д.'} {name} ({region})
+            </li>
           )}
           getItemValue={settlement => settlement.name}
           selectOnBlur
-          wrapperStyle={{ position: 'relative', display: 'inline-block' }}
           items={(this.props.settlement && this.props.settlement.list) ? this.props.settlement.list : []}
           value={this.state.value}
           open={this.props.settlement && this.props.settlement.list && Boolean(this.props.settlement.list.length)}
@@ -77,7 +73,7 @@ class SettlementForm extends Component {
   render() {
     return (
       <div className='b-section_title'>
-        {Boolean(this.state.isField) ? this.renderField() : (<div>
+        {Boolean(this.state.isField) ? this.renderField() : (<div className='container'>
           <span>Your city:</span>&nbsp;
           <span
             className='link link_pseudo'

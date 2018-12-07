@@ -25,20 +25,24 @@
     <div id="backbone-app"></div>
   </footer>
   <script type="text/template" id='settlement-form-template'>
-    <% if (isField) { %>
-      <label for="backbone-settlement-search">Your city:</label> <input class="settlement-search" type="search" id="backbone-settlement-search"/>
-      <ul class="settlement-list"></ul>
-    <% } else { %>
-      <% if (current) { %>
-        <span>Your city:</span> <span class="current-settlement"><%= current.name %> (<%= current.region %>)</span> 
+    <div class='container'>
+      <% if (isField) { %>
+        <label for="backbone-settlement-search">Your city:</label> <input class="settlement-search" type="search" id="backbone-settlement-search"/>
+        <div class="settlement-list"></div>
+      <% } else { %>
+        <% if (current) { %>
+          <span>Your city:</span> <span class="link link_pseudo current-settlement"><%= current.name %> (<%= current.region %>)</span> 
+        <% } %>
       <% } %>
-    <% } %>
+    </div>
   </script>
   <script type="text/template" id="settlement-list-template">
-    <% if (list) { %>
+    <% if (list && list.length) { %>
+      <ul class="b-popup">
       <% for (var i = 0; i < list.length; i += 1) { %>
-        <li data-settlement-id="<%= list[i].id %>"><%= list[i].name%> (<%= list[i].region %>)</li>
+        <li class='link link_no-underline' data-settlement-id="<%= list[i].id %>"><%= list[i].name%> (<%= list[i].region %>)</li>
       <% } %>
+      </ul>
     <% } %>
   </script>
   <script type="text/javascript" src="build/vendor.js"></script>

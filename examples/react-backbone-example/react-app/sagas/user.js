@@ -1,8 +1,8 @@
 import get from 'lodash/get'
 import { call, put, select, take } from 'redux-saga/effects'
-import { eventChannel } from 'redux-saga'
 import { Types, Creators as Action } from '../redux/user'
 import { respond, request } from '../../../../es/cqrs-bus'
+import watchGeneratorCreator from '../helpers/watch-generator-creator'
 
 const requestFn = request([Types.QUERY_USER_IP], 'react-app/user')
 const respondFn = respond([Types.QUERY_USER_IP], 'react-app/user')
@@ -46,9 +46,4 @@ export function* requestUserIp(api) {
     }
 }
 
-export function* watchOnQueries() {
-    const takeUserIpQuery = respondFn(Types.QUERY_USER_IP)
-    while (true) {
-        yield put(yield call(takeUserIpQuery))
-    }
-}
+export const watchOnQueries = watchGeneratorCreator (respondFn, Types.QUERY_USER_IP)

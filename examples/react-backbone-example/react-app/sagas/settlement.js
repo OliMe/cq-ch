@@ -1,8 +1,8 @@
 import get from 'lodash/get'
-import { call, put, select, take } from 'redux-saga/effects'
-import { eventChannel } from 'redux-saga'
+import { call, put, select} from 'redux-saga/effects'
 import { Types, Creators as Action } from '../redux/settlement'
 import { command, execute } from '../../../../es/cqrs-bus'
+import watchGeneratorCreator from '../helpers/watch-generator-creator'
 
 const executeChannelFactory = execute([Types.SET_CURRENT], 'react-app/settlement')
 const putCommand = command([Types.SET_CURRENT], 'react-app/settlement')
@@ -44,18 +44,9 @@ export function* getSettlementList(api, query) {
   }
 }
 
-export function* watchOnCommands() {
-  const takeCommand = executeChannelFactory()
-  while (true) {
-    yield put(yield call(takeCommand))
-  }
-}
+export const watchOnCommands = watchGeneratorCreator(executeChannelFactory)
 
-/**
- * Обновляет необходимые поля в store в соответствии с выбранным населенным пунктом.
- * @generator
- * @param {Object} action 
- */
+// Отправка команды на изменение города в других приложениях
 export function* declareSettlement(action) {
   yield call(putCommand, action)
 }
