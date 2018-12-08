@@ -1,7 +1,7 @@
 import get from 'lodash/get'
 import { call, put, select, take } from 'redux-saga/effects'
 import { Types, Creators as Action } from '../redux/user'
-import { respond, request } from '../../../../es/cqrs-bus'
+import { respond, request } from '../../../../es/cqc'
 import watchGeneratorCreator from '../helpers/watch-generator-creator'
 
 const requestFn = request([Types.QUERY_USER_IP], 'react-app/user')

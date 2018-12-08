@@ -8,11 +8,11 @@ import EventTargetTransport from "./event-target-transport";
  */
 export default function getTransport(type: string): EventTargetTransport {
     if (typeof window.CQRSBusChannels === 'undefined') {
-        window.CQRSBusChannels = {}
+        window.CQChannels = {}
     }
     if (typeof window.CQRSBusChannels[type] === 'undefined') {
-        window.CQRSBusChannels[type] = new EventTargetTransport
+        window.CQChannels[type] = new EventTargetTransport
     }
 
-    return window.CQRSBusChannels[type]
+    return window.CQChannels[type]
 }

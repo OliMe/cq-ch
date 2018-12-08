@@ -24,7 +24,7 @@ const externals = makeExternalPredicate([
 const config = {
   cjs: {
     input: 'src/index.js',
-    output: { file: 'lib/cqrs-bus.js', format: 'cjs', indent: false },
+    output: { file: 'lib/cqc.js', format: 'cjs', indent: false },
     plugins: [
       babel(),
       globals(),
@@ -33,7 +33,7 @@ const config = {
   },
   esDev: {
     input: 'src/index.js',
-    output: { file: 'es/cqrs-bus.js', format: 'es', indent: false },
+    output: { file: 'es/cqc.js', format: 'es', indent: false },
     plugins: [
       babel(),
       builtins(),
@@ -42,7 +42,7 @@ const config = {
   },
   esProd: {
     input: 'src/index.js',
-    output: { file: 'es/cqrs-bus.min.js', format: 'es', indent: false },
+    output: { file: 'es/cqc.min.js', format: 'es', indent: false },
     plugins: [
       babel(),
       builtins(),
@@ -63,9 +63,9 @@ const config = {
   umdDev: {
     input: 'src/index.js',
     output: {
-      file: 'dist/cqrs-bus.js',
+      file: 'dist/cqc.js',
       format: 'umd',
-      name: 'CQRSBus',
+      name: 'CQC',
     },
     plugins: [
       builtins(),
@@ -79,9 +79,9 @@ const config = {
   umdProd: {
     input: 'src/index.js',
     output: {
-      file: 'dist/cqrs-bus.min.js',
+      file: 'dist/cqc.min.js',
       format: 'umd',
-      name: 'CQRSBus',
+      name: 'CQC',
     },
     plugins: [
       builtins(),

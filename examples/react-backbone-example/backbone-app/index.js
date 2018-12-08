@@ -42,7 +42,7 @@ $(function () {
                 ]
             }
         };
-    app.declareInterface(interfaceConfig, 'backbone-app', CQRSBus);
+    app.declareInterface(interfaceConfig, 'backbone-app', CQC);
     new app.SettlementForm({
         el: '#backbone-app',
         ip: ipModel,
