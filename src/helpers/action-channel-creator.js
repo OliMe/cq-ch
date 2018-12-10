@@ -9,8 +9,8 @@ import Channel from '../channel/channel'
  * @returns {Function} 
  */
 export function actionChannelCreator(types: Array<string>, context: string) {
-    return async function* (type: string | Array<string>, transport: EventTargetTransport, notificator) {
-        const queue: Channel = new Channel()
+    return async function* (type: string | Array<string>, transport: EventTargetTransport, notificator: EventTargetTransport) {
+        const queue: Channel = new Channel(notificator)
         type = (type === '*' ? types : type)
         type = typeof type === 'string' ? [type] : type
         Array.isArray(type)
@@ -18,7 +18,6 @@ export function actionChannelCreator(types: Array<string>, context: string) {
             && transport.on(type, ({ detail: action }) => {
                 if (action.context && action.context !== context) {
                     queue.put(action)
-                    notificator.trigger('change')
                 }
             })
         while (true) {
@@ -26,14 +25,18 @@ export function actionChannelCreator(types: Array<string>, context: string) {
         }
     }
 }
-
-export function channelEmitterCreator(iterator: Function, notificator) {
-    const result = async function (): Object {
+/**
+ * 
+ * @param {*} iterator 
+ * @param {*} notificator
+ * @returns {Function}
+ */
+export function channelEmitterCreator(iterator: Function, notificator: EventTargetTransport) {
+    const emitter = async function (onchange: Function | null = null): Object {
+        if (typeof onchange === 'function') {
+            notificator.on('change', onchange.bind(onchange, emitter))
+        }
         return (await iterator.next()).value
     }
-    return Object.assign(result, {
-        change: (callback: Function) => {
-            notificator.on('change', callback)
-        }
-    });
+    return emitter
 }

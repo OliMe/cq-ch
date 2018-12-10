@@ -1,13 +1,18 @@
 // @flow
 import Queue from './queue'
+import EventTargetTransport from '../event-transport/event-target-transport';
 
 export default class Channel {
     puts: Queue
     takes: Queue
+    notificator: EventTargetTransport | null
     /**
      * Create instance of Channel
      */
-    constructor () {
+    constructor (notificator: EventTargetTransport | null = null) {
+        if (notificator && notificator instanceof EventTargetTransport) {
+            this.notificator = notificator
+        }
         this.puts = new Queue(this._putListener.bind(this))
         this.takes = new Queue()
     }
@@ -37,6 +42,9 @@ export default class Channel {
                 const take = this.takes.take()
                 const put = this.puts.take()
                 take(put)
+                if (this.notificator) {
+                    this.notificator.trigger('change')
+                }
             }
         }
     }

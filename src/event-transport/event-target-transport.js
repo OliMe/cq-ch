@@ -8,17 +8,24 @@ export default class EventTargetTransport {
     /**
      * Create instance of EventTargetTransport
      */
-    constructor() {
+    constructor(events: Object | null = null) {
         this.listeners = {}
         this.eventQueue = {}
         this.target = createEventTarget()
+        if (events && typeof events === 'object') {
+            for (let type in events) {
+                if (typeof events[type] === 'function') {
+                    this.on(type, events[type])
+                }
+            }
+        }
     }
     /**
      * 
      * @param {string} type 
      * @param {Object} payload 
      */
-    trigger(type: string, payload: Object): void {
+    trigger(type: string, payload: Object = {}): void {
         const event = new CustomEvent(type, {
             detail: payload,
         });

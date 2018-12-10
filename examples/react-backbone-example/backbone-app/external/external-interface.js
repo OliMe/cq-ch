@@ -83,14 +83,12 @@ var app = app || {};
                 return !value.running;
             });
             if (notRunning.length) {
-                var runner = function () {
-                    notRunning.forEach(function (handler) {
-                        handler.running = true;
-                        handler.handler(handler.channel)
+                notRunning.forEach(function (handler) {
+                    handler.running = true;
+                    handler.channel(function (channel) {
+                        handler.handler(channel);    
                     });
-                    setTimeout(runner, 0)
-                }
-                runner()
+                });
             }
         },
         /**
@@ -117,7 +115,7 @@ var app = app || {};
     var instance;
     app.declareInterface = function (config, context, bus) {
         if (!instance) {
-            instance = new ExternalInterface({}, {config: config, context: context, bus: bus});
+            instance = new ExternalInterface({}, { config: config, context: context, bus: bus });
         }
         return instance;
     }
