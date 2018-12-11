@@ -13,7 +13,9 @@ function channelEmitterCreator(iterator: Function, notificator: EventTargetTrans
     const emitter = async function (onchange: Function | null = null): Object {
         initialized = !initialized ? iterator.next() : initialized
         if (typeof onchange === 'function') {
-            notificator.on('change', onchange.bind(onchange, emitter))
+            onchange = onchange.bind(onchange, emitter)
+            notificator.on('change', onchange)
+            onchange()
             return;
         }
         return (await iterator.next(initialized)).value
