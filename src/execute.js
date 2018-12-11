@@ -1,6 +1,5 @@
 // @flow
-import getTransport from './event-transport/get-transport'
-import { actionChannelCreator, channelEmitterCreator } from './helpers/action-channel-creator'
+import { channelCreator, takeChannelCreator } from './helpers/channel-creators'
 import { TYPE_COMMAND } from './constants'
 import EventTargetTransport from './event-transport/event-target-transport';
 /**
@@ -10,11 +9,6 @@ import EventTargetTransport from './event-transport/event-target-transport';
  * @returns {Function}
  */
 export default function execute(types: Array<string>, context: string): Function {
-    const channel = actionChannelCreator(types, context)
-    return (type: string | Array<string> = '*', onchange: Function | null = null): Function => {
-        const events = typeof onchange === 'function' ? { change: onchange } : null
-        const notificator = new EventTargetTransport(events);
-        const iterator = channel(type, getTransport(TYPE_COMMAND), notificator)
-        return channelEmitterCreator(iterator, notificator)
-    }
+    const channel = channelCreator(types, context)
+    return takeChannelCreator(TYPE_COMMAND, channel)
 }
