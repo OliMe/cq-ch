@@ -85,9 +85,8 @@ var app = app || {};
             if (notRunning.length) {
                 notRunning.forEach(function (handler) {
                     handler.running = true;
-                    handler.channel(function (channel) {
-                        handler.handler(channel);    
-                    });
+                    handler.channel(handler.handler);
+                    handler.handler(handler.channel);
                 });
             }
         },

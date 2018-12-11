@@ -20,7 +20,8 @@ export function actionChannelCreator(types: Array<string>, context: string) {
                     queue.put(action)
                 }
             })
-        while (true) {
+        const initialized = yield true
+        while (initialized) {
             yield await queue.take()
         }
     }
@@ -32,11 +33,14 @@ export function actionChannelCreator(types: Array<string>, context: string) {
  * @returns {Function}
  */
 export function channelEmitterCreator(iterator: Function, notificator: EventTargetTransport) {
+    let initialized = false;
     const emitter = async function (onchange: Function | null = null): Object {
+        initialized = !initialized ? iterator.next() : initialized
         if (typeof onchange === 'function') {
             notificator.on('change', onchange.bind(onchange, emitter))
+            return;
         }
-        return (await iterator.next()).value
+        return (await iterator.next(initialized)).value
     }
     return emitter
 }
