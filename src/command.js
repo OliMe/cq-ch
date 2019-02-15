@@ -6,9 +6,9 @@ type Command = {
     type: string,
 }
 /**
- * 
- * @param {*} types 
- * @param {*} context 
+ *
+ * @param {*} types
+ * @param {*} context
  * @returns {Function}
  */
 export default function command(types: Array<string>, context: string): Function {

@@ -5,6 +5,7 @@ export default class EventTargetTransport {
     target: EventTarget
     listeners: Object
     eventQueue: Object
+
     /**
      * Create instance of EventTargetTransport
      */
@@ -20,10 +21,11 @@ export default class EventTargetTransport {
             }
         }
     }
+
     /**
-     * 
-     * @param {string} type 
-     * @param {Object} payload 
+     *
+     * @param {string} type
+     * @param {Object} payload
      */
     trigger(type: string, payload: Object = {}): void {
         const event = new CustomEvent(type, {
@@ -37,10 +39,11 @@ export default class EventTargetTransport {
         }
         this.eventQueue[type].push(event)
     }
+
     /**
-     * 
-     * @param {string} type 
-     * @param {Function} callback 
+     *
+     * @param {string} type
+     * @param {Function} callback
      */
     on(type: string | Array<string>, callback: Function): void {
         type = (typeof type === 'string' ? [type] : type)

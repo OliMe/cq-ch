@@ -9,9 +9,9 @@ type Query = {
     resolve?: Function
 }
 /**
- * 
- * @param {Array} types 
- * @param {string} context 
+ *
+ * @param {Array} types
+ * @param {string} context
  * @returns {Function}
  */
 export default function request(types: Array<string>, context: string) {

@@ -1,10 +1,10 @@
 // @flow
 import { channelCreator, takeChannelCreator } from './helpers/channel-creators'
 import { TYPE_QUERY } from './constants'
-import EventTargetTransport from './event-transport/event-target-transport';
+
 /**
- * 
- * @param {Array} types 
+ *
+ * @param {Array} types
  * @param {string} context
  * @returns {Function}
  */

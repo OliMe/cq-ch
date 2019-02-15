@@ -2,9 +2,10 @@
 import getTransport from '../event-transport/get-transport'
 import EventTargetTransport from "../event-transport/event-target-transport";
 import Channel from '../channel/channel'
+
 /**
- * 
- * @param {*} iterator 
+ *
+ * @param {*} iterator
  * @param {*} notificator
  * @returns {Function}
  */
@@ -22,34 +23,40 @@ function channelEmitterCreator(iterator: Function, notificator: EventTargetTrans
     }
     return emitter
 }
+
 /**
- * 
- * @param {*} types 
+ *
+ * @param {*} types
  * @param {*} context
- * @returns {Function} 
+ * @returns {Function}
  */
 export function channelCreator(types: Array<string>, context: string) {
-    return async function* (type: string | Array<string>, transport: EventTargetTransport, notificator: EventTargetTransport) {
+    return async function* (
+        type: string | Array<string>,
+        transport: EventTargetTransport,
+        notificator: EventTargetTransport
+    ) {
         const queue: Channel = new Channel(notificator)
         type = (type === '*' ? types : type)
         type = typeof type === 'string' ? [type] : type
         Array.isArray(type)
-            && type.every(type => types.includes(type))
-            && transport.on(type, ({ detail: action }) => {
-                if (action.context && action.context !== context) {
-                    queue.put(action)
-                }
-            })
+        && type.every(type => types.includes(type))
+        && transport.on(type, ({ detail: action }) => {
+            if (action.context && action.context !== context) {
+                queue.put(action)
+            }
+        })
         const initialized = yield true
         while (initialized) {
             yield await queue.take()
         }
     }
 }
+
 /**
- * 
- * @param {*} key 
- * @param {*} channel 
+ *
+ * @param {*} key
+ * @param {*} channel
  * @returns {Function}
  */
 export function takeChannelCreator(key: string, channel: Function) {
