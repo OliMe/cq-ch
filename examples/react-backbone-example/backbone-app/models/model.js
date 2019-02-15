@@ -9,8 +9,8 @@ var app = app || {};
   app.Model = Backbone.Model.extend({
     additionalOptions: ['requestParameters'],
     requestParameters: {},
-    /** 
-     * Ovveride parent method, so that you can specify the expand options in the model 
+    /**
+     * Override parent method, so that you can specify the expand options in the model
      */
     url: function () {
       var parameters = $.param(this.requestParameters) || '',
