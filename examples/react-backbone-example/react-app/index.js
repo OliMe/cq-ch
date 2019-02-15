@@ -2,7 +2,6 @@ import 'babel-polyfill'
 import React from 'react'
 import { render } from 'react-dom'
 import { Provider } from 'react-redux'
-import SettlementForm from './components/settlement-form'
 import SettlementFormConnector from './connectors/settlement-form'
 import Store from './store'
 
@@ -13,7 +12,7 @@ const App = () => (
       <SettlementFormConnector/>
     </Provider>
   )
-  
+
   render(<App />, container)
 
 

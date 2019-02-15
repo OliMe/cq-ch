@@ -1,7 +1,7 @@
 {
   "name": "cqc",
   "version": "0.0.1",
-  "description": "CQRS (Command Query Responsibility Segregation) bus for interaction between microservices on the frontend",
+  "description": "CQRS (Command Query Responsibility Segregation) bus for interaction between micro services on the frontend",
   "main": "lib/cqc.js",
   "unpkg": "dist/cqc.js",
   "module": "es/cqc.js",

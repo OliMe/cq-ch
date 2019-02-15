@@ -1,7 +1,8 @@
 import get from 'lodash/get'
 import { call, put, select} from 'redux-saga/effects'
 import { Types, Creators as Action } from '../redux/settlement'
-import { command, execute } from '../../../../es/cqc'
+import command from '../../../../es/command'
+import execute from '../../../../es/execute'
 import watchGeneratorCreator from '../helpers/watch-generator-creator'
 
 const executeChannelFactory = execute([Types.SET_CURRENT], 'react-app/settlement')

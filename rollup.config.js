@@ -9,96 +9,137 @@ import pkg from './package.json'
 const BABEL_ENV = process.env.BABEL_ENV
 
 const makeExternalPredicate = externalsArr => {
-  if (externalsArr.length === 0) {
-    return () => false
-  }
-  const externalPattern = new RegExp(`^(${externalsArr.join('|')})($|/)`)
-  return id => externalPattern.test(id)
+    if (externalsArr.length === 0) {
+        return () => false
+    }
+    const externalPattern = new RegExp(`^(${externalsArr.join('|')})($|/)`)
+    return id => externalPattern.test(id)
 }
 
 const externals = makeExternalPredicate([
-  ...Object.keys(pkg.dependencies || {}),
-  ...Object.keys(pkg.peerDependencies || {}),
+    ...Object.keys(pkg.dependencies || {}),
+    ...Object.keys(pkg.peerDependencies || {}),
 ])
 
+const apply = (changable, constant) => changable.map(entry => ({
+    ...constant,
+    ...entry,
+    output: {
+        ...constant.output,
+        file: entry.output,
+    },
+}));
+
+const createChangable = (pattern, prefix = '', postfix = '.js') => pattern.map(entry => ({
+    ...entry,
+    output: `${prefix}${entry.output}${postfix}`,
+}));
+
 const config = {
-  cjs: {
-    input: 'src/index.js',
-    output: { file: 'lib/cqc.js', format: 'cjs', indent: false },
-    plugins: [
-      babel(),
-      globals(),
-    ],
-    external: externals,
-  },
-  esDev: {
-    input: 'src/index.js',
-    output: { file: 'es/cqc.js', format: 'es', indent: false },
-    plugins: [
-      babel(),
-      builtins(),
-    ],
-    external: externals,
-  },
-  esProd: {
-    input: 'src/index.js',
-    output: { file: 'es/cqc.min.js', format: 'es', indent: false },
-    plugins: [
-      babel(),
-      builtins(),
-      nodeResolve({
-        jsnext: true,
-      }),
-      terser({
-        compress: {
-          pure_getters: true,
-          unsafe: true,
-          unsafe_comps: true,
-          warnings: false,
+    entries: [
+        {
+            input: 'src/index.js',
+            output: 'index',
         },
-      })
-    ],
-    external: externals,
-  },
-  umdDev: {
-    input: 'src/index.js',
-    output: {
-      file: 'dist/cqc.js',
-      format: 'umd',
-      name: 'CQC',
-    },
-    plugins: [
-      builtins(),
-      nodeResolve(),
-      babel({
-        exclude: '**/node_modules/**',
-      }),
-      commonjs()
-    ],
-  },
-  umdProd: {
-    input: 'src/index.js',
-    output: {
-      file: 'dist/cqc.min.js',
-      format: 'umd',
-      name: 'CQC',
-    },
-    plugins: [
-      builtins(),
-      nodeResolve(),
-      babel({
-        exclude: '**/node_modules/**',
-      }),
-      commonjs(),
-      terser({
-        compress: {
-          pure_getters: true,
-          unsafe: true,
-          unsafe_comps: true,
-          warnings: false,
+        {
+            input: 'src/execute.js',
+            output: 'execute',
         },
-      })
+        {
+            input: 'src/command.js',
+            output: 'command',
+        },
+        {
+            input: 'src/request.js',
+            output: 'request',
+        },
+        {
+            input: 'src/respond.js',
+            output: 'respond',
+        }
     ],
-  },
+    cjs: {
+        plugins: [
+            babel(),
+            globals(),
+        ],
+        external: externals,
+        output: {
+            format: 'cjs',
+            indent: false,
+        },
+    },
+    esDev: {
+        plugins: [
+            babel(),
+            builtins(),
+        ],
+        external: externals,
+        output: {
+            format: 'es', indent: false,
+        },
+    },
+    esProd: {
+        plugins: [
+            babel(),
+            builtins(),
+            nodeResolve({
+                jsnext: true,
+            }),
+            terser({
+                compress: {
+                    pure_getters: true,
+                    unsafe: true,
+                    unsafe_comps: true,
+                    warnings: false,
+                },
+            })
+        ],
+        external: externals,
+        output: { format: 'es', indent: false },
+    },
+    umdDev: {
+        output: {
+            format: 'umd',
+            name: 'CQC',
+        },
+        plugins: [
+            builtins(),
+            nodeResolve(),
+            babel({
+                exclude: '**/node_modules/**',
+            }),
+            commonjs()
+        ],
+    },
+    umdProd: {
+        output: {
+            format: 'umd',
+            name: 'CQC',
+        },
+        plugins: [
+            builtins(),
+            nodeResolve(),
+            babel({
+                exclude: '**/node_modules/**',
+            }),
+            commonjs(),
+            terser({
+                compress: {
+                    pure_getters: true,
+                    unsafe: true,
+                    unsafe_comps: true,
+                    warnings: false,
+                },
+            })
+        ],
+    },
 }
-export default BABEL_ENV === 'es5' ? [config.umdDev, config.umdProd] : [config.cjs, config.esDev, config.esProd]
+export default BABEL_ENV === 'es5' ? [
+    ...apply(createChangable(config.entries, 'dist/'), config.umdDev),
+    ...apply(createChangable(config.entries, 'dist/', '.min.js'), config.umdProd),
+] : [
+    ...apply(createChangable(config.entries, 'lib/'), config.cjs),
+    ...apply(createChangable(config.entries, 'es/'), config.esDev),
+    ...apply(createChangable(config.entries, 'es/', '.min.js'), config.esProd),
+]
