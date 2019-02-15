@@ -16,7 +16,7 @@ var app = app || {};
         },
         /**
          * Обрабатываем конфигурацию внешнего интерфейса, регистрируем хэндлеры
-         * 
+         *
          * @param {Object} config Конфигурация интерфейса
          * @param {string} context Контекст интерфейса
          */
@@ -32,7 +32,7 @@ var app = app || {};
         },
         /**
          * Инициализируем хэндлеры для отправки команд и запросов
-         * 
+         *
          * @param {string} section Раздел интерфейса (команды, обработки команд, запрос, обработки запросов)
          * @param {Object} config Раздел конфигурации с параметрами
          * @param {string} context Контекст интерфейса
@@ -40,9 +40,7 @@ var app = app || {};
         initHandlers: function (section, config, context) {
             if (_.isPlainObject(config)) {
                 var types = config.types,
-                    handlers = config.handlers,
-                    channelCreator = this._getBusFunctionForSection(section),
-                    channel;
+                    channelCreator = this._getBusFunctionForSection(section);
                 if (_.isFunction(channelCreator)) {
                     if (_.isString(types)) {
                         types = [types]
@@ -52,7 +50,7 @@ var app = app || {};
                     if (handlers && _.isArray(handlers)) {
                         handlers.forEach(function (handler) {
                             var type = handler.type,
-                                handlerCreator = handler.creator,
+                                handlerCreator = handler.creator;
                                 handler = _.isFunction(handlerCreator) && handlerCreator(section, type);
                             if (_.isFunction(handler)) {
                                 if (!this.handlers[section]) {
@@ -100,7 +98,9 @@ var app = app || {};
                 respond: this._takeRunner,
             }
             for (var section in this.handlers) {
-                runners[section](this.handlers[section])
+                if (this.handlers.hasOwnProperty(section)) {
+                    runners[section](this.handlers[section])
+                }
             }
         },
         _getBusFunctionForSection(section) {
