@@ -1,6 +1,6 @@
+// @flow
 import EventTargetTransport from "./event-target-transport";
 
-// @flow
 /**
  *
  * @param {Function} type

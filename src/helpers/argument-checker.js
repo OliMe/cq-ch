@@ -1,17 +1,18 @@
 // @flow
 /**
- * 
- * @param {Array} args 
- * @param {Object} conf 
+ *
+ * @param {Array} args
+ * @param {Object} conf
  */
-export function checkArguments (args: Array<any>, conf: Array<Array<Object>>): void {
+export function checkArguments (args: Array<any>, functionName: string, conf: Function): void {
+    conf = getCfgCreator(functionName, conf)(args)
     Array.from(args).forEach((arg: any, index: number) => {
         const argCheckConfList: Array<Object> = conf[index]
         if (argCheckConfList && argCheckConfList instanceof Array) {
             argCheckConfList.forEach(argCheckConf => {
                 if (
-                    typeof argCheckConf === 'object' && 
-                    argCheckConf.validator instanceof Function && 
+                    typeof argCheckConf === 'object' &&
+                    argCheckConf.validator instanceof Function &&
                     argCheckConf.error instanceof Error
                 ) {
                     if (!argCheckConf.validator(arg, args)) {
@@ -23,8 +24,8 @@ export function checkArguments (args: Array<any>, conf: Array<Array<Object>>): v
     })
 }
 /**
- * 
- * @param {string} functionName 
+ *
+ * @param {string} functionName
  * @param {Function} creator
  * @returns {Function}
  */
