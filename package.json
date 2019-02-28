@@ -55,6 +55,6 @@
     "watchman": false
   },
   "dependencies": {
-    "event-target-shim": "^3.0.2"
+    "event-target-shim": "^5.0.1"
   }
 }

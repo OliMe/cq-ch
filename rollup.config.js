@@ -107,7 +107,7 @@ const config = {
             builtins(),
             nodeResolve(),
             babel({
-                exclude: '**/node_modules/**',
+                exclude: 'node_modules/**/*.js',
             }),
             commonjs()
         ],
@@ -121,7 +121,7 @@ const config = {
             builtins(),
             nodeResolve(),
             babel({
-                exclude: '**/node_modules/**',
+                exclude: 'node_modules/**/*.js',
             }),
             commonjs(),
             terser({
