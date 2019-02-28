@@ -62,7 +62,7 @@ export function channelCreator(types: Array<string>, context: string) {
 export function takeChannelCreator(key: string, channel: Function) {
     return (type: string | Array<string> = '*', onchange: Function | null = null): Function => {
         const events = typeof onchange === 'function' ? { change: onchange } : null
-        const notificator = new EventTargetTransport(events);
+        const notificator = new EventTargetTransport(events)
         const iterator = channel(type, getTransport(key), notificator)
         return channelEmitterCreator(iterator, notificator)
     }
