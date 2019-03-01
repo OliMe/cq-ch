@@ -5,7 +5,7 @@
   "author": "Dmitri Vizgin",
   "license": "MIT",
   "scripts": {
-    "build": "NODE_ENV=production parallel-webpack -p --config ./webpack.config.js",
+    "build": "NODE_ENV=development parallel-webpack -p --config ./webpack.config.js",
     "dev": "NODE_ENV=dev webpack --progress=true --config ./webpack.config.js",
     "watch": "yarn dev --watch"
   },

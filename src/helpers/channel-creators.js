@@ -9,19 +9,18 @@ import Channel from '../channel/channel'
  * @param {*} notificator
  * @returns {Function}
  */
-function channelEmitterCreator(iterator: Function, notificator: EventTargetTransport) {
-    let initialized = false;
-    const emitter = async function (onchange: Function | null = null): Object {
+function channelEmitterCreator(iterator: Function, notificator: EventTargetTransport, onchange: Function | null = null) {
+    let initialized = false
+    const emitter = async function (onchange: Function | null = null): Object | Function {
         initialized = !initialized ? iterator.next() : initialized
         if (typeof onchange === 'function') {
-            onchange = onchange.bind(onchange, emitter)
-            notificator.on('change', onchange)
-            onchange()
-            return;
+            const callback = () => onchange(emitter) ? callback : callback
+            notificator.on('change', callback())
+            return emitter
         }
         return (await iterator.next(initialized)).value
     }
-    return emitter
+    return typeof onchange === 'function' ? emitter(onchange) : emitter
 }
 
 /**
@@ -31,7 +30,7 @@ function channelEmitterCreator(iterator: Function, notificator: EventTargetTrans
  * @returns {Function}
  */
 export function channelCreator(types: Array<string>, context: string) {
-    return async function* (
+    return function* (
         type: string | Array<string>,
         transport: EventTargetTransport,
         notificator: EventTargetTransport
@@ -48,7 +47,7 @@ export function channelCreator(types: Array<string>, context: string) {
         })
         const initialized = yield true
         while (initialized) {
-            yield await queue.take()
+            yield queue.take()
         }
     }
 }
@@ -61,9 +60,8 @@ export function channelCreator(types: Array<string>, context: string) {
  */
 export function takeChannelCreator(key: string, channel: Function) {
     return (type: string | Array<string> = '*', onchange: Function | null = null): Function => {
-        const events = typeof onchange === 'function' ? { change: onchange } : null
-        const notificator = new EventTargetTransport(events)
+        const notificator = new EventTargetTransport()
         const iterator = channel(type, getTransport(key), notificator)
-        return channelEmitterCreator(iterator, notificator)
+        return channelEmitterCreator(iterator, notificator, onchange)
     }
 }
