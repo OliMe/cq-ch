@@ -1,5 +1,6 @@
 // @flow
 import { EventTarget as EventTargetShim } from 'event-target-shim'
+import 'custom-event-polyfill'
 /**
  * Creates EventTarget instance
  *

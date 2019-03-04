@@ -73,8 +73,10 @@ const config = {
         plugins: [
             babel(),
             builtins(),
+            nodeResolve({
+                jsnext: true,
+            }),
         ],
-        external: externals,
         output: {
             format: 'es', indent: false,
         },
@@ -95,7 +97,6 @@ const config = {
                 },
             })
         ],
-        external: externals,
         output: { format: 'es', indent: false },
     },
     umdDev: {
