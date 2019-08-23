@@ -1,17 +1,16 @@
-// @flow
-import { EventTarget as EventTargetShim } from 'event-target-shim'
-import 'custom-event-polyfill'
+import { EventTarget as EventTargetShim } from 'event-target-shim';
+import 'custom-event-polyfill';
+
 /**
- * Creates EventTarget instance
- *
- * @returns { EventTarget | EventTargetShim }
+ * Creates EventTarget instance.
+ * @return { EventTarget | EventTargetShim }
  */
-export default function createEventTarget(): EventTarget | EventTargetShim {
-    let instance
-    try {
-        instance = new EventTarget()
-    } catch (e) {
-        instance = new EventTargetShim()
-    }
-    return instance
+export default function createEventTarget () {
+  let instance;
+  try {
+    instance = new EventTarget();
+  } catch (e) {
+    instance = new EventTargetShim();
+  }
+  return instance;
 }

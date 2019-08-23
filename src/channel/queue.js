@@ -1,48 +1,44 @@
-// @flow
-import createEventTarget from '../helpers/event-target-creator'
+import createEventTarget from '../helpers/event-target-creator';
 
 export default class Queue {
-    target: EventTarget
-    buffer: Array<any>
-    length: number = 0
+    target;
+    buffer;
+    length = 0;
 
     /**
-     * Instantiate Queue
-     *
+     * Instantiate Queue.
      * @param {Function | undefined} putCallback
      */
-    constructor(putCallback: Function | null = null) {
-        this.target = createEventTarget()
-        this.buffer = []
-        this.length = this.buffer.length
-        if (putCallback && typeof putCallback == 'function') {
-            this.target.addEventListener('put', putCallback);
-        }
+    constructor (putCallback = null) {
+      this.target = createEventTarget();
+      this.buffer = [];
+      this.length = this.buffer.length;
+      if (putCallback && typeof putCallback === 'function') {
+        this.target.addEventListener('put', putCallback);
+      }
     }
 
     /**
-     * Add value to queue
-     *
-     * @param {any} value
-     * @returns {number}
+     * Add value to queue.
+     * @param {*} value
+     * @return {number}
      */
-    put(value: any): number {
-        const result = this.buffer.push(value)
-        this.length = this.buffer.length
-        this.target.dispatchEvent(new CustomEvent('put', {
-            detail: value,
-        }))
-        return result
+    put (value) {
+      const result = this.buffer.push(value);
+      this.length = this.buffer.length;
+      this.target.dispatchEvent(new CustomEvent('put', {
+        detail: value,
+      }));
+      return result;
     }
 
     /**
-     * Get value from queue
-     *
-     * @returns {any}
+     * Get value from queue.
+     * @return {*}
      */
-    take() {
-        const result = this.buffer.shift()
-        this.length = this.buffer.length
-        return result
+    take () {
+      const result = this.buffer.shift();
+      this.length = this.buffer.length;
+      return result;
     }
 }
