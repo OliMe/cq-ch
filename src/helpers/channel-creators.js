@@ -34,7 +34,7 @@ export function channelCreator (types, context) {
     transport,
     notificator
   ) {
-    const queue: Channel = new Channel(notificator);
+    const queue = new Channel(notificator);
     type = type === '*' ? types : type;
     type = typeof type === 'string' ? [type] : type;
     Array.isArray(type)

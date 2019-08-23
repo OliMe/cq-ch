@@ -9,7 +9,7 @@ import { channelCreatorCfg, commandChannelCfg } from './arguments.cfg';
  * @param {string} context Application context e.g. Namespace of command.
  * @return {Function} Function for sending commands to channel.
  */
-export default function command (types, context): Function {
+export default function command (types, context) {
   checkArguments([types, context], 'command', channelCreatorCfg);
   return command => {
     checkArguments([command], 'commandChannel', commandChannelCfg);

@@ -22,7 +22,7 @@ export default function request (types, context) {
         reject('Time to answer exhausted.');
       }, time);
       getTransport(TYPE_QUERY).trigger(query.type, {
-        ...query, resolve: (value: any) => {
+        ...query, resolve: (value) => {
           clearTimeout(timeout);
           return resolve(value);
         },

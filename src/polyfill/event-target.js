@@ -28,7 +28,7 @@ export class EventTargetShim {
  * Choose constructor for EventTarget.
  * @return {Function}
  */
-export function getEventTargetConstructor (): Function {
+export function getEventTargetConstructor () {
   let constructor;
   try {
     new EventTarget();
