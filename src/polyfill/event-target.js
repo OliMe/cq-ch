@@ -1,24 +1,28 @@
-export class EventTargetShim {
+export class EventTarget {
   listeners;
+
   constructor () {
     this.listeners = {};
   }
+
   addEventListener (eventName, listener) {
     if (!this.listeners[eventName]) {
       this.listeners[eventName] = new Map();
     }
     this.listeners[eventName].set(listener, listener);
   }
+
   removeEventListener (eventName, listener) {
     if (this.listeners[eventName] instanceof Map) {
       this.listeners[eventName].delete(listener);
     }
   }
+
   dispatchEvent (event) {
     if (event instanceof Event) {
       const eventName = event.type;
       if (this.listeners[eventName] instanceof Map) {
-        this.listeners[eventName].values();
+        this.listeners[eventName].forEach(listener => listener(event));
       }
     }
   }
@@ -31,10 +35,10 @@ export class EventTargetShim {
 export function getEventTargetConstructor () {
   let constructor;
   try {
-    new EventTarget();
-    constructor = EventTarget;
+    new window.EventTarget();
+    constructor = window.EventTarget;
   } catch (e) {
-    constructor = EventTargetShim;
+    constructor = EventTarget;
   }
   return constructor;
 }

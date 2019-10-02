@@ -1,4 +1,5 @@
-import createEventTarget from '../helpers/event-target-creator';
+import EventTarget from '../polyfill/event-target';
+import CustomEvent from '../polyfill/custom-event';
 
 export default class EventTargetTransport {
     target;
@@ -11,7 +12,7 @@ export default class EventTargetTransport {
     constructor (events) {
       this.listeners = {};
       this.eventQueue = {};
-      this.target = createEventTarget();
+      this.target = new EventTarget();
       if (events && typeof events === 'object') {
         for (const type in events) {
           if (typeof events[type] === 'function') {

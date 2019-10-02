@@ -1,4 +1,5 @@
-import createEventTarget from '../helpers/event-target-creator';
+import EventTarget from '../polyfill/event-target';
+import CustomEvent from '../polyfill/custom-event';
 
 export default class Queue {
     target;
@@ -10,7 +11,7 @@ export default class Queue {
      * @param {Function | undefined} putCallback
      */
     constructor (putCallback = null) {
-      this.target = createEventTarget();
+      this.target = new EventTarget();
       this.buffer = [];
       this.length = this.buffer.length;
       if (putCallback && typeof putCallback === 'function') {

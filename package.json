@@ -51,8 +51,5 @@
   "jest": {
     "watchman": false
   },
-  "dependencies": {
-    "custom-event-polyfill": "^1.0.6",
-    "event-target-shim": "^5.0.1"
-  }
+  "dependencies": {}
 }
