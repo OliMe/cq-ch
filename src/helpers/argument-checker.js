@@ -11,8 +11,8 @@ export function checkArguments (args, functionName, conf) {
       argCheckConfList.forEach(argCheckConf => {
         if (
           typeof argCheckConf === 'object'
-                    && argCheckConf.validator instanceof Function
-                    && argCheckConf.error instanceof Error
+          && argCheckConf.validator instanceof Function
+          && argCheckConf.error instanceof Error
         ) {
           if (!argCheckConf.validator(arg, args)) {
             throw argCheckConf.error;

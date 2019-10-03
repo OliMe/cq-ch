@@ -38,12 +38,12 @@ export function channelCreator (types, context) {
     type = type === '*' ? types : type;
     type = typeof type === 'string' ? [type] : type;
     Array.isArray(type)
-        && type.every(type => types.includes(type))
-        && transport.on(type, ({ detail: action }) => {
-          if (action.context && action.context !== context) {
-            queue.put(action);
-          }
-        });
+    && type.every(type => types.includes(type))
+    && transport.on(type, ({ detail: action }) => {
+      if (action.context && action.context !== context) {
+        queue.put(action);
+      }
+    });
     const initialized = yield true;
     while (initialized) {
       yield queue.take();

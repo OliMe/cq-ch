@@ -1,3 +1,6 @@
+/**
+ *
+ */
 export function CustomEvent (event, { bubbles, cancelable, detail } = {}) {
   const evt = document.createEvent('CustomEvent');
   evt.initCustomEvent(
@@ -24,6 +27,9 @@ export function CustomEvent (event, { bubbles, cancelable, detail } = {}) {
 
 CustomEvent.prototype = window.Event.prototype;
 
+/**
+ *
+ */
 export function getCustomEventConstructor () {
   let constructor;
   try {

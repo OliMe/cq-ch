@@ -48,6 +48,6 @@ export function* getSettlementList(api, query) {
 export const watchOnCommands = watchGeneratorCreator(executeChannelFactory)
 
 // Отправка команды на изменение города в других приложениях
-export function* declareSettlement(action) {
+export function* sendSettlement(action) {
   yield call(putCommand, action)
 }
