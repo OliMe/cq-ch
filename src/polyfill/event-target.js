@@ -1,3 +1,5 @@
+import CustomEvent from './custom-event';
+
 export class EventTarget {
   listeners;
 
@@ -19,7 +21,7 @@ export class EventTarget {
   }
 
   dispatchEvent (event) {
-    if (event instanceof Event) {
+    if (event instanceof CustomEvent) {
       const eventName = event.type;
       if (this.listeners[eventName] instanceof Map) {
         this.listeners[eventName].forEach(listener => listener(event));
