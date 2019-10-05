@@ -1,4 +1,5 @@
 import EventTargetTransport from './event-target-transport';
+import { IS_BROWSER } from '../constants';
 
 /**
  *
@@ -6,12 +7,13 @@ import EventTargetTransport from './event-target-transport';
  * @return {EventTargetTransport}
  */
 export default function getTransport (type) {
-  if (typeof window.CQChannels === 'undefined') {
-    window.CQChannels = {};
+  const globalThis = IS_BROWSER ? window : global;
+  if (typeof globalThis.CQChannels === 'undefined') {
+    globalThis.CQChannels = {};
   }
-  if (typeof window.CQChannels[type] === 'undefined') {
-    window.CQChannels[type] = new EventTargetTransport;
+  if (typeof globalThis.CQChannels[type] === 'undefined') {
+    globalThis.CQChannels[type] = new EventTargetTransport;
   }
 
-  return window.CQChannels[type];
+  return globalThis.CQChannels[type];
 }

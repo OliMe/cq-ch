@@ -30,7 +30,7 @@ export class EventTarget {
 
 /**
  * Choose constructor for EventTarget.
- * @return {Function}
+ * @return {Function} EventTarget constructor.
  */
 export function getEventTargetConstructor () {
   let constructor;

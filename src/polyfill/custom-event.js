@@ -1,7 +1,14 @@
+import { IS_BROWSER } from '../constants';
+
 /**
  *
+ * @param event
+ * @param bubbles
+ * @param cancelable
+ * @param detail
+ * @return {CustomEvent}
  */
-export function CustomEvent (event, { bubbles, cancelable, detail } = {}) {
+export const createBrowserEvent = (event, bubbles, cancelable, detail) => {
   const evt = document.createEvent('CustomEvent');
   evt.initCustomEvent(
     event,
@@ -23,9 +30,38 @@ export function CustomEvent (event, { bubbles, cancelable, detail } = {}) {
     }
   };
   return evt;
+};
+/**
+ *
+ * @param event
+ * @param bubbles
+ * @param cancelable
+ * @param detail
+ * @return {{cancelable: *, bubbles: *, detail: *, type: *}}
+ */
+export const createNodeEvent = (event, bubbles, cancelable, detail) => ({
+  type: event,
+  bubbles: Boolean(bubbles),
+  cancelable: Boolean(bubbles),
+  detail,
+});
+
+/**
+ *
+ * @param event
+ * @param bubbles
+ * @param cancelable
+ * @param detail
+ * @return {*}
+ * @constructor
+ */
+export function CustomEvent (event, { bubbles, cancelable, detail } = {}) {
+  return (IS_BROWSER ? createBrowserEvent : createNodeEvent)(event, bubbles, cancelable, detail);
 }
 
-CustomEvent.prototype = window.Event.prototype;
+if (IS_BROWSER) {
+  CustomEvent.prototype = window.Event.prototype;
+}
 
 /**
  *
