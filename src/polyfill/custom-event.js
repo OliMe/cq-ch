@@ -1,14 +1,16 @@
 import { IS_BROWSER } from '../constants';
 
 /**
- *
- * @param event
- * @param bubbles
- * @param cancelable
- * @param detail
- * @return {CustomEvent}
+ * CustomEvent constructor.
+ * @param {string} event Event type.
+ * @param {Object} params Parameters of created event.
+ * @param {boolean} params.bubbles Does it bubbles?
+ * @param {boolean} params.cancelable Does it cancelable?
+ * @param {Object} params.detail Additional data.
+ * @return {Event} Event.
+ * @constructor
  */
-export const createBrowserEvent = (event, bubbles, cancelable, detail) => {
+export function CustomEvent (event, { bubbles, cancelable, detail } = {}) {
   const evt = document.createEvent('CustomEvent');
   evt.initCustomEvent(
     event,
@@ -21,6 +23,10 @@ export const createBrowserEvent = (event, bubbles, cancelable, detail) => {
     origPrevent.call(this);
     try {
       Object.defineProperty(this, 'defaultPrevented', {
+        /**
+         * Getter for 'defaultPrevented' property.
+         * @return {boolean} Value of property.
+         */
         get () {
           return true;
         },
@@ -30,33 +36,6 @@ export const createBrowserEvent = (event, bubbles, cancelable, detail) => {
     }
   };
   return evt;
-};
-/**
- *
- * @param event
- * @param bubbles
- * @param cancelable
- * @param detail
- * @return {{cancelable: *, bubbles: *, detail: *, type: *}}
- */
-export const createNodeEvent = (event, bubbles, cancelable, detail) => ({
-  type: event,
-  bubbles: Boolean(bubbles),
-  cancelable: Boolean(bubbles),
-  detail,
-});
-
-/**
- *
- * @param event
- * @param bubbles
- * @param cancelable
- * @param detail
- * @return {*}
- * @constructor
- */
-export function CustomEvent (event, { bubbles, cancelable, detail } = {}) {
-  return (IS_BROWSER ? createBrowserEvent : createNodeEvent)(event, bubbles, cancelable, detail);
 }
 
 if (IS_BROWSER) {
@@ -64,7 +43,8 @@ if (IS_BROWSER) {
 }
 
 /**
- *
+ * Choose constructor for CustomEvent.
+ * @return {Function} CustomEvent constructor.
  */
 export function getCustomEventConstructor () {
   let constructor;

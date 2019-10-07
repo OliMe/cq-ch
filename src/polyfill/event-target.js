@@ -1,12 +1,21 @@
-import CustomEvent from './custom-event';
-
+/**
+ * EventTarget polyfill.
+ */
 export class EventTarget {
   listeners;
 
+  /**
+   * EventTarget polyfill constructor.
+   */
   constructor () {
     this.listeners = {};
   }
 
+  /**
+   * Adds event listener.
+   * @param {string} eventName Name of event.
+   * @param {Function} listener Event listener.
+   */
   addEventListener (eventName, listener) {
     if (!this.listeners[eventName]) {
       this.listeners[eventName] = new Map();
@@ -14,14 +23,23 @@ export class EventTarget {
     this.listeners[eventName].set(listener, listener);
   }
 
+  /**
+   * Removes event listener.
+   * @param {string} eventName Name of event.
+   * @param {Function} listener Event listener.
+   */
   removeEventListener (eventName, listener) {
     if (this.listeners[eventName] instanceof Map) {
       this.listeners[eventName].delete(listener);
     }
   }
 
+  /**
+   * Dispatches event.
+   * @param {Event} event Event.
+   */
   dispatchEvent (event) {
-    if (event instanceof CustomEvent) {
+    if (event instanceof Event) {
       const eventName = event.type;
       if (this.listeners[eventName] instanceof Map) {
         this.listeners[eventName].forEach(listener => listener(event));
