@@ -13,8 +13,8 @@ export default class Channel {
     if (notificator && notificator instanceof EventTargetTransport) {
       this.notificator = notificator;
     }
-    this.puts = new Queue(this._putListener.bind(this));
-    this.takes = new Queue();
+    this.puts = new Queue(this._listener.bind(this));
+    this.takes = new Queue(this._listener.bind(this));
   }
 
   /**
@@ -39,15 +39,13 @@ export default class Channel {
   /**
    * Bind puts to takes.
    */
-  _putListener () {
-    if (this.takes.length) {
-      if (this.puts.length) {
-        const take = this.takes.take();
-        const put = this.puts.take();
-        take(put);
-        if (this.notificator) {
-          this.notificator.trigger('change');
-        }
+  _listener () {
+    if (this.takes.length && this.puts.length) {
+      const take = this.takes.take();
+      const put = this.puts.take();
+      take(put);
+      if (this.notificator) {
+        this.notificator.trigger('change');
       }
     }
   }
