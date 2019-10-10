@@ -1,3 +1,9 @@
+/**
+ * Creates configuration for checking channelCreator arguments.
+ * @param {string} functionName Name of function.
+ * @param {Array} args Function arguments.
+ * @return {Array<Object>} Checking configuration.
+ */
 export const channelCreatorCfg = (functionName, args) => [
   [
     {

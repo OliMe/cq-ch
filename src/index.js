@@ -1,4 +1,3 @@
-// @flow
 import request from './request';
 import respond from './respond';
 import command from './command';
