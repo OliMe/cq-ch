@@ -326,7 +326,9 @@
             "error",
             {
                 "definedTypes": [
-                    "SyntheticEvent"
+                    "SyntheticEvent",
+                    "Generator",
+                    "Iterable"
                 ]
             }
         ],

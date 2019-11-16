@@ -3,10 +3,11 @@ import EventTargetTransport from '../event-transport/event-target-transport';
 import Channel from '../channel/channel';
 
 /**
- *
- * @param {*} iterator
- * @param {*} notificator
- * @return {Function}
+ * Creates emitter for start channel.
+ * @param {Iterable} iterator Event channel.
+ * @param {EventTarget} notificator EventTarget for notify about new event in channel.
+ * @param {Function|null} onchange A callback function to handle a new event in a channel.
+ * @return {Function} Async function for channel initializing.
  */
 function channelEmitterCreator (iterator, notificator, onchange = null) {
   let initialized = false;
@@ -23,10 +24,10 @@ function channelEmitterCreator (iterator, notificator, onchange = null) {
 }
 
 /**
- *
- * @param {*} types
- * @param {*} context
- * @return {Function}
+ * Creates partially applied generator function for picking events from main stream through channel.
+ * @param {Array|string} types List of filtered event types.
+ * @param {symbol|string} context Identifier of place where event was emitted.
+ * @return {Function} Generator function for picking filtered events.
  */
 export function channelCreator (types, context) {
   return function* (
