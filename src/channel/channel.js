@@ -1,6 +1,9 @@
 import Queue from './queue';
 import EventTargetTransport from '../event-transport/event-target-transport';
 
+/**
+ * Channel.
+ */
 export default class Channel {
   puts;
   takes;
@@ -8,6 +11,7 @@ export default class Channel {
 
   /**
    * Create instance of Channel.
+   * @param {EventTargetTransport} notificator Instance of EventTargetTransport.
    */
   constructor (notificator = null) {
     if (notificator && notificator instanceof EventTargetTransport) {
@@ -18,8 +22,8 @@ export default class Channel {
   }
 
   /**
-   * Send value to channel.
-   * @param {*} value
+   * Puts value to channel.
+   * @param {*} value Element for add in channel.
    */
   put (value) {
     if (value !== undefined) {
@@ -28,7 +32,8 @@ export default class Channel {
   }
 
   /**
-   * Take data from channel.
+   * Takes data from channel.
+   * @return {Promise<*>} Returns element from channel.
    */
   async take () {
     return new Promise(resolve => {
@@ -37,7 +42,7 @@ export default class Channel {
   }
 
   /**
-   * Bind puts to takes.
+   * Binds puts to takes.
    */
   _listener () {
     if (this.takes.length && this.puts.length) {

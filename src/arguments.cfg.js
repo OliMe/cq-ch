@@ -35,6 +35,12 @@ export const channelCreatorCfg = (functionName, args) => [
   ],
 ];
 
+/**
+ *
+ * @param functionName
+ * @param args
+ * @return {[[{validator: (function(*, *=): *|boolean), error: TypeError}, {validator: (function(*=): boolean|boolean), error: TypeError}]]}
+ */
 export const commandChannelCfg = (functionName, args) => [
   [
     {

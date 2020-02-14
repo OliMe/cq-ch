@@ -1,6 +1,9 @@
 import EventTarget from '../polyfill/event-target';
 import CustomEvent from '../polyfill/custom-event';
 
+/**
+ * Queue.
+ */
 export default class Queue {
   target;
   buffer;
@@ -8,7 +11,7 @@ export default class Queue {
 
   /**
    * Instantiate Queue.
-   * @param {Function | undefined} putCallback
+   * @param {Function | undefined} putCallback Callback for adding in queue event.
    */
   constructor (putCallback = null) {
     this.target = new EventTarget();
@@ -21,8 +24,8 @@ export default class Queue {
 
   /**
    * Add value to queue.
-   * @param {*} value
-   * @return {number}
+   * @param {*} value Element for add.
+   * @return {number} Index of added element.
    */
   put (value) {
     const result = this.buffer.push(value);
@@ -35,7 +38,7 @@ export default class Queue {
 
   /**
    * Get value from queue.
-   * @return {*}
+   * @return {*} Element.
    */
   take () {
     const result = this.buffer.shift();

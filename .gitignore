@@ -8,10 +8,8 @@ node_modules
 .eslintcache
 
 # Build folders
-build/
 dist/
 es/
-lib/
 
 # VS Code directory
 .vscode/

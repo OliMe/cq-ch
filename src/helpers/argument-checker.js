@@ -1,10 +1,12 @@
 /**
- *
- * @param {Array} args
- * @param {Object} conf
+ * Checks function arguments.
+ * @param {Array} args Arguments.
+ * @param {string} functionName Function name.
+ * @param {function(string, Array):Object} confCreator Validation configuration creator.
+ * @throws {Error} Throws validation error.
  */
-export function checkArguments (args, functionName, conf) {
-  conf = getCfgCreator(functionName, conf)(args);
+export function checkArguments (args, functionName, confCreator) {
+  const conf = confCreator(functionName, args);
   Array.from(args).forEach((arg, index) => {
     const argCheckConfList = conf[index];
     if (argCheckConfList && argCheckConfList instanceof Array) {
@@ -21,14 +23,4 @@ export function checkArguments (args, functionName, conf) {
       });
     }
   });
-}
-
-/**
- *
- * @param {string} functionName
- * @param {Function} creator
- * @return {Function}
- */
-export function getCfgCreator (functionName, creator) {
-  return args => creator(functionName, args);
 }

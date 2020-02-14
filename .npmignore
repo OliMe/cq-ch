@@ -1,10 +1,12 @@
 examples
-src
+**/__test__/**
+**/__mocks__/**
 babel.config.js
 rollup.config.js
 yarn.lock
 .gitignore
 .eslintrc
 .eslintignore
+.eslintcache
 .idea
 coverage

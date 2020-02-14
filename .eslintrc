@@ -340,6 +340,8 @@
             "allowCallExpression": true,
             "allowLiteral": false,
             "allowObject": false
-        }]
+        }],
+        "complexity": ["error", 5],
+        "max-depth": ["error", 3]
     }
 }

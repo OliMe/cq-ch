@@ -1,13 +1,17 @@
 import EventTarget from '../polyfill/event-target';
 import CustomEvent from '../polyfill/custom-event';
 
+/**
+ * Event transport.
+ */
 export default class EventTargetTransport {
   target;
   listeners;
   eventQueue;
 
   /**
-   * Create instance of EventTargetTransport.
+   * Creates instance of EventTargetTransport.
+   * @param {Object} events Event handlers map.
    */
   constructor (events) {
     this.listeners = {};
@@ -23,9 +27,9 @@ export default class EventTargetTransport {
   }
 
   /**
-   *
-   * @param {string} type
-   * @param {Object} payload
+   * Triggers event of passed type.
+   * @param {string} type Type of event.
+   * @param {Object} payload Data.
    */
   trigger (type, payload = {}) {
     const event = new CustomEvent(type, {
@@ -41,9 +45,9 @@ export default class EventTargetTransport {
   }
 
   /**
-   *
-   * @param {string} type
-   * @param {Function} callback
+   * Adds handler for event of passed type.
+   * @param {string} type Type of event.
+   * @param {Function} callback Callback function.
    */
   on (type, callback) {
     type = typeof type === 'string' ? [type] : type;
