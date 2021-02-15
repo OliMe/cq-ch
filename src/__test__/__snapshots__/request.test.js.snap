@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`created by request function throws error on wait timeout expires 1`] = `undefined`;
+
+exports[`created by request function throws error when incorrect arguments passed 1`] = `"Failed to execute 'requestChannel': first argument must be an Object with defined property type."`;
+
+exports[`created by request function throws error when incorrect arguments passed 2`] = `"Failed to execute 'requestChannel': first argument must be an Object with defined property type."`;
+
+exports[`created by request function throws error when incorrect arguments passed 3`] = `"Trying to send query with type not in interface."`;
+
+exports[`request creates channel unsuccessfully. 1`] = `"Failed to execute 'request': first argument must be an Array with at least one element."`;
+
+exports[`request creates channel unsuccessfully. 2`] = `"Failed to execute 'request': first argument must be an Array with at least one element."`;
+
+exports[`request creates channel unsuccessfully. 3`] = `"Failed to execute 'request': first argument must be an Array with at least one element."`;
+
+exports[`request creates channel unsuccessfully. 4`] = `"Failed to execute 'request': second argument must be a string."`;
+
+exports[`request creates channel unsuccessfully. 5`] = `"Failed to execute 'request': second argument must be a string."`;

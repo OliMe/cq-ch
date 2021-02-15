@@ -46,7 +46,16 @@
     "size-limit": "^0.20.1"
   },
   "jest": {
-    "watchman": false
+    "watchman": false,
+    "clearMocks": true,
+    "coverageThreshold": {
+      "global": {
+        "branches": 100,
+        "functions": 100,
+        "lines": 100,
+        "statements": 100
+      }
+    }
   },
   "dependencies": {}
 }

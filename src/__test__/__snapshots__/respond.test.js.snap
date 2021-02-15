@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`respond should create respond channel unsuccessful 1`] = `"Failed to execute 'respond': first argument must be an Array with at least one element."`;
+
+exports[`respond should create respond channel unsuccessful 2`] = `"Failed to execute 'respond': first argument must be an Array with at least one element."`;
+
+exports[`respond should create respond channel unsuccessful 3`] = `"Failed to execute 'respond': first argument must be an Array with at least one element."`;
+
+exports[`respond should create respond channel unsuccessful 4`] = `"Failed to execute 'respond': second argument must be a string."`;
+
+exports[`respond should create respond channel unsuccessful 5`] = `"Failed to execute 'respond': second argument must be a string."`;

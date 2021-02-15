@@ -36,10 +36,10 @@ export const channelCreatorCfg = (functionName, args) => [
 ];
 
 /**
- *
- * @param functionName
- * @param args
- * @return {[[{validator: (function(*, *=): *|boolean), error: TypeError}, {validator: (function(*=): boolean|boolean), error: TypeError}]]}
+ * Creates configuration for checking commandChannel arguments.
+ * @param {string} functionName Name of function.
+ * @param {Array} args Function arguments.
+ * @return {Array<Object>} Checking configuration.
  */
 export const commandChannelCfg = (functionName, args) => [
   [
@@ -58,6 +58,12 @@ export const commandChannelCfg = (functionName, args) => [
   ],
 ];
 
+/**
+ * Creates configuration for checking requestChannel arguments.
+ * @param {string} functionName Name of function.
+ * @param {Array} args Function arguments.
+ * @return {Array<Object>} Checking configuration.
+ */
 export const requestChannelCfg = (functionName, args) => [
   [
     {

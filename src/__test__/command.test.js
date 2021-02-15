@@ -10,10 +10,10 @@ jest.mock('../event-transport/get-transport', () => {
 });
 
 describe('command', () => {
-  it('creates commandChannel successfully', () => {
+  it('creates channel successfully', () => {
     expect(command(['test_type'], 'test')).toBeInstanceOf(Function);
   });
-  it('creates commandChannel unsuccessfully', () => {
+  it('creates channel unsuccessfully', () => {
     const createChannelWithoutArguments = () => command();
     const createChannelWithFirstIncorrectArgument = () => command('not array');
     const createChannelWithFirstArgumentEmptyArray = () => command([], 'test');
@@ -27,7 +27,7 @@ describe('command', () => {
   });
 });
 
-describe('commandChannel', () => {
+describe('created by command function', () => {
   const channel = command(['first_type', 'second_type'], 'test');
   it('throws error when incorrect arguments passed', () => {
     const callChannelWithoutArguments = () => channel();
@@ -37,7 +37,7 @@ describe('commandChannel', () => {
     expect(callChannelWithCommandWithoutTypeProperty).toThrowErrorMatchingSnapshot();
     expect(callChannelWithCommandWithUndefinedType).toThrowErrorMatchingSnapshot();
   });
-  it('sends command to channel', () => {
+  it('sends command', () => {
     channel({ type: 'first_type' });
     expect(getTransport).toHaveBeenCalledWith(TYPE_COMMAND);
     const { trigger } = getTransport();

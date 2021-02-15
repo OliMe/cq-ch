@@ -50,9 +50,9 @@ export default class EventTargetTransport {
    * @param {Function} callback Callback function.
    */
   on (type, callback) {
-    type = typeof type === 'string' ? [type] : type;
-    if (Array.isArray(type)) {
-      type.forEach(type => {
+    const types = typeof type === 'string' ? [type] : type;
+    if (Array.isArray(types)) {
+      types.forEach(type => {
         this.listeners[type] = true;
         this.target.addEventListener(type, callback);
         if (this.eventQueue[type] && this.eventQueue[type].length) {

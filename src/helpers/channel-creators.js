@@ -14,7 +14,7 @@ import isTypeInTypes from './is-type-in-types';
  * @param {Function|null} onchange A callback function to handle a new event in a channel.
  * @return {Function} Async function for channel initializing.
  */
-function channelEmitterCreator (iterator, notificator, onchange = null) {
+function channelEmitterCreator (iterator, notificator, onchange) {
   let initialized = false;
 
   /**

@@ -1,17 +1,17 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`command creates commandChannel unsuccessfully 1`] = `"Failed to execute 'command': first argument must be an Array with at least one element."`;
+exports[`command creates channel unsuccessfully 1`] = `"Failed to execute 'command': first argument must be an Array with at least one element."`;
 
-exports[`command creates commandChannel unsuccessfully 2`] = `"Failed to execute 'command': first argument must be an Array with at least one element."`;
+exports[`command creates channel unsuccessfully 2`] = `"Failed to execute 'command': first argument must be an Array with at least one element."`;
 
-exports[`command creates commandChannel unsuccessfully 3`] = `"Failed to execute 'command': first argument must be an Array with at least one element."`;
+exports[`command creates channel unsuccessfully 3`] = `"Failed to execute 'command': first argument must be an Array with at least one element."`;
 
-exports[`command creates commandChannel unsuccessfully 4`] = `"Failed to execute 'command': second argument must be a string."`;
+exports[`command creates channel unsuccessfully 4`] = `"Failed to execute 'command': second argument must be a string."`;
 
-exports[`command creates commandChannel unsuccessfully 5`] = `"Failed to execute 'command': second argument must be a string."`;
+exports[`command creates channel unsuccessfully 5`] = `"Failed to execute 'command': second argument must be a string."`;
 
-exports[`commandChannel throws error when incorrect arguments passed 1`] = `"Failed to execute 'commandChannel': first argument must be an Object with defined property type."`;
+exports[`created by command function throws error when incorrect arguments passed 1`] = `"Failed to execute 'commandChannel': first argument must be an Object with defined property type."`;
 
-exports[`commandChannel throws error when incorrect arguments passed 2`] = `"Failed to execute 'commandChannel': first argument must be an Object with defined property type."`;
+exports[`created by command function throws error when incorrect arguments passed 2`] = `"Failed to execute 'commandChannel': first argument must be an Object with defined property type."`;
 
-exports[`commandChannel throws error when incorrect arguments passed 3`] = `"Trying to send command with type not in interface."`;
+exports[`created by command function throws error when incorrect arguments passed 3`] = `"Trying to send command with type not in interface."`;

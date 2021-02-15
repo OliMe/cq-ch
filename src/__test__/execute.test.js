@@ -1,12 +1,21 @@
 import execute from '../execute';
-import { TYPE_COMMAND } from '../constants';
 import command from '../command';
 
+// We need to mock EventTarget, because it does not work in jsdom environment.
+jest.mock('../polyfill/event-target', () => {
+  const actual = jest.requireActual('../polyfill/event-target');
+  return {
+    __esModule: true,
+    ...actual,
+    default: actual.EventTarget,
+  };
+});
+
 describe('execute', () => {
-  it('creates execute channel successfully', () => {
+  it('should create execute channel successfully', () => {
     expect(execute(['test_type'], 'test')).toBeInstanceOf(Function);
   });
-  it('creates execute channel unsuccessfully', () => {
+  it('should create execute channel unsuccessfully', () => {
     const createChannelWithoutArguments = () => execute();
     const createChannelWithFirstIncorrectArgument = () => execute('not array');
     const createChannelWithFirstArgumentEmptyArray = () => execute([], 'test');
@@ -17,5 +26,26 @@ describe('execute', () => {
     expect(createChannelWithFirstArgumentEmptyArray).toThrowErrorMatchingSnapshot();
     expect(createChannelWithoutSecondArgument).toThrowErrorMatchingSnapshot();
     expect(createChannelWithSecondIncorrectArgument).toThrowErrorMatchingSnapshot();
+  });
+});
+
+describe('channel created by execute function', () => {
+  it('should receive commands in order of sending', async () => {
+    expect.assertions(2);
+    const channel = execute(['first_type', 'second_type'], 'first');
+    const commandChannel = command(['first_type', 'second_type'], 'second');
+    const firstTestCommand = { type: 'first_type' };
+    const secondTestCommand = { type: 'second_type' };
+    setTimeout(() => {
+      commandChannel(secondTestCommand);
+    }, 25);
+    setTimeout(() => {
+      commandChannel(firstTestCommand);
+    }, 20);
+    const receive = channel();
+    const firstReceivedCommand = await receive();
+    expect(firstReceivedCommand).toEqual({ ...firstTestCommand, context: 'second' });
+    const secondReceivedCommand = await receive();
+    expect(secondReceivedCommand).toEqual({ ...secondTestCommand, context: 'second' });
   });
 });

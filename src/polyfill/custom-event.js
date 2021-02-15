@@ -32,7 +32,7 @@ export function CustomEvent (event, { bubbles, cancelable, detail } = {}) {
         },
       });
     } catch (e) {
-      this.defaultPrevented = true;
+      evt.defaultPrevented = true;
     }
   };
   return evt;

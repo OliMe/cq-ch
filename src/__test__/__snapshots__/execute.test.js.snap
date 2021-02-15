@@ -1,11 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`execute creates execute channel unsuccessfully 1`] = `"Failed to execute 'execute': first argument must be an Array with at least one element."`;
+exports[`execute should create execute channel unsuccessfully 1`] = `"Failed to execute 'execute': first argument must be an Array with at least one element."`;
 
-exports[`execute creates execute channel unsuccessfully 2`] = `"Failed to execute 'execute': first argument must be an Array with at least one element."`;
+exports[`execute should create execute channel unsuccessfully 2`] = `"Failed to execute 'execute': first argument must be an Array with at least one element."`;
 
-exports[`execute creates execute channel unsuccessfully 3`] = `"Failed to execute 'execute': first argument must be an Array with at least one element."`;
+exports[`execute should create execute channel unsuccessfully 3`] = `"Failed to execute 'execute': first argument must be an Array with at least one element."`;
 
-exports[`execute creates execute channel unsuccessfully 4`] = `"Failed to execute 'execute': second argument must be a string."`;
+exports[`execute should create execute channel unsuccessfully 4`] = `"Failed to execute 'execute': second argument must be a string."`;
 
-exports[`execute creates execute channel unsuccessfully 5`] = `"Failed to execute 'execute': second argument must be a string."`;
+exports[`execute should create execute channel unsuccessfully 5`] = `"Failed to execute 'execute': second argument must be a string."`;
