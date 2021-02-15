@@ -14,7 +14,7 @@ jest.mock('../../polyfill/event-target', () => {
 
 describe('Channel', () => {
   it('should create queues and take notificator of correct type on instance creation.', () => {
-    const notificator = new EventTargetTransport()
+    const notificator = new EventTargetTransport();
     const channel = new Channel(notificator);
     expect(channel.puts).toBeInstanceOf(Queue);
     expect(channel.takes).toBeInstanceOf(Queue);
