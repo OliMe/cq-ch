@@ -1,9 +1,9 @@
 {
-  "name": "cqc",
-  "version": "0.0.1",
-  "description": "CQC (Command Query Channel) for interaction between micro services on the frontend",
+  "name": "@olime/cq-ch",
+  "version": "1.0.0",
+  "description": "CQC (Command Query Channel) for interaction between micro services in browser",
   "browser": "es/index.js",
-  "author": "Dmitri Vizgin aka OliMe <dvzphp@gmail.com>",
+  "author": "Dmitry Vizgin <dvzphp@gmail.com>",
   "license": "MIT",
   "private": false,
   "scripts": {
@@ -57,5 +57,9 @@
       }
     }
   },
-  "dependencies": {}
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OliMe/cqc.git"
+  }
 }

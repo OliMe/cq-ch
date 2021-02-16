@@ -140,7 +140,6 @@ export default BABEL_ENV === 'es5' ? [
   ...apply(createChangable(config.entries, 'dist/'), config.umdDev),
   ...apply(createChangable(config.entries, 'dist/', '.min.js'), config.umdProd),
 ] : [
-  ...apply(createChangable(config.entries, 'lib/'), config.cjs),
   ...apply(createChangable(config.entries, 'es/'), config.esDev),
   ...apply(createChangable(config.entries, 'es/', '.min.js'), config.esProd),
 ];
