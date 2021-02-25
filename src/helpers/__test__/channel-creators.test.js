@@ -73,7 +73,6 @@ describe('takeChannelCreator', () => {
   const takeChannel = takeChannelCreator(key, channel);
   it('should create take channel correctly.', () => {
     expect(takeChannel).toBeInstanceOf(Function);
-    expect(takeChannel).toHaveLength(2);
   });
   it('should start channel and call onchange callback on changes in channel.', async done => {
     const payload = { type: 'test', context: 'notTest' };

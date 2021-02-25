@@ -4,9 +4,11 @@ examples
 babel.config.js
 rollup.config.js
 yarn.lock
+yarn-error.log
 .gitignore
 .eslintrc
 .eslintignore
 .eslintcache
+.eslintrc
 .idea
 coverage
