@@ -1,0 +1,19 @@
+name: CI Pipeline
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  run-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install node.js 14.15.5
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.15.5
+      - run: npm ci
+      - run: npm test

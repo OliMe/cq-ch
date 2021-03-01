@@ -10,12 +10,11 @@
   "private": false,
   "scripts": {
     "lint": "eslint --cache --ext .js ./",
-    "test": "cross-env NODE_ENV=test jest --coverage && yarn lint",
+    "test": "cross-env NODE_ENV=test jest --coverage",
     "build:es5": "cross-env BABEL_ENV=es5 rollup -c",
     "build:es6": "cross-env BABEL_ENV=es6 rollup -c",
-    "build": "yarn build:es5 && yarn build:es6",
-    "build:examples": "yarn build && cd ./examples/react-backbone-example/ && yarn build",
-    "prepublish": "yarn lint && yarn test"
+    "build": "npm run build:es5 && npm run build:es6",
+    "build:examples": "npm run build && cd ./examples/react-backbone-example/ && npm i && npm run build"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.17",
