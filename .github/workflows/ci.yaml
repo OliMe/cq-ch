@@ -7,13 +7,14 @@ on:
     branches:
       - master
 jobs:
-  run-test:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Install node.js 14.15.5
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2.1.4
         with:
           node-version: 14.15.5
-      - run: npm ci
+      - run: npm install
       - run: npm test
+      - run: ./node_modules/.bin/codecov
