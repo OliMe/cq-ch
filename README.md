@@ -3,33 +3,37 @@
 
 ## Motivation
 
-В некоторых случаях JS-приложениям в браузере необходимо обмениваться информацией или выполнять какие-либо действия в ответ на события в другом приложении, которое исполняется с ним в одном окружении.
+In some cases, JS applications in the browser need to exchange information or perform some actions in response to events in another application that runs with it in the same environment.
 
-Особенно это актуально для микросервисной архитектуры, которая реализуется в приложении исполняющемся в браузере.
+This is especially actual for frontend microservice architecture as known as micro frontends.
 
-Конечно всегда можно использовать события. Но это легко может привести к загрязнению кода, усилению зацепления между приложениями и расплывчатым интерфейсам.
+Of course, you can always use events, but this can easily lead to code pollution, increased interlocking between applications, and vague interfaces.
 
-## Usage
+## Getting Started
 
-### Отправка команд.
+### Send command
 
-Объявляем интерфейс команд, которые будет отправлять приложение.
-Получаем функцию для отправки данных.
+At first, we need to declare an interface of commands, that our application will send. In order for the library to identify the application or interface, a unique identifier must be passed as the second argument.
+
+As result, we receive a function to send commands of types, specified in our interface. Other types of commands will throw exceptions if we try to send them.
+
 ```javascript
 import command from '@olime/cq-ch/command';
-// Создаём интерфейс команд которые будет отправлять приложение.
+// Create interface.
 const send = command(['FIRST_COMMAD_TYPE', 'SECOND_COMMAND_TYPE'], 'unique-key-of-application');
-// Отправляем данные. Для этого отправляем команду - это простой JS-объект с одним обязательным полем type.
+// Sending command. Command is a simple JS Object with one required field - type.
 send({
   type: 'FIRST_COMMAND_TYPE',
   data: 'Hello world.'
 });
 ```
 
-### Получение команд.
+### Receive commands
 
-Объявляем интерфейс команд, которые будет выполнять приложение.
-Получаем функцию, для запроса следующей команды из очереди полученных сообщений.
+To receive commands, we need to declare an interface of that commands types.
+
+As a result, the library will return us a function to get the next command of the specified type from the queue.
+
 ```javascript
 import execute from '@olime/cq-ch/execute';
 // Create executed commands interface of application.
