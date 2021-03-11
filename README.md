@@ -15,7 +15,7 @@ Of course, you can always use events, but this can easily lead to code pollution
 
 At first, we need to declare an interface of commands, that our application will send. In order for the library to identify the application or interface, a unique identifier must be passed as the second argument.
 
-As result, we receive a function to send commands of types, specified in our interface. Other types of commands will throw exceptions if we try to send them.
+As result, we receive a function to send commands of types, defined in our interface. Other types of commands will throw exceptions if we try to send them.
 
 ```javascript
 import command from '@olime/cq-ch/command';
@@ -32,7 +32,7 @@ send({
 
 To receive commands, we need to declare an interface of that commands types.
 
-As a result, the library will return us a function to get the next command of the specified type from the queue.
+As a result, function `execute` will return us a function to get the next command of the defined type from the queue.
 
 ```javascript
 import execute from '@olime/cq-ch/execute';
@@ -54,7 +54,11 @@ getCommandsOfThirdType(async (channel) => {
 });
 ```
 
-### Отправка запросов.
+### Send queries
+
+To send queries, we need to declare an interface of that queries types.
+
+As a result, function `request` will return us a function to send queries of types, defined in our interface. Queries of other types will throw exceptions if we try to send them.
 
 ```javascript
 import request from '@olime/cq-ch/request';
