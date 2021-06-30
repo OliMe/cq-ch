@@ -68,7 +68,7 @@ const sendQuery = request(['FIRST_QUERY_TYPE'], 'unique-key-of-application');
 const result = await sendQuery({type: 'FIRST_QUERY_TYPE', data: 'Hello world'});
 ```
 
-### Получение запросов.
+### Receiving queries.
 
 ```javascript
 import respond from '@olime/cq-ch/respond';

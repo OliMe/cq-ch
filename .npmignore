@@ -5,10 +5,12 @@ babel.config.js
 rollup.config.js
 yarn.lock
 yarn-error.log
+package-lock.json
 .gitignore
 .eslintrc
 .eslintignore
 .eslintcache
 .eslintrc
 .idea
+.github
 coverage
