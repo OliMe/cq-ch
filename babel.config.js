@@ -21,7 +21,7 @@ if (NODE_ENV === 'test') {
   };
 } else {
   const presetEnvConfig = {
-    modules: 'auto',
+    modules: 'commonjs',
   };
 
   if (BABEL_ENV === 'es5') {

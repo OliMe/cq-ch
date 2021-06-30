@@ -3,18 +3,14 @@
   "version": "1.0.0",
   "description": "CQC (Command Query Channel) for interaction between micro services in browser",
   "browser": "es/index.js",
-  "module": "src/index.js",
-  "unpkg": "dist/index.min.js",
-  "main": "src/index.js",
+  "main": "es/index.js",
   "author": "Dmitry Vizgin <dvzphp@gmail.com>",
   "license": "MIT",
   "private": false,
   "scripts": {
     "lint": "eslint --cache --ext .js ./",
     "test": "cross-env NODE_ENV=test jest --coverage",
-    "build:es5": "cross-env BABEL_ENV=es5 rollup -c",
-    "build:es6": "cross-env BABEL_ENV=es6 rollup -c",
-    "build": "npm run build:es5 && npm run build:es6",
+    "build": "BABEL_ENV=es6 babel src -d es --copy-files --extensions \".ts,.js\" --source-maps",
     "build:examples": "npm run build && cd ./examples/react-backbone-example/ && npm i && npm run build"
   },
   "devDependencies": {

@@ -18,7 +18,7 @@ At first, we need to declare an interface of commands, that our application will
 As result, we receive a function to send commands of types, defined in our interface. Other types of commands will throw exceptions if we try to send them.
 
 ```javascript
-import command from '@olime/cq-ch/command';
+import { command } from '@olime/cq-ch';
 // Create interface.
 const send = command(['FIRST_COMMAD_TYPE', 'SECOND_COMMAND_TYPE'], 'unique-key-of-application');
 // Sending command. Command is a simple JS Object with one required field - type.
@@ -35,7 +35,7 @@ To receive commands, we need to declare an interface of that commands types.
 As a result, function `execute` will return us a function to get the next command of the defined type from the queue.
 
 ```javascript
-import execute from '@olime/cq-ch/execute';
+import { execute } from '@olime/cq-ch';
 // Create executed commands interface of application.
 const execute = execute(['THIRD_COMMAND_TYPE', 'FOUTH_COMMAND_TYPE'], 'unique-key-of-application');
 // Create function for filter incomming messages.
@@ -61,7 +61,7 @@ To send queries, we need to declare an interface of that queries types.
 As a result, function `request` will return us a function to send queries of types, defined in our interface. Queries of other types will throw exceptions if we try to send them.
 
 ```javascript
-import request from '@olime/cq-ch/request';
+import { request } from '@olime/cq-ch';
 // Create interface of sending queries in your application.
 const sendQuery = request(['FIRST_QUERY_TYPE'], 'unique-key-of-application');
 // Somewhere in your application, request data in async function.
@@ -71,7 +71,7 @@ const result = await sendQuery({type: 'FIRST_QUERY_TYPE', data: 'Hello world'});
 ### Receiving queries.
 
 ```javascript
-import respond from '@olime/cq-ch/respond';
+import { respond } from '@olime/cq-ch';
 // Create interface of receiving queries in your application.
 const getQueryChannel = respond(['THIRD_QUERY_TYPE', 'FOUTH_QUERY_TYPE'], 'unique-key-of-application');
 // Create channel for receiving only queries of type THIRD_QUERY_TYPE.
