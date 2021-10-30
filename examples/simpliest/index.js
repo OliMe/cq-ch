@@ -1,7 +1,4 @@
-import command from '../../es/command.js';
-import execute from '../../es/execute.js';
-import request from '../../es/request.js';
-import respond from '../../es/respond.js';
+import { command, execute, request, respond } from "@olime/cq-ch";
 
 const sendCommand = command(['test'], 'test-2');
 const sendQuery = request(['test'], 'test-2');

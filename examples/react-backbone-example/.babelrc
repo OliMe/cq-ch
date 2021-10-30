@@ -1,33 +1,43 @@
 {
   "presets": [
-    "es2015",
-    "react",
-    "stage-0"
+    [
+      "@babel/env",
+      {
+        "useBuiltIns": "usage",
+        "corejs": 3,
+        "targets": {
+          "browsers": ["defaults", "not ie > 0"]
+        }
+      }
+    ],
+    "@babel/preset-react"
   ],
   "plugins": [
-    "transform-decorators-legacy",
-    ["module-resolver", {
-      "root": ["./src"],
-      "alias": {
-        "desktop": "./frontend/assets/js/react/desktop/",
-        "mobile": "./frontend/assets/js/react/mobile/",
-        "components": "./frontend/assets/js/react/common/components",
-        "es6": "./frontend/assets/js/react/common/es6",
-        "init": "./frontend/assets/js/react/common/init",
-        "helpers": "./frontend/assets/js/react/common/helpers",
-        "services": "./frontend/assets/js/react/common/services",
-        "configs": "./frontend/assets/js/react/common/conf",
-        "sagas": "./frontend/assets/js/react/common/sagas",
-        "common-redux": "./frontend/assets/js/react/common/redux",
-        "lib" : "./frontend/assets/js/lib",
-        "_": "lodash"
+    [
+      "@babel/plugin-proposal-decorators",
+      {
+        "legacy": true
       }
-    }],
+    ],
+    [
+      "module-resolver", {
+        "root": ["./src"],
+        "alias": {
+          "desktop": "./frontend/assets/js/react/desktop/",
+          "mobile": "./frontend/assets/js/react/mobile/",
+          "components": "./frontend/assets/js/react/common/components",
+          "es6": "./frontend/assets/js/react/common/es6",
+          "init": "./frontend/assets/js/react/common/init",
+          "helpers": "./frontend/assets/js/react/common/helpers",
+          "services": "./frontend/assets/js/react/common/services",
+          "configs": "./frontend/assets/js/react/common/conf",
+          "sagas": "./frontend/assets/js/react/common/sagas",
+          "common-redux": "./frontend/assets/js/react/common/redux",
+          "lib" : "./frontend/assets/js/lib",
+          "_": "lodash"
+        }
+      }
+    ],
     "array-includes"
-  ],
-  "env": {
-    "test": {
-      "plugins": ["transform-es2015-modules-commonjs"]
-    }
-  }
+  ]
 }

@@ -1,5 +1,3 @@
-const rp = require('request-promise-native')
-const fse = require('fs-extra')
 const _ = require('lodash')
 const commonConfig = require('./webpack/common')
 const frontBackboneEs5Config = require('./webpack/front-backbone-es5')

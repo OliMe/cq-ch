@@ -1,0 +1,35 @@
+name: Publish NPM package
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  publish-npm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 14.16.0
+          registry-url: https://registry.npmjs.org/
+
+      - name: Install dependencies
+        run: |
+          npm i -g npm@7 --registry=https://registry.npmjs.org
+          npm install
+      - name: Lint
+        run: |
+          npm run lint
+      - name: Test
+        run: |
+          npm test
+
+      - name: Build package
+        run: |
+          npm run build
+          npm --no-git-tag-version version ${GITHUB_REF#refs/*/}
+      - name: Publish package
+        run: npm publish ./ --access public
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}

@@ -1,6 +1,5 @@
 const webpack = require('webpack')
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const LiveReloadPlugin = require('webpack-livereload-plugin')
 
 let optimization = {

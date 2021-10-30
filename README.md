@@ -32,7 +32,9 @@ send({
 
 To receive commands, we need to declare an interface of that commands types.
 
-As a result, function `execute` will return us a function to get the next command of the defined type from the queue.
+As a result, function `execute` will return a function.
+If we call the resulting function, with the command type (or array of types), we get an asynchronous function,
+each call of which will return us the next received command object of the passed type(s).
 
 ```javascript
 import { execute } from '@olime/cq-ch';
@@ -58,7 +60,8 @@ getCommandsOfThirdType(async (channel) => {
 
 To send queries, we need to declare an interface of that queries types.
 
-As a result, function `request` will return us a function to send queries of types, defined in our interface. Queries of other types will throw exceptions if we try to send them.
+As a result, function `request` will return us a function to send queries of types, defined in our interface. 
+Queries of other types will throw exceptions if we try to send them.
 
 ```javascript
 import { request } from '@olime/cq-ch';
@@ -69,6 +72,12 @@ const result = await sendQuery({type: 'FIRST_QUERY_TYPE', data: 'Hello world'});
 ```
 
 ### Receiving queries.
+
+To receive queries, we need to declare an interface of that query types.
+
+As a result, function `respond` will return a function.
+If we call the resulting function, with the request type (or array of types), we get an asynchronous function,
+each call of which will return us the next received request object of the passed type(s).
 
 ```javascript
 import { respond } from '@olime/cq-ch';
@@ -83,5 +92,10 @@ setInterval(async () => {
     // Respond with data on received query.
     query.resolve({ data: 'Hello world!'});
   }
+});
+// Or you can register callback for new events.
+// This callback will be called on receiving of new message of type.
+getQueriesOfThirdType(async (channel) => {
+  const query = await channel();
 });
 ```

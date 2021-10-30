@@ -4,8 +4,5 @@ test
 */__test__/*
 # Build directories
 es
-dist
-lib
-rollup.config.js
 # Example directory
 examples

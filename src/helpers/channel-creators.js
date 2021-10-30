@@ -59,7 +59,7 @@ export const createChannelEventHandler = (channel, context) => ({ detail: action
  * @return {Array<string|symbol>} Type in Array format.
  */
 export const castType = (inputType, types) => {
-  let resultType = [inputType];
+  let resultType = Array.isArray(inputType) ? inputType : [inputType];
   if (inputType === '*') {
     resultType = types;
     if (typeof resultType === 'string' || typeof resultType === 'symbol') {

@@ -1,8 +1,8 @@
 examples
 **/__test__/**
 **/__mocks__/**
+**/__snapshots__/**
 babel.config.js
-rollup.config.js
 yarn.lock
 yarn-error.log
 package-lock.json

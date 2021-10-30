@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Install node.js 14.15.5
+      - name: Install node.js 14.16.0
         uses: actions/setup-node@v2.1.4
         with:
-          node-version: 14.15.5
+          node-version: 14.16.0
       - run: npm install
       - run: npm test
       - run: ./node_modules/.bin/codecov

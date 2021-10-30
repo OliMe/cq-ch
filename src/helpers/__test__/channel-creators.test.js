@@ -36,6 +36,7 @@ describe('castType', () => {
     const allInputType = '*';
     const stringTypes = 'secondTest';
     expect(castType(stringInputType)).toEqual(arrayTypes);
+    expect(castType(arrayTypes)).toBe(arrayTypes);
     expect(castType(allInputType, arrayTypes)).toEqual(arrayTypes);
     expect(castType(allInputType, stringTypes)).toEqual([stringTypes]);
   });
