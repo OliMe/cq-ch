@@ -1,16 +1,11 @@
-import { castType, channelCreator, createChannelEventHandler, takeChannelCreator } from '../channel-creators';
+import {
+  castType,
+  channelCreator,
+  createChannelEventHandler,
+  takeChannelCreator,
+} from '../channel-creators';
 import EventTargetTransport from '../../event-transport/event-target-transport';
 import getTransport from '../../event-transport/get-transport';
-
-// We need to mock EventTarget, because it does not work in jsdom environment.
-jest.mock('../../polyfill/event-target', () => {
-  const actual = jest.requireActual('../../polyfill/event-target');
-  return {
-    __esModule: true,
-    ...actual,
-    default: actual.EventTarget,
-  };
-});
 
 describe('createChannelEventHandler', () => {
   it('should create channel event handler function.', () => {
@@ -34,11 +29,9 @@ describe('castType', () => {
     const stringInputType = 'test';
     const arrayTypes = ['test'];
     const allInputType = '*';
-    const stringTypes = 'secondTest';
     expect(castType(stringInputType)).toEqual(arrayTypes);
     expect(castType(arrayTypes)).toBe(arrayTypes);
     expect(castType(allInputType, arrayTypes)).toEqual(arrayTypes);
-    expect(castType(allInputType, stringTypes)).toEqual([stringTypes]);
   });
 });
 
@@ -53,7 +46,10 @@ describe('channelCreator', () => {
     const gen = channelIterator(rightTestType, transport, notificator);
     expect(gen.next().value).toBe(true);
     transport.trigger(rightTestType, { context: 'notTest', type: rightTestType });
-    await expect((await gen.next(true)).value).resolves.toEqual({ context: 'notTest', type: rightTestType });
+    await expect((await gen.next(true)).value).resolves.toEqual({
+      context: 'notTest',
+      type: rightTestType,
+    });
   });
   it('should not register handler for type which does not exists in permitted types of channel.', () => {
     const transport = new EventTargetTransport();

@@ -1,16 +1,6 @@
 import execute from '../execute';
 import command from '../command';
 
-// We need to mock EventTarget, because it does not work in jsdom environment.
-jest.mock('../polyfill/event-target', () => {
-  const actual = jest.requireActual('../polyfill/event-target');
-  return {
-    __esModule: true,
-    ...actual,
-    default: actual.EventTarget,
-  };
-});
-
 describe('execute', () => {
   it('should create execute channel successfully', () => {
     expect(execute(['test_type'], 'test')).toBeInstanceOf(Function);

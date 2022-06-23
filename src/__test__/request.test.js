@@ -44,14 +44,15 @@ describe('created by request function', () => {
       resolve: expect.any(Function),
     });
   });
-  it('receives respond', () => {
+  it('receives respond', done => {
     expect.assertions(1);
     const resovedBy = 'test value';
     channel({ type: 'first_type' }).then(value => {
       expect(value).toBe(resovedBy);
+      done();
     });
     const { trigger } = getTransport();
-    trigger.mock.calls[0][1].resolve(resovedBy);
+    trigger.mock.calls[1][1].resolve(resovedBy);
   });
   it('throws error on wait timeout expires', () => {
     jest.useFakeTimers();

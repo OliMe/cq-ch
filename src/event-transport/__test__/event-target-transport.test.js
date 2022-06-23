@@ -1,15 +1,4 @@
 import EventTargetTransport from '../event-target-transport';
-import EventTarget from '../../polyfill/event-target';
-
-// We need to mock EventTarget, because it does not work in jsdom environment.
-jest.mock('../../polyfill/event-target', () => {
-  const actual = jest.requireActual('../../polyfill/event-target');
-  return {
-    __esModule: true,
-    ...actual,
-    default: actual.EventTarget,
-  };
-});
 
 describe('EventTargetTransport', () => {
   it('should create listeners object, event queue object and event target instance at instance creation',
@@ -21,10 +10,12 @@ describe('EventTargetTransport', () => {
     });
   it('should register passed events correctly at instance creation', () => {
     const events = { correct: jest.fn(), incorrect: 'test' };
+    EventTargetTransport.prototype.on = jest.fn(EventTargetTransport.prototype.on);
     const transport = new EventTargetTransport(events);
     expect(transport.listeners.correct).toBe(true);
     expect(transport.listeners.incorrect).toBe(undefined);
-    expect(transport.target.listeners.correct.get(events.correct)).toBe(events.correct);
+    expect(transport.on).toHaveBeenCalledTimes(1);
+    expect(transport.on).toHaveBeenCalledWith('correct', events.correct);
   });
   it('should trigger events correctly', () => {
     const transport = new EventTargetTransport();

@@ -2,16 +2,6 @@ import Channel from '../channel';
 import EventTargetTransport from '../../event-transport/event-target-transport';
 import Queue from '../queue';
 
-// We need to mock EventTarget, because it does not work in jsdom environment.
-jest.mock('../../polyfill/event-target', () => {
-  const actual = jest.requireActual('../../polyfill/event-target');
-  return {
-    __esModule: true,
-    ...actual,
-    default: actual.EventTarget,
-  };
-});
-
 describe('Channel', () => {
   it('should create queues and take notificator of correct type on instance creation.', () => {
     const notificator = new EventTargetTransport();

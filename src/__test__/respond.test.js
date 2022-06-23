@@ -1,16 +1,6 @@
 import respond from '../respond';
 import request from '../request';
 
-// We need to mock EventTarget, because it does not work in jsdom environment.
-jest.mock('../polyfill/event-target', () => {
-  const actual = jest.requireActual('../polyfill/event-target');
-  return {
-    __esModule: true,
-    ...actual,
-    default: actual.EventTarget,
-  };
-});
-
 describe('respond', () => {
   it('should create respond channel successfully', () => {
     expect(respond(['test_type'], 'test')).toBeInstanceOf(Function);

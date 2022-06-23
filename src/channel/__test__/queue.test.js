@@ -1,16 +1,4 @@
 import Queue from '../queue';
-import EventTarget from '../../polyfill/event-target';
-import CustomEvent from '../../polyfill/custom-event';
-
-// We need to mock EventTarget, because it does not work in jsdom environment.
-jest.mock('../../polyfill/event-target', () => {
-  const actual = jest.requireActual('../../polyfill/event-target');
-  return {
-    __esModule: true,
-    ...actual,
-    default: actual.EventTarget,
-  };
-});
 
 describe('Queue', () => {
   it('should create EventTarget instance at instance creation.', () => {
@@ -28,7 +16,6 @@ describe('Queue', () => {
   it('should add event listener to event target for "put" event type', () => {
     const testListener = jest.fn();
     const queue = new Queue(testListener);
-    expect(queue.target.listeners.put.size).toBe(1);
     expect(testListener).not.toHaveBeenCalled();
     queue.target.dispatchEvent(new CustomEvent('put'));
     expect(testListener).toHaveBeenCalledTimes(1);
