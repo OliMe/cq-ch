@@ -1,4 +1,4 @@
-# Command query channels.
+# Command query channels
 [![codecov](https://codecov.io/gh/OliMe/cq-ch/branch/master/graph/badge.svg?token=EAESO7AKNO)](https://codecov.io/gh/OliMe/cq-ch)
 
 ## Motivation
@@ -9,7 +9,7 @@ This is especially actual for frontend microservice architecture as known as mic
 
 Of course, you can always use events, but this can easily lead to code pollution, increased interlocking between applications, and vague interfaces.
 
-## Getting Started
+## Getting started with base cq-ch
 
 ### Send command
 
@@ -39,21 +39,14 @@ each call of which will return us the next received command object of the passed
 ```javascript
 import { execute } from '@olime/cq-ch';
 // Create executed commands interface of application.
-const execute = execute(['THIRD_COMMAND_TYPE', 'FOUTH_COMMAND_TYPE'], 'unique-key-of-application');
-// Create function for filter incomming messages.
-const getCommandsOfThirdType = execute(['THIRD_COMMAND_TYPE']);
+const takeCommand = execute(['THIRD_COMMAND_TYPE', 'FOUTH_COMMAND_TYPE'], 'unique-key-of-application');
 // Run checking of new commands in filter channel.
 setInterval(async () => {
-  const command = await getCommandsOfThirdType();
+  const command = await takeCommand();
   if (command) {
     console.log(command);
   }
-}, 0);
-// Or you can register callback for new events.
-// This callback will be called on receiving of new message of type.
-getCommandsOfThirdType(async (channel) => {
-  const command = await channel();
-});
+}, 3);
 ```
 
 ### Send queries
@@ -71,7 +64,7 @@ const sendQuery = request(['FIRST_QUERY_TYPE'], 'unique-key-of-application');
 const result = await sendQuery({type: 'FIRST_QUERY_TYPE', data: 'Hello world'});
 ```
 
-### Receiving queries.
+### Receiving queries
 
 To receive queries, we need to declare an interface of that query types.
 
@@ -82,20 +75,76 @@ each call of which will return us the next received request object of the passed
 ```javascript
 import { respond } from '@olime/cq-ch';
 // Create interface of receiving queries in your application.
-const getQueryChannel = respond(['THIRD_QUERY_TYPE', 'FOUTH_QUERY_TYPE'], 'unique-key-of-application');
-// Create channel for receiving only queries of type THIRD_QUERY_TYPE.
-const getQueriesOfThirdType = getQueryChannel('THIRD_QUERY_TYPE');
+const takeQuery = respond(['THIRD_QUERY_TYPE', 'FOUTH_QUERY_TYPE'], 'unique-key-of-application');
 // Run checking of new received queries in filter channel.
 setInterval(async () => {
-  const query = await getQueriesOfThirdType();
+  const query = await takeQuery();
   if (query) {
     // Respond with data on received query.
     query.resolve({ data: 'Hello world!'});
   }
-});
-// Or you can register callback for new events.
-// This callback will be called on receiving of new message of type.
-getQueriesOfThirdType(async (channel) => {
-  const query = await channel();
-});
+}, 2);
+```
+
+## Getting started with toolkit
+
+If you want to decrease amount of boilerplate code, you can use `@olime/cq-ch/es/toolkit`.
+It's wrapper under raw base library with some useful functions for creating messages and process them.
+
+At first, we need to create channel for sending and receiving messages. Then create message creator function and send message with send method of channel.
+
+```typescript
+import {createChannel, createCommand, createQuery} from '@olime/cq-ch/es/toolkit';
+// Create channel for sending and receiving messages.
+const channel = createChannel('unique-key-of-application');
+// Create command creator with payload type definition.
+const testCommand = createCommand<string>('FIRST_COMMAND_TYPE');
+// Create query creator with payload and response type definitions.
+const pingQuery = createQuery<'ping', 'pong'>('PING');
+// Create and send command with payload.
+channel.send(testCommand('Hello'));
+// Create and send query with payload, and receive response.
+const pong = await channel.send(pingQuery('ping'));
+// pong variable value is 'pong'.
+```
+
+You can separate the message creator functions into a separate package.
+
+```typescript
+// Inside a message contract package, for example @acme/messages
+import {createCommand} from '@olime/cq-ch/es/toolkit';
+import {createQuery} from "./index";
+
+export const firstCommand = createCommand<string>('FIRST_COMMAND_TYPE');
+export const secondCommand = createCommand<{ testProperty: string }>('SECOND_COMMAND_TYPE');
+export const pingQuery = createQuery<'ping', 'pong'>('PING');
+```
+
+And use them in specific applications as a contract.
+
+```typescript
+// Inside a specific application
+import { firstCommand, secondCommand, pingQuery } from '@acme/messages';
+import { createChannel } from "@olime/cq-ch/es/toolkit";
+// Create channel for sending and receiving messages.
+const channel = createChannel('unique-key-of-application');
+// Create and send first command with payload.
+channel.send(firstCommand('Hello'));
+// Create and send second command with payload.
+channel.send(secondCommand({ testProperty: 'hello' }));
+// Create and send ping query.
+const pong = channel.send(pingQuery('ping'));
+// Process input commands.
+setInterval(async () => {
+    // Receive command.
+    const command = await channel.take(firstCommand);
+    // Make some good stuff with received command.
+}, 2);
+// Process input queries.
+setInterval(async () => {
+    // Receive query.
+    const ping = await channel.take(pingQuery);
+    // Respond on query.
+    channel.respond(ping, 'pong');
+}, 3);
 ```

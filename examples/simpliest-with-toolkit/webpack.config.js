@@ -10,6 +10,10 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].js',
   },
+  resolve: {
+    extensions: ['.js', '.ts'],
+  },
+  devtool: 'source-map',
   module: {
     rules: [
       {

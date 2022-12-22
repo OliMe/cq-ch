@@ -10,11 +10,12 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Install node.js 14.16.0
-        uses: actions/setup-node@v2.1.4
+      - uses: actions/checkout@v3
+      - name: Install node.js 16
+        uses: actions/setup-node@v3
         with:
-          node-version: 14.16.0
+          node-version: 16
+          registry-url: https://registry.npmjs.org/
       - run: npm install
       - run: npm test
       - run: ./node_modules/.bin/codecov

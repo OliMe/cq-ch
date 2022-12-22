@@ -8,18 +8,19 @@ jobs:
   publish-npm:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: 14.16.0
+          node-version: 16
           registry-url: https://registry.npmjs.org/
 
       - name: Install dependencies
         run: |
-          npm i -g npm@7 --registry=https://registry.npmjs.org
+          npm i -g npm@9 --registry=https://registry.npmjs.org
           npm install
       - name: Lint
         run: |
+          npm run type-check
           npm run lint
       - name: Test
         run: |
