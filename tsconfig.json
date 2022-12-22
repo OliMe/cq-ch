@@ -10,5 +10,6 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "allowJs": true
-  }
+  },
+  "exclude": ["examples"],
 }
