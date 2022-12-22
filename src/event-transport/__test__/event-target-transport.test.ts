@@ -1,19 +1,18 @@
 import EventTargetTransport from '../event-target-transport';
 
 describe('EventTargetTransport', () => {
-  it('should create listeners object, event queue object and event target instance at instance creation',
-    () => {
-      const transport = new EventTargetTransport();
-      expect(transport.listeners).toEqual({});
-      expect(transport.eventQueue).toEqual({});
-      expect(transport.target).toBeInstanceOf(EventTarget);
-    });
+  it('should create listeners object, event queue object and event target instance at instance creation', () => {
+    const transport = new EventTargetTransport();
+    expect(transport.listeners).toEqual({});
+    expect(transport.eventQueue).toEqual({});
+    expect(transport.target).toBeInstanceOf(EventTarget);
+  });
   it('should register passed events correctly at instance creation', () => {
-    const events = { correct: jest.fn(), incorrect: 'test' };
+    const listener = (event: Event) => jest.fn(() => event);
+    const events = { correct: listener };
     EventTargetTransport.prototype.on = jest.fn(EventTargetTransport.prototype.on);
     const transport = new EventTargetTransport(events);
     expect(transport.listeners.correct).toBe(true);
-    expect(transport.listeners.incorrect).toBe(undefined);
     expect(transport.on).toHaveBeenCalledTimes(1);
     expect(transport.on).toHaveBeenCalledWith('correct', events.correct);
   });
@@ -22,8 +21,9 @@ describe('EventTargetTransport', () => {
     const testPayload = { test: 'test' };
     const testType = 'correct';
     transport.trigger(testType, testPayload);
-    expect(transport.eventQueue[testType][0].type).toBe(testType);
-    expect(transport.eventQueue[testType][0].detail).toBe(testPayload);
+    const event = transport.eventQueue[testType][0] as CustomEvent;
+    expect(event.type).toBe(testType);
+    expect(event.detail).toBe(testPayload);
   });
   it('should register event callback correctly for single event and call it on this event.', () => {
     const transport = new EventTargetTransport();
@@ -48,14 +48,6 @@ describe('EventTargetTransport', () => {
     transport.trigger('test2', secondPayload);
     expect(callback).toHaveBeenCalledTimes(2);
     expect(callback.mock.calls[1][0].detail).toBe(secondPayload);
-  });
-  it('shouldn`t register callback when event type argument is not string or array', () => {
-    const transport = new EventTargetTransport();
-    const callback = jest.fn();
-    transport.on({}, callback);
-    expect(callback).not.toHaveBeenCalled();
-    transport.trigger({});
-    expect(callback).not.toHaveBeenCalled();
   });
   it('should call callback at registration when events have been triggered already.', () => {
     const transport = new EventTargetTransport();

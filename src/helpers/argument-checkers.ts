@@ -1,5 +1,10 @@
 import { Message } from '../types';
 
+/**
+ * Check arguments of channel creator for raw JS usage.
+ * @param name Name of called function.
+ * @param args Arguments of called function.
+ */
 export const checkChannelCreator = (name: string, ...args: unknown[]) => {
   if (args.length !== 2) {
     throw new TypeError(
@@ -17,9 +22,19 @@ export const checkChannelCreator = (name: string, ...args: unknown[]) => {
   }
 };
 
+/**
+ * Checks if a value is a message.
+ * @param value Value.
+ * @return true or false - message or not.
+ */
 const isMessage = (value: any): value is Message<unknown> =>
   typeof value === 'object' && value?.type && typeof value?.type === 'string';
 
+/**
+ * Check arguments of command channel.
+ * @param name Name of called function.
+ * @param args Arguments of called function.
+ */
 export const checkCommandChannel = (name: string, ...args: unknown[]) => {
   if (args.length !== 1) {
     throw new TypeError(
@@ -33,7 +48,11 @@ export const checkCommandChannel = (name: string, ...args: unknown[]) => {
     );
   }
 };
-
+/**
+ * Check arguments of request channel.
+ * @param name
+ * @param args
+ */
 export const checkRequestChannel = (name: string, ...args: unknown[]) => {
   if (args.length !== 2) {
     throw new TypeError(

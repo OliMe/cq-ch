@@ -8,7 +8,7 @@ export default class Queue<T> {
 
   /**
    * Instantiate Queue.
-   * @param {Function | undefined} putCallback Callback for adding in queue event.
+   * @param putCallback Callback for adding in queue event.
    */
   constructor(putCallback: EventListener | null = null) {
     this.target = new EventTarget();
@@ -21,8 +21,8 @@ export default class Queue<T> {
 
   /**
    * Add value to queue.
-   * @param {*} value Element for add.
-   * @return {number} Index of added element.
+   * @param value Element for add.
+   * @return Index of added element.
    */
   put(value: T) {
     const result = this.buffer.push(value);
@@ -37,7 +37,7 @@ export default class Queue<T> {
 
   /**
    * Get value from queue.
-   * @return {*} Element.
+   * @return Element.
    */
   take(): T | undefined {
     const result = this.buffer.shift();

@@ -1,191 +1,109 @@
-import { Message, OutputQuery } from '../types';
+import { OutputQuery } from '../types';
 import { command, execute, request, respond } from '../';
 import {
   ChannelSegregation,
-  ExtendedMessage,
-  OutputPayloadQuery,
   MessageCreatorWithoutPayload,
   MessageCreatorWithPayload,
-  OutputPayloadMessage,
   PrepareMessageWithoutPayload,
   PrepareMessageWithPayload,
+  InputCommand,
+  InputQuery,
+  SegregatedMessage,
+  OutputPayloadQuery,
+  OutputPayloadMessage,
 } from './types';
+import { useCache } from './cache';
 
-type Output<TPayload, TResponse> = TResponse extends undefined
-  ? OutputPayloadMessage<TPayload>
-  : OutputPayloadQuery<TPayload, TResponse>;
-
-type CQCInput<TPayload = any, TResponse = any> = () => Output<TPayload, TResponse>;
-
-type CQCOutput<TResponse = any> = (message: Message<TResponse>) => Promise<TResponse>;
-
-type Direction = 'input' | 'output';
-
-/**
- * Тип транспорта (способ отправки или получения) сообщений.
- */
-type Transport<TDirection, TPayload, TResponse> = TDirection extends 'input'
-  ? CQCInput<TPayload, TResponse>
-  : CQCOutput<TResponse>;
-
-const DIRECTION = {
-  INPUT: 'input',
-  OUTPUT: 'output',
-} as const;
-
-export const CHANNEL_SEGREGATION = {
+const CHANNEL_SEGREGATION = {
   QUERY: 'query',
   COMMAND: 'command',
 } as const;
 
-const IO_CREATORS = {
-  [CHANNEL_SEGREGATION.QUERY]: {
-    input: respond,
-    output: request,
-  },
-  [CHANNEL_SEGREGATION.COMMAND]: {
-    input: execute,
-    output: command,
-  },
-} as const;
+const cachedRespond = useCache(respond, 'respond');
+const cachedRequest = useCache(request, 'request');
+const cachedExecute = useCache(execute, 'execute');
+const cachedCommand = useCache(command, 'command');
 
 /**
- * Создаёт объект канала для отправки и обработки сообщений.
- * @param serviceName Название сервиса к которому будет привязан канал.
- * @return Объект канала для отправки и приёма сообщений.
+ * Creates a channel object for sending and processing messages.
+ * @param serviceName The name of the service to which the channel will be assigned.
+ * @return The channel instance for sending and receiving messages.
  */
 export const createChannel = (serviceName: string) => new Channel(serviceName);
 
 /**
- * Канал для отправки и обработки сообщений.
+ * A channel for sending and processing messages.
  */
-class Channel {
+export class Channel {
   private readonly serviceName: string;
 
-  private transport: {
-    [channelType in ChannelSegregation]: {
-      [DIRECTION.INPUT]: {
-        [messageType: string]: CQCInput;
-      };
-      [DIRECTION.OUTPUT]: {
-        [messageType: string]: CQCOutput;
-      };
-    };
-  } = {
-    [CHANNEL_SEGREGATION.QUERY]: {
-      [DIRECTION.INPUT]: {},
-      [DIRECTION.OUTPUT]: {},
-    },
-    [CHANNEL_SEGREGATION.COMMAND]: {
-      [DIRECTION.INPUT]: {},
-      [DIRECTION.OUTPUT]: {},
-    },
-  };
-
   /**
-   * Конструктор объекта канала.
-   * @param serviceName Название сервиса.
+   * Channel instance constructor.
+   * @param serviceName Service name.
    */
   constructor(serviceName: string) {
     this.serviceName = serviceName;
   }
 
   /**
-   * Метод для получения следующего в очереди сообщения переданного типа.
-   * @param messageType Тип сообщения.
-   * @return Следующее сообщение из канала.
+   * Gets the next message in the queue of the passed type.
+   * @param creator Type function.
+   * @return The next input message.
    */
+  async take<TPayload, TResponse>(
+    creator: MessageCreatorWithPayload<'query', TPayload, TResponse>,
+  ): Promise<OutputPayloadQuery<TPayload, TResponse>>;
+  async take<TPayload>(
+    creator: MessageCreatorWithPayload<'command', TPayload, undefined>,
+  ): Promise<OutputPayloadMessage<TPayload>>;
   async take<TChannel extends ChannelSegregation, TPayload, TResponse>({
     channelType,
     type,
   }: MessageCreatorWithPayload<TChannel, TPayload, TResponse>) {
-    const take = this.getTransport<'input', TPayload, TResponse>(
-      DIRECTION.INPUT,
-      channelType,
-      type,
-    );
-    return take();
+    if (channelType === CHANNEL_SEGREGATION.QUERY) {
+      return cachedRespond<TPayload, TResponse>([type], this.serviceName)();
+    }
+    return cachedExecute<TPayload>([type], this.serviceName)();
   }
 
   /**
-   * Метод для отправки сообщения.
-   * @param message Сообщение.
-   * @return Возвращает ответ на сообщение в случае если было отправлено сообщение-запрос.
+   * Sends message.
+   * @param message Message.
+   * @return Response on request message or nothing.
    */
-  async send<TPayload, TResponse>(message: ExtendedMessage<TPayload, TResponse>) {
-    const send = this.getTransport<'output', TPayload, TResponse>(
-      DIRECTION.OUTPUT,
-      message.channelType,
-      message.type,
-    );
-    return send(message);
+  async send<TPayload, TResponse>(
+    message: InputCommand<TPayload> | InputQuery<TPayload, TResponse>,
+  ) {
+    if (message.channelType === CHANNEL_SEGREGATION.QUERY) {
+      return cachedRequest<TPayload, TResponse>([message.type], this.serviceName)(message);
+    }
+    return cachedCommand<TPayload, TResponse>([message.type], this.serviceName)(message);
   }
 
   /**
-   * Метод для ответа на сообщение-запрос.
-   * @param query Сообщение-запрос.
-   * @param result Данные ответа.
+   * Responds on request message.
+   * @param query Query message.
+   * @param result Response data.
    */
   respond<TResponse>(query: OutputQuery<TResponse>, result: TResponse) {
     query.resolve(result);
   }
-
-  /**
-   * Метод для получения функции-канала отправки или получения сообщений.
-   * @param direction Направление канала (ввод или вывод).
-   * @param channelType Тип канала (команда или запрос).
-   * @param messageType Тип сообщения.
-   * @return Возвращает функцию для отправки и получения сообщений.
-   * @private
-   */
-  private getTransport<TDirection extends Direction, TPayload, TResponse>(
-    direction: TDirection,
-    channelType: ChannelSegregation,
-    messageType: string,
-  ) {
-    if (!this.transport[channelType][direction][messageType]) {
-      const creator = IO_CREATORS[channelType][direction];
-      this.transport[channelType][direction][messageType] = creator<TResponse>(
-        [messageType],
-        this.serviceName,
-      );
-    }
-    return this.transport[channelType][direction][messageType] as Transport<
-      TDirection,
-      TPayload,
-      TResponse
-    >;
-  }
 }
 
 /**
- * Создаёт функцию-создатель сообщения-запроса.
- * @param type Идентификатор типа сообщения.
- * @param prepareMessage Функция для добавления в сообщение данных которые выходят за рамки интерфейса.
- * @return Возвращает функцию для создания сообщения-запроса.
+ * Creates creator function for query message.
+ * @param type Message type.
+ * @param prepareMessage Function for transform message and add additional data before sending.
+ * @return Query message creator.
  */
 export function createQuery<TResponse>(
   type: string,
   prepareMessage?: PrepareMessageWithoutPayload,
 ): MessageCreatorWithoutPayload<'query', TResponse>;
-
-/**
- * Создаёт функцию-создатель сообщения-запроса.
- * @param type Идентификатор типа сообщения.
- * @param prepareMessage Функция для добавления данных которые выходят за рамки интерфейса в сообщение.
- * @return Возвращает функцию для создания сообщения-запроса.
- */
 export function createQuery<TPayload, TResponse>(
   type: string,
   prepareMessage?: PrepareMessageWithPayload<TPayload>,
 ): MessageCreatorWithPayload<'query', TPayload, TResponse>;
-
-/**
- * Создаёт функцию-создатель сообщения-запроса.
- * @param type Идентификатор типа сообщения.
- * @param prepareMessage Функция для добавления данных которые выходят за рамки интерфейса в сообщение.
- * @return Возвращает функцию для создания сообщения-запроса.
- */
 export function createQuery(
   type: string,
   prepareMessage?: PrepareMessageWithPayload<unknown> | PrepareMessageWithoutPayload,
@@ -194,33 +112,19 @@ export function createQuery(
 }
 
 /**
- * Создаёт функцию-создатель сообщения-команды.
- * @param type Идентификатор типа сообщения.
- * @param prepareMessage Функция для добавления данных которые выходят за рамки интерфейса в сообщение.
- * @return Возвращает функцию для создания сообщения-команды.
+ * Creates creator function for command message.
+ * @param type Message type.
+ * @param prepareMessage Function for transform message and add additional data before sending.
+ * @return Command message creator.
  */
 export function createCommand(
   type: string,
   prepareMessage?: PrepareMessageWithoutPayload,
 ): MessageCreatorWithoutPayload<'command', undefined>;
-
-/**
- * Создаёт функцию-создатель сообщения-команды.
- * @param type Идентификатор типа сообщения.
- * @param prepareMessage Функция для добавления данных которые выходят за рамки интерфейса в сообщение.
- * @return Возвращает функцию для создания сообщения-команды.
- */
 export function createCommand<TPayload>(
   type: string,
   prepareMessage?: PrepareMessageWithPayload<TPayload>,
 ): MessageCreatorWithPayload<'command', TPayload, undefined>;
-
-/**
- * Создаёт функцию-создатель сообщения-команды.
- * @param type Идентификатор типа сообщения.
- * @param prepareMessage Функция для добавления данных которые выходят за рамки интерфейса в сообщение.
- * @return Возвращает функцию для создания сообщения-команды.
- */
 export function createCommand(
   type: string,
   prepareMessage?: PrepareMessageWithPayload<unknown> | PrepareMessageWithoutPayload,
@@ -231,11 +135,11 @@ export function createCommand(
 }
 
 /**
- * Создаёт функции для создания сообщений-команд или сообщений-запросов в зависимости от переданного типа канала.
- * @param messageType Тип сообщения.
- * @param channelType Тип канала (команда или запрос).
- * @param prepareMessage Функция для добавления данных которые выходят за рамки интерфейса в сообщение.
- * @return Возвращает функцию для создания сообщения.
+ * Creates creators for command and query messages depending on type.
+ * @param messageType Message type.
+ * @param channelType Type of channel (command or query).
+ * @param prepareMessage Function for transform message and add additional data before sending.
+ * @return Creator function.
  */
 function createMessage<TChannel extends ChannelSegregation, TPayload, TResponse>(
   messageType: string,
@@ -244,12 +148,6 @@ function createMessage<TChannel extends ChannelSegregation, TPayload, TResponse>
 ):
   | MessageCreatorWithPayload<TChannel, TPayload, TResponse>
   | MessageCreatorWithoutPayload<TChannel, TResponse> {
-  /**
-   * Функция для создания сообщения.
-   * @param payload Дополнительные данные для отправки в сообщении.
-   * @param other Остальные аргументы.
-   * @return Возвращает сообщение.
-   */
   const creator = function (payload?: TPayload, ...other: unknown[]) {
     let initialData = {};
     if (prepareMessage) {
@@ -260,10 +158,11 @@ function createMessage<TChannel extends ChannelSegregation, TPayload, TResponse>
       type: messageType,
       payload,
       channelType,
-    };
+    } as SegregatedMessage<TChannel, TPayload, TResponse>;
   };
   creator.type = messageType;
   creator.channelType = channelType;
+  creator.toString = () => messageType;
 
   return creator;
 }

@@ -10,8 +10,8 @@ describe('getTransport', () => {
     expect(window.CQChannels).toBeUndefined();
     const transport = getTransport('test');
     expect(transport).toBeInstanceOf(EventTargetTransport);
-    expect(window.CQChannels.test).toBeInstanceOf(EventTargetTransport);
-    expect(window.CQChannels.test).toBe(transport);
+    expect(window?.CQChannels?.test).toBeInstanceOf(EventTargetTransport);
+    expect(window?.CQChannels?.test).toBe(transport);
   });
   it('shouldn`t create EventTargetTransport instance when it already exist.', () => {
     const transport = getTransport('test');

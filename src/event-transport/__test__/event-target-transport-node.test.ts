@@ -15,6 +15,6 @@ describe('getTransport', () => {
     expect(global.CQChannels).toBeUndefined();
     const transport = getTransport('test');
     expect(transport).toBeInstanceOf(EventTargetTransport);
-    expect(global.CQChannels.test).toBe(transport);
+    expect(global?.CQChannels?.test).toBe(transport);
   });
 });

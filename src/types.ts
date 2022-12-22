@@ -23,14 +23,3 @@ export type Emitter<
   TResponse,
   TOutput extends OutputMessage<TResponse>,
 > = () => Promise<TOutput | void>;
-
-export type RequestChannel<TResponse> = (
-  query: Message<TResponse>,
-  time: number,
-) => Promise<TResponse>;
-
-export type CommandChannel = (command: Message<undefined>) => Promise<void>;
-
-export type RespondChannel<TResponse> = Emitter<TResponse, OutputQuery<TResponse>>;
-
-export type ExecuteChannel = Emitter<undefined, OutputMessage<undefined>>;

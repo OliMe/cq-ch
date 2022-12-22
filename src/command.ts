@@ -5,9 +5,9 @@ import { checkChannelCreator, checkCommandChannel } from './helpers/argument-che
 
 /**
  * Declares a channel for sent commands in the service interface.
- * @param {Array} types Types of commands for sending.
- * @param {string} context Application context e.g. Namespace of command.
- * @return {Function} Function for sending commands to channel.
+ * @param types Types of commands for sending.
+ * @param context Application context e.g. Namespace of command.
+ * @return Function for sending commands to channel.
  */
 export default function command(types: Types, context: Context) {
   checkChannelCreator(command.name, types, context);

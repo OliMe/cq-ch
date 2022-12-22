@@ -5,9 +5,9 @@ import { checkChannelCreator, checkRequestChannel } from './helpers/argument-che
 
 /**
  * Declares a channel for sent queries in the service interface.
- * @param {Array} types Types of queries for sending.
- * @param {string} context Application context e.g. Namespace of command.
- * @return {Function} Function for sending queries to channel.
+ * @param types Types of queries for sending.
+ * @param context Application context e.g. Namespace of command.
+ * @return Function for sending queries to channel.
  */
 export default function request(types: Types, context: Context) {
   checkChannelCreator('request', types, context);

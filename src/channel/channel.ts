@@ -7,14 +7,14 @@ import EventTargetTransport from '../event-transport/event-target-transport';
 export default class Channel<T> {
   puts;
   takes;
-  notificator: EventTargetTransport | undefined;
+  notificator?: EventTargetTransport;
 
   /**
    * Create instance of Channel.
-   * @param {EventTargetTransport} notificator Instance of EventTargetTransport.
+   * @param notificator Instance of EventTargetTransport.
    */
-  constructor(notificator: EventTargetTransport | null = null) {
-    if (notificator && notificator instanceof EventTargetTransport) {
+  constructor(notificator?: EventTargetTransport) {
+    if (notificator) {
       this.notificator = notificator;
     }
     this.puts = new Queue<T>(this._listener.bind(this));
@@ -23,7 +23,7 @@ export default class Channel<T> {
 
   /**
    * Puts value to channel.
-   * @param {*} value Element for add in channel.
+   * @param value Element for add in channel.
    */
   put(value: T) {
     if (value !== undefined) {
@@ -33,7 +33,7 @@ export default class Channel<T> {
 
   /**
    * Takes data from channel.
-   * @return {Promise<*>} Returns element from channel.
+   * @return Returns element from channel.
    */
   async take(): Promise<T> {
     return new Promise(resolve => {
@@ -42,16 +42,25 @@ export default class Channel<T> {
   }
 
   /**
-   * Binds puts to takes.
+   * Listener for new message event.
    */
   _listener() {
     if (this.takes.length && this.puts.length) {
-      const take = this.takes.take();
-      const put = this.puts.take();
-      take && put && take(put);
+      this._pass();
       if (this.notificator) {
         this.notificator.trigger('change');
       }
+    }
+  }
+  /**
+   * Binds puts to takes.
+   */
+  _pass() {
+    const take = this.takes.take();
+    const put = this.puts.take();
+    // TODO The reverse version of the condition is not possible with the current usage. It needs to be simplified.
+    if (take && put) {
+      take(put);
     }
   }
 }

@@ -5,9 +5,9 @@ import { Context, OutputMessage, Types } from './types';
 
 /**
  * Declares a channel for processed commands in the service interface.
- * @param {Array} types Types of processed commands.
- * @param {string} context Application context e.g. Namespace of command.
- * @return {Function} Function for receiving commands from channel.
+ * @param types Types of processed commands.
+ * @param context Application context e.g. Namespace of command.
+ * @return Function for receiving commands from channel.
  */
 export default function execute(types: Types, context: Context) {
   checkChannelCreator('execute', types, context);

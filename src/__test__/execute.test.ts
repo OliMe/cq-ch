@@ -6,10 +6,15 @@ describe('execute', () => {
     expect(execute(['test_type'], 'test')).toBeInstanceOf(Function);
   });
   it('should create execute channel unsuccessfully', () => {
+    // TODO Ignore TS errors because for raw JS we need to test argument validation.
+    // @ts-ignore
     const createChannelWithoutArguments = () => execute();
+    // @ts-ignore
     const createChannelWithFirstIncorrectArgument = () => execute('not array');
     const createChannelWithFirstArgumentEmptyArray = () => execute([], 'test');
+    // @ts-ignore
     const createChannelWithoutSecondArgument = () => execute(['test_type']);
+    // @ts-ignore
     const createChannelWithSecondIncorrectArgument = () => execute(['test_type'], 200);
     expect(createChannelWithoutArguments).toThrowErrorMatchingSnapshot();
     expect(createChannelWithFirstIncorrectArgument).toThrowErrorMatchingSnapshot();
@@ -21,7 +26,6 @@ describe('execute', () => {
 
 describe('channel created by execute function', () => {
   it('should receive commands in order of sending', async () => {
-    expect.assertions(2);
     const channel = execute(['first_type', 'second_type'], 'first');
     const commandChannel = command(['first_type', 'second_type'], 'second');
     const firstTestCommand = { type: 'first_type' };
@@ -32,10 +36,9 @@ describe('channel created by execute function', () => {
     setTimeout(() => {
       commandChannel(firstTestCommand);
     }, 20);
-    const receive = channel();
-    const firstReceivedCommand = await receive();
+    const firstReceivedCommand = await channel();
     expect(firstReceivedCommand).toEqual({ ...firstTestCommand, context: 'second' });
-    const secondReceivedCommand = await receive();
+    const secondReceivedCommand = await channel();
     expect(secondReceivedCommand).toEqual({ ...secondTestCommand, context: 'second' });
   });
 });

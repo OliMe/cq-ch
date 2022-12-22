@@ -10,9 +10,10 @@
   "scripts": {
     "lint": "eslint --cache --ext .js ./",
     "test": "cross-env NODE_ENV=test jest --coverage",
-    "build": "tsc --project tsconfig.build.json",
+    "build": "rm -rf ./es && tsc --project tsconfig.build.json",
     "build:examples": "npm run build && cd ./examples/react-backbone-example/ && npm i && npm run build",
-    "prettier": "prettier --write \"./src/**/*.ts\" --loglevel error"
+    "prettier": "prettier --write \"./src/**/*.ts\" --loglevel error",
+    "type-check": "tsc --noEmit -p ."
   },
   "devDependencies": {
     "@babel/cli": "^7.12.17",

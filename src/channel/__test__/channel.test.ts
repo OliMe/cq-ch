@@ -10,11 +10,6 @@ describe('Channel', () => {
     expect(channel.takes).toBeInstanceOf(Queue);
     expect(channel.notificator).toBe(notificator);
   });
-  it('should not take notificator of incorrect type.', () => {
-    const notificator = {};
-    const channel = new Channel(notificator);
-    expect(channel.notificator).not.toBe(notificator);
-  });
   it('should return value from take on put.', async () => {
     expect.assertions(1);
     const channel = new Channel();
@@ -46,7 +41,17 @@ describe('Channel', () => {
     const channel = new Channel();
     jest.spyOn(channel.puts, 'put');
     expect(channel.puts.put).not.toHaveBeenCalled();
-    channel.put();
+    channel.put(undefined);
     expect(channel.puts.put).not.toHaveBeenCalled();
+  });
+  it('shouldn`t do anything, when put value is undefined in queue', () => {
+    const channel = new Channel();
+    const takesMock = jest.fn();
+    jest.spyOn(channel.takes, 'take');
+    (channel.takes.take as jest.Mock).mockImplementationOnce(() => takesMock);
+    expect(takesMock).not.toHaveBeenCalled();
+    channel.puts.put(undefined);
+    channel.take();
+    expect(takesMock).not.toHaveBeenCalled();
   });
 });

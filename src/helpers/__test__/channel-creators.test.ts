@@ -6,20 +6,27 @@ import {
 } from '../channel-creators';
 import EventTargetTransport from '../../event-transport/event-target-transport';
 import getTransport from '../../event-transport/get-transport';
+import Channel from '../../channel/channel';
+import { OutputMessage } from '../../types';
 
 describe('createChannelEventHandler', () => {
   it('should create channel event handler function.', () => {
-    const mockChannel = {
-      put: jest.fn(),
-    };
+    const mockChannel = new Channel<OutputMessage>();
+    mockChannel.put = jest.fn();
     const testContext = 'test';
     const eventHandler = createChannelEventHandler(mockChannel, testContext);
     expect(eventHandler).toBeInstanceOf(Function);
     expect(eventHandler).toHaveLength(1);
     expect(mockChannel.put).not.toHaveBeenCalled();
-    eventHandler({ detail: { context: testContext } });
+    const testEvent = new CustomEvent('test', {
+      detail: { type: 'test', context: testContext },
+    });
+    eventHandler(testEvent);
     expect(mockChannel.put).not.toHaveBeenCalled();
-    eventHandler({ detail: { context: 'notTest' } });
+    const notTestEvent = new CustomEvent('test', {
+      detail: { type: 'test', context: 'notTest' },
+    });
+    eventHandler(notTestEvent);
     expect(mockChannel.put).toHaveBeenCalledTimes(1);
   });
 });
@@ -29,8 +36,8 @@ describe('castType', () => {
     const stringInputType = 'test';
     const arrayTypes = ['test'];
     const allInputType = '*';
-    expect(castType(stringInputType)).toEqual(arrayTypes);
-    expect(castType(arrayTypes)).toBe(arrayTypes);
+    expect(castType(stringInputType, arrayTypes)).toEqual(arrayTypes);
+    expect(castType(arrayTypes, arrayTypes)).toBe(arrayTypes);
     expect(castType(allInputType, arrayTypes)).toEqual(arrayTypes);
   });
 });
@@ -44,7 +51,6 @@ describe('channelCreator', () => {
     const channelIterator = channelCreator(testTypesArray, 'test');
     expect(channelIterator).toBeInstanceOf(Function);
     const gen = channelIterator(rightTestType, transport, notificator);
-    expect(gen.next().value).toBe(true);
     transport.trigger(rightTestType, { context: 'notTest', type: rightTestType });
     await expect((await gen.next(true)).value).resolves.toEqual({
       context: 'notTest',
@@ -71,19 +77,7 @@ describe('takeChannelCreator', () => {
   it('should create take channel correctly.', () => {
     expect(takeChannel).toBeInstanceOf(Function);
   });
-  it('should start channel and call onchange callback on changes in channel.', async done => {
-    const payload = { type: 'test', context: 'notTest' };
-    const onchange = jest.fn(async emitter => {
-      await expect(emitter()).resolves.toBe(payload);
-      done();
-    });
-    const emitter = await takeChannel('test', onchange);
-    const transport = getTransport(key);
-    transport.trigger('test', payload);
-    expect(onchange).toHaveBeenCalledTimes(2);
-    expect(onchange).toHaveBeenNthCalledWith(2, emitter);
-  });
-  it('should start channel without onchange callback and return messages from channel.', async () => {
+  it('should start channel and return messages from channel.', async () => {
     const payload = { type: 'secondTest', context: 'notTest' };
     const emitter = await takeChannel('secondTest');
     const transport = getTransport(key);
