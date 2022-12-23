@@ -1,4 +1,4 @@
-import { Emitter, Message, OutputMessage, OutputQuery } from '../types';
+import { Take, Message, OutputMessage, OutputQuery } from '../types';
 
 /**
  * The type of the channel function with which the message should be sent/received.
@@ -104,7 +104,7 @@ export type CommandChannel<TPayload> = (command: InputCommand<TPayload>) => Prom
 /**
  * Respond channel.
  */
-export type RespondChannel<TPayload, TResponse> = Emitter<
+export type RespondChannel<TPayload, TResponse> = Take<
   TResponse,
   OutputPayloadQuery<TPayload, TResponse>
 >;
@@ -112,4 +112,4 @@ export type RespondChannel<TPayload, TResponse> = Emitter<
 /**
  * Execute channel.
  */
-export type ExecuteChannel<TPayload> = Emitter<undefined, OutputPayloadMessage<TPayload>>;
+export type ExecuteChannel<TPayload> = Take<undefined, OutputPayloadMessage<TPayload>>;

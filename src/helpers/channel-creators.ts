@@ -2,7 +2,7 @@ import getTransport from '../event-transport/get-transport';
 import EventTargetTransport from '../event-transport/event-target-transport';
 import Channel from '../channel/channel';
 import isTypesInTypes from './is-types-in-types';
-import { Emitter, OutputMessage, Type, Types } from '../types';
+import { Take, OutputMessage, Type, Types } from '../types';
 
 type MessageGenerator<TOutput> = Generator<Promise<TOutput>, void, boolean>;
 
@@ -22,10 +22,8 @@ function channelEmitterCreator<TOutput extends OutputMessage>(iterator: MessageG
    * Function for receiving events from channel.
    * @return Function for take event from channel or event.
    */
-  const emitter: Emitter<unknown, TOutput> = async function () {
-    const value = await iterator.next().value;
-
-    return value;
+  const emitter: Take<unknown, TOutput> = async function () {
+    return iterator.next().value;
   };
 
   return emitter;

@@ -16,6 +16,16 @@ jobs:
         with:
           node-version: 16
           registry-url: https://registry.npmjs.org/
-      - run: npm install
-      - run: npm test
-      - run: ./node_modules/.bin/codecov
+      - name: Install dependencies
+        run: |
+          npm install
+      - name: Lint
+        run: |
+          npm run type-check
+          npm run lint
+      - name: Test
+        run: |
+          npm test
+      - name: Collect coverage
+        run: |
+          ./node_modules/.bin/codecov
