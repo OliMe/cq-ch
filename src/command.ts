@@ -9,7 +9,10 @@ import { checkChannelCreator, checkCommandChannel } from './helpers/argument-che
  * @param context Application context e.g. Namespace of command.
  * @return Function for sending commands to channel.
  */
-export default function command(types: Types, context: Context): Send<undefined> {
+export default function command(
+  types: Types,
+  context: Context,
+): Send<undefined, Message<undefined>> {
   checkChannelCreator(command.name, types, context);
   return async function commandChannel(command: Message<undefined>) {
     checkCommandChannel(commandChannel.name, command);

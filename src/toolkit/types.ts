@@ -1,4 +1,4 @@
-import { Take, Message, OutputMessage, OutputQuery } from '../types';
+import { Take, Message } from '../types';
 
 /**
  * The type of the channel function with which the message should be sent/received.
@@ -6,70 +6,86 @@ import { Take, Message, OutputMessage, OutputQuery } from '../types';
 export type ChannelSegregation = 'query' | 'command';
 
 /**
- * Output message with payload.
+ * Interface of channel object for sending and processing messages.
  */
-export interface OutputPayloadMessage<TPayload> extends OutputMessage<undefined> {
-  payload?: TPayload;
+export interface Channel {
+  /**
+   * Gets the next message in the queue of the passed types.
+   * @param creators Type functions.
+   * @return The next input message.
+   */
+  take(
+    ...creators: (MessageCreatorWithPayload<any, any> | MessageCreatorWithoutPayload<any>)[]
+  ): ReturnType<TakeChannel<any, any>>;
+  /**
+   * Sends message.
+   * @param message Message.
+   * @param timeout Wait for response timeout of requests.
+   * @return Response on request message or nothing.
+   */
+  send<TPayload, TResponse>(
+    message: ExtendedMessage<TPayload, TResponse>,
+    timeout?: number,
+  ): Promise<TResponse | void>;
+  /**
+   * Responds on request message.
+   * @param query Query message.
+   * @param result Response data.
+   */
+  respond<TResponse>(query: Message<TResponse>, result: TResponse): void;
 }
 
 /**
- * A request message with a specific expected response type.
+ * Extended message interface with additional data about the type of channel through which it can be sent.
  */
-export interface OutputPayloadQuery<TPayload, TResponse> extends OutputQuery<TResponse> {
+export interface ExtendedMessage<TPayload, TResponse> extends Message<TResponse> {
   payload?: TPayload;
+  channelType?: ChannelSegregation;
 }
 
 /**
- * Extended input message interface with additional data about the type of channel through which it can be sent.
+ * Extended message interface with payload.
  */
-export interface ExtendedInputMessage<TPayload, TResponse> extends Message<TResponse> {
-  payload?: TPayload;
+export interface ExtendedMessageWithPayload<TPayload, TResponse>
+  extends ExtendedMessage<TPayload, TResponse> {
+  payload: TPayload;
+}
+
+/**
+ * Extended message interface without payload.
+ */
+export interface ExtendedMessageWithoutPayload<TResponse>
+  extends ExtendedMessage<undefined, TResponse> {
+  payload: undefined;
+}
+
+/**
+ * Function interface for creating a message.
+ */
+export interface MessageCreator<TPayload, TResponse> {
+  (payload: TPayload): ExtendedMessage<TPayload, TResponse>;
+  type: string;
   channelType: ChannelSegregation;
+  toString: () => string;
+  match: (message: Message) => message is ExtendedMessage<TPayload, TResponse>;
 }
-
-/**
- * Extended input command message interface.
- */
-export interface InputCommand<TPayload> extends ExtendedInputMessage<TPayload, undefined> {
-  channelType: 'command';
-}
-
-/**
- * Extended input request message interface.
- */
-export interface InputQuery<TPayload, TResponse> extends ExtendedInputMessage<TPayload, TResponse> {
-  channelType: 'query';
-}
-
-/**
- * A message with a restriction on the type of send channel.
- */
-export type SegregatedMessage<
-  TChannel extends ChannelSegregation,
-  TPayload,
-  TResponse,
-> = TChannel extends 'query' ? InputQuery<TPayload, TResponse> : InputCommand<TPayload>;
 
 /**
  * Function interface for creating a message with the ability to pass payload when creating.
  */
-export interface MessageCreatorWithPayload<
-  TChannel extends ChannelSegregation,
-  TPayload,
-  TResponse,
-> {
-  (payload: TPayload): SegregatedMessage<TChannel, TPayload, TResponse>;
-  type: string;
-  channelType: TChannel;
-  toString: () => string;
+export interface MessageCreatorWithPayload<TPayload, TResponse>
+  extends MessageCreator<TPayload, TResponse> {
+  (payload: TPayload): ExtendedMessageWithPayload<TPayload, TResponse>;
+  match: (message: Message) => message is ExtendedMessageWithPayload<TPayload, TResponse>;
 }
 
 /**
  * Function interface for creating a message without the ability to pass payload when creating.
  */
-export interface MessageCreatorWithoutPayload<TChannel extends ChannelSegregation, TResponse>
-  extends MessageCreatorWithPayload<TChannel, undefined, TResponse> {
-  (): SegregatedMessage<TChannel, undefined, TResponse>;
+export interface MessageCreatorWithoutPayload<TResponse>
+  extends MessageCreator<undefined, TResponse> {
+  (): ExtendedMessageWithoutPayload<TResponse>;
+  match: (message: Message) => message is ExtendedMessageWithoutPayload<TResponse>;
 }
 
 /**
@@ -92,24 +108,32 @@ export type PrepareMessageWithoutPayload = (...args: unknown[]) => { [key: strin
  * Request channel.
  */
 export type RequestChannel<TPayload, TResponse> = (
-  query: InputQuery<TPayload, TResponse>,
+  query: ExtendedMessage<TPayload, TResponse>,
   time?: number,
 ) => Promise<TResponse>;
 
 /**
  * Command channel.
  */
-export type CommandChannel<TPayload> = (command: InputCommand<TPayload>) => Promise<void>;
+export type CommandChannel<TPayload> = (command: ExtendedMessage<TPayload, void>) => Promise<void>;
 
 /**
  * Respond channel.
  */
 export type RespondChannel<TPayload, TResponse> = Take<
   TResponse,
-  OutputPayloadQuery<TPayload, TResponse>
+  ExtendedMessage<TPayload, TResponse>
 >;
 
 /**
  * Execute channel.
  */
-export type ExecuteChannel<TPayload> = Take<undefined, OutputPayloadMessage<TPayload>>;
+export type ExecuteChannel<TPayload> = Take<void, ExtendedMessage<TPayload, void>>;
+
+/**
+ * Take channel.
+ */
+export type TakeChannel<TPayload, TResponse> = Take<
+  TResponse,
+  ExtendedMessage<TPayload, TResponse>
+>;

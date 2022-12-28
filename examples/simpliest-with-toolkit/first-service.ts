@@ -5,11 +5,13 @@ const firstChannel = createChannel('test-2');
 const secondChannel = createChannel('test-3');
 
 setInterval(async () => {
-  await firstChannel.send(testCommand());
+  await firstChannel.send(testCommand('test'));
+
   const result = await firstChannel.send(testQuery());
   if (result) {
     console.log('test-2 query result:', result);
   }
+
   const pong = await firstChannel.send(pingQuery('ping'));
   if (pong) {
     console.log('test-2 ping query result', pong);
@@ -21,8 +23,9 @@ setInterval(async () => {
   if (result) {
     console.log('test-3 query result:', result);
   }
+
   const commandWithPayload = await secondChannel.take(payloadCommand);
-  if (commandWithPayload) {
+  if (commandWithPayload && payloadCommand.match(commandWithPayload)) {
     console.log('payload command foo:', commandWithPayload.payload?.foo);
   }
 }, 100);

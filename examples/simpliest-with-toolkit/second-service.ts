@@ -4,22 +4,19 @@ import { pingQuery, testCommand, testQuery, payloadCommand } from './messages';
 const channel = createChannel('test-1');
 
 setInterval(async () => {
-  const query = await channel.take(testQuery);
-  if (query) {
-    console.log('query:', query);
-    channel.respond(query, 'test');
-  }
-  const ping = await channel.take(pingQuery);
-  if (ping) {
-    console.log('ping query payload', ping.payload);
-    channel.respond(ping, 'pong');
-  }
-}, 5);
-
-setInterval(async () => {
-  const command = await channel.take(testCommand);
-  if (command) {
-    console.log('command:', command);
+  const message = await channel.take(testQuery, pingQuery, testCommand);
+  if (message) {
+    if (testQuery.match(message)) {
+      console.log('query:', message);
+      channel.respond(message, 'test');
+    }
+    if (pingQuery.match(message)) {
+      console.log('ping query payload', message.payload);
+      channel.respond(message, 'pong');
+    }
+    if (testCommand.match(message)) {
+      console.log('command:', message);
+    }
   }
   await channel.send(payloadCommand({ foo: 'bar' }));
 }, 5);

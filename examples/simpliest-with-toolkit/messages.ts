@@ -1,6 +1,6 @@
 import { createCommand, createQuery } from '../../es/toolkit';
 
-export const testCommand = createCommand('test');
-export const testQuery = createQuery<string>('test');
+export const testCommand = createCommand<string>('makeTest');
+export const testQuery = createQuery<string>('getTest');
 export const payloadCommand = createCommand<{ foo: string }>('foo');
-export const pingQuery = createQuery<'ping', 'pong'>('test-ping');
+export const pingQuery = createQuery<'ping', 'pong'>('testPing');

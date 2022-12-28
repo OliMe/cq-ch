@@ -1,5 +1,4 @@
-import execute from '../execute';
-import command from '../command';
+import { execute, command } from '..';
 
 describe('execute', () => {
   it('should create execute channel successfully', () => {

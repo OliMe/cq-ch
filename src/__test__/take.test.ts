@@ -1,20 +1,20 @@
-import { respond, request } from '..';
+import { take, request } from '..';
 
-describe('respond', () => {
+describe('take', () => {
   it('should create respond channel successfully', () => {
-    expect(respond(['test_type'], 'test')).toBeInstanceOf(Function);
+    expect(take(['test_type'], 'test')).toBeInstanceOf(Function);
   });
-  it('should create respond channel unsuccessful', () => {
+  it('should create take channel unsuccessful', () => {
     // TODO Ignore TS errors because for raw JS we need to test argument validation.
     // @ts-ignore
-    const createChannelWithoutArguments = () => respond();
+    const createChannelWithoutArguments = () => take();
     // @ts-ignore
-    const createChannelWithFirstIncorrectArgument = () => respond('not array');
-    const createChannelWithFirstArgumentEmptyArray = () => respond([], 'test');
+    const createChannelWithFirstIncorrectArgument = () => take('not array');
+    const createChannelWithFirstArgumentEmptyArray = () => take([], 'test');
     // @ts-ignore
-    const createChannelWithoutSecondArgument = () => respond(['test_type']);
+    const createChannelWithoutSecondArgument = () => take(['test_type']);
     // @ts-ignore
-    const createChannelWithSecondIncorrectArgument = () => respond(['test_type'], 200);
+    const createChannelWithSecondIncorrectArgument = () => take(['test_type'], 200);
     expect(createChannelWithoutArguments).toThrowErrorMatchingSnapshot();
     expect(createChannelWithFirstIncorrectArgument).toThrowErrorMatchingSnapshot();
     expect(createChannelWithFirstArgumentEmptyArray).toThrowErrorMatchingSnapshot();
@@ -23,10 +23,10 @@ describe('respond', () => {
   });
 });
 
-describe('channel created by respond function', () => {
-  it('should receive queries in order of sending and respond with answers', async () => {
+describe('channel created by take function', () => {
+  it('should receive messages in order of sending and respond with answers', async () => {
     expect.assertions(4);
-    const channel = respond(['first_type', 'second_type'], 'first');
+    const channel = take(['first_type', 'second_type'], 'first');
     const requestChannel = request(['first_type', 'second_type'], 'second');
     const firstTestQuery = { type: 'first_type' };
     const secondTestQuery = { type: 'second_type' };
@@ -46,13 +46,13 @@ describe('channel created by respond function', () => {
       context: 'second',
       resolve: expect.any(Function),
     });
-    firstReceivedQuery && firstReceivedQuery.resolve(firstResult);
+    firstReceivedQuery && firstReceivedQuery.resolve?.(firstResult);
     const secondReceivedQuery = await channel();
     expect(secondReceivedQuery).toEqual({
       ...secondTestQuery,
       context: 'second',
       resolve: expect.any(Function),
     });
-    secondReceivedQuery && secondReceivedQuery.resolve(secondResult);
+    secondReceivedQuery && secondReceivedQuery.resolve?.(secondResult);
   });
 });

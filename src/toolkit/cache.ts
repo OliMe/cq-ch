@@ -1,7 +1,13 @@
 import { Context, Types } from '../types';
-import { CommandChannel, ExecuteChannel, RequestChannel, RespondChannel } from './types';
+import {
+  CommandChannel,
+  ExecuteChannel,
+  RequestChannel,
+  RespondChannel,
+  TakeChannel,
+} from './types';
 
-export type Initiator = 'command' | 'request' | 'execute' | 'respond';
+export type Initiator = 'command' | 'request' | 'execute' | 'respond' | 'take';
 
 export type CacheValue<
   TInitiator extends Initiator,
@@ -15,6 +21,8 @@ export type CacheValue<
   ? ExecuteChannel<TPayload>
   : TInitiator extends 'respond'
   ? RespondChannel<TPayload, TResponse>
+  : TInitiator extends 'take'
+  ? TakeChannel<TPayload, TResponse>
   : never;
 
 export type Creator<TInitiator extends Initiator> = (
@@ -33,6 +41,7 @@ export class Cache {
     request: {},
     execute: {},
     respond: {},
+    take: {},
   };
 
   /**
@@ -91,7 +100,7 @@ const instance = new Cache();
  */
 export const useCache =
   <TInitiator extends Initiator>(create: Creator<TInitiator>, name: TInitiator) =>
-  <TPayload, TResponse = undefined>(types: Types, context: Context) => {
+  <TPayload, TResponse>(types: Types, context: Context) => {
     let result = instance.get<TInitiator, TPayload, TResponse>(types, context, name);
     if (!result) {
       result = create(types, context);

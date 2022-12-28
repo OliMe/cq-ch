@@ -86,6 +86,26 @@ setInterval(async () => {
 }, 2);
 ```
 
+### Receiving messages without separation on commands and queries
+
+To receive messages without separation, we can use `take` function and declare interface with it.
+
+```javascript
+import { take } from '@olime/cq-ch';
+// Create interface of receiving queries in your application.
+const takeMessage = take(['THIRD_QUERY_TYPE', 'FOUTH_QUERY_TYPE', 'FIRST_COMMAND_TYPE'], 'unique-key-of-application');
+// Run checking of new received queries in filter channel.
+setInterval(async () => {
+  const message = await takeMessage();
+  if (message) {
+    // Respond with data on received query.
+    message.resolve?.({ data: 'Hello world!'});
+    // Do something else with message.
+    console.log(message);
+  }
+}, 2);
+```
+
 ## Getting started with toolkit
 
 If you want to decrease amount of boilerplate code, you can use `@olime/cq-ch/es/toolkit`.
@@ -134,17 +154,18 @@ channel.send(firstCommand('Hello'));
 channel.send(secondCommand({ testProperty: 'hello' }));
 // Create and send ping query.
 const pong = channel.send(pingQuery('ping'));
-// Process input commands.
+// Process input messages.
 setInterval(async () => {
-    // Receive command.
-    const command = await channel.take(firstCommand);
-    // Make some good stuff with received command.
-}, 2);
-// Process input queries.
-setInterval(async () => {
-    // Receive query.
-    const ping = await channel.take(pingQuery);
-    // Respond on query.
-    channel.respond(ping, 'pong');
+    // Receive messages.
+    const message = await channel.take(pingQuery, firstCommand);
+    if (message) {
+        if (firstCommand.match(message)) {
+            // Make some good stuff with received command.
+        }
+        if (pingQuery.match(message)) {
+            // Respond on query.
+            channel.respond(message, 'pong');
+        }
+    }
 }, 3);
 ```

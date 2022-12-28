@@ -1,4 +1,4 @@
-import request from '../request';
+import { request } from '..';
 import getTransport from '../event-transport/get-transport';
 import { TYPE_QUERY } from '../constants';
 

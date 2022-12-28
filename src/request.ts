@@ -1,6 +1,6 @@
 import getTransport from './event-transport/get-transport';
 import { TYPE_QUERY } from './constants';
-import { Context, Message, OutputQuery, Send, Types } from './types';
+import { Context, Message, Types } from './types';
 import { checkChannelCreator, checkRequestChannel } from './helpers/argument-checkers';
 
 /**
@@ -9,9 +9,12 @@ import { checkChannelCreator, checkRequestChannel } from './helpers/argument-che
  * @param context Application context e.g. Namespace of command.
  * @return Function for sending queries to channel.
  */
-export default function request<TResponse = any>(types: Types, context: Context): Send<TResponse> {
+export default function request(types: Types, context: Context) {
   checkChannelCreator('request', types, context);
-  return async function requestChannel(query: Message<TResponse>, time = 200) {
+  return async function requestChannel<TResponse = Exclude<any, undefined>>(
+    query: Message<TResponse>,
+    time = 200,
+  ) {
     checkRequestChannel('requestChannel', query, time);
     if (!types.includes(query.type)) {
       throw new TypeError('Trying to send query with type not in interface.');
@@ -22,7 +25,7 @@ export default function request<TResponse = any>(types: Types, context: Context)
           `Time to answer exhausted. Message type: ${query.type}, request context: ${context}.`,
         );
       }, time);
-      const extendedQuery: OutputQuery<TResponse> = {
+      const extendedQuery: Message<TResponse> = {
         ...query,
         context,
         resolve: (value: TResponse) => {

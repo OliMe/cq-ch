@@ -9,14 +9,14 @@ describe('createChannel', () => {
       const firstTestCommand = createCommand<string>('test');
       await firstChannel.send(firstTestCommand('test payload'));
       const commandToSecond = await secondChannel.take(firstTestCommand);
-      expect(commandToSecond.type).toBe(firstTestCommand.type);
-      expect(commandToSecond.payload).toBe('test payload');
+      expect(commandToSecond?.type).toBe(firstTestCommand.type);
+      expect(commandToSecond?.payload).toBe('test payload');
 
       const secondTestCommand = createCommand('secondTest');
       await secondChannel.send(secondTestCommand());
       const commandToFirst = await firstChannel.take(secondTestCommand);
-      expect(commandToFirst.type).toBe(secondTestCommand.type);
-      expect(commandToFirst.payload).toBe(undefined);
+      expect(commandToFirst?.type).toBe(secondTestCommand.type);
+      expect(commandToFirst?.payload).toBe(undefined);
     });
     it('which sends, receives and responds queries', async () => {
       const firstChannel = createChannel('first-service');
@@ -27,13 +27,17 @@ describe('createChannel', () => {
         expect(settlementName).toBe('Екатеринбург');
       });
       const firstQuery = await secondChannel.take(settlement);
-      expect(firstQuery.payload).toBe(123456);
-      secondChannel.respond(firstQuery, 'Екатеринбург');
+      expect(firstQuery?.payload).toBe(123456);
+      if (firstQuery && settlement.match(firstQuery)) {
+        secondChannel.respond(firstQuery, 'Екатеринбург');
+      }
 
       setTimeout(async () => {
         const secondQuery = await firstChannel.take(settlement);
-        expect(secondQuery.payload).toBe(234567);
-        firstChannel.respond(secondQuery, 'Уфа');
+        expect(secondQuery?.payload).toBe(234567);
+        if (secondQuery && settlement.match(secondQuery)) {
+          firstChannel.respond(secondQuery, 'Уфа');
+        }
       }, 100);
 
       const response = await secondChannel.send(settlement(234567));

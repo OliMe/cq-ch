@@ -1,7 +1,7 @@
 import { channelCreator, takeChannelCreator } from './helpers/channel-creators';
 import { TYPE_COMMAND } from './constants';
 import { checkChannelCreator } from './helpers/argument-checkers';
-import { Context, OutputMessage, Take, Types } from './types';
+import { Context, Message, Take, Types } from './types';
 
 /**
  * Declares a channel for processed commands in the service interface.
@@ -12,8 +12,8 @@ import { Context, OutputMessage, Take, Types } from './types';
 export default function execute(
   types: Types,
   context: Context,
-): Take<undefined, OutputMessage<undefined>> {
+): Take<undefined, Message<undefined>> {
   checkChannelCreator('execute', types, context);
-  const channel = channelCreator<OutputMessage<undefined>>(types, context);
-  return takeChannelCreator<OutputMessage<undefined>>(TYPE_COMMAND, channel)();
+  const channel = channelCreator<Message<undefined>>(types, context);
+  return takeChannelCreator<Message<undefined>>([TYPE_COMMAND], channel)();
 }

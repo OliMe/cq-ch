@@ -2,13 +2,13 @@ import getTransport from '../event-transport/get-transport';
 import EventTargetTransport from '../event-transport/event-target-transport';
 import Channel from '../channel/channel';
 import isTypesInTypes from './is-types-in-types';
-import { Take, OutputMessage, Type, Types } from '../types';
+import { Take, Type, Types, Message } from '../types';
 
 type MessageGenerator<TOutput> = Generator<Promise<TOutput>, void, boolean>;
 
-type MessageChannel<TOutput extends OutputMessage> = (
+type MessageChannel<TOutput extends Message> = (
   type: Type | Types,
-  transport: EventTargetTransport<OutputMessage>,
+  transport: EventTargetTransport<Message>[],
   notificator: EventTargetTransport,
 ) => MessageGenerator<TOutput>;
 
@@ -17,7 +17,7 @@ type MessageChannel<TOutput extends OutputMessage> = (
  * @param iterator Event channel.
  * @return Async function for channel initializing.
  */
-function channelEmitterCreator<TOutput extends OutputMessage>(iterator: MessageGenerator<TOutput>) {
+function channelEmitterCreator<TOutput extends Message>(iterator: MessageGenerator<TOutput>) {
   /**
    * Function for receiving events from channel.
    * @return Function for take event from channel or event.
@@ -36,7 +36,7 @@ function channelEmitterCreator<TOutput extends OutputMessage>(iterator: MessageG
  * @return Handler function.
  */
 export const createChannelEventHandler =
-  <TOutput extends OutputMessage>(channel: Channel<TOutput>, context: string) =>
+  <TOutput extends Message>(channel: Channel<TOutput>, context: string) =>
   ({ detail: action }: CustomEvent<TOutput>) => {
     if (action.context && action.context !== context) {
       channel.put(action);
@@ -63,13 +63,13 @@ export const castType = (inputType: Type | Types, types: Types) => {
  * @param context Identifier of place where event was emitted.
  * @return Generator function for picking filtered events.
  */
-export function channelCreator<TOutput extends OutputMessage>(
+export function channelCreator<TOutput extends Message>(
   types: Types,
   context: string,
 ): MessageChannel<TOutput> {
   return function* (
     type: Type | Types,
-    transport: EventTargetTransport<TOutput>,
+    transport: EventTargetTransport<TOutput>[],
     notificator: EventTargetTransport,
   ): MessageGenerator<TOutput> {
     const queue = new Channel<TOutput>(notificator);
@@ -78,7 +78,7 @@ export function channelCreator<TOutput extends OutputMessage>(
       const channelEventHandler = createChannelEventHandler(queue, context);
       // todo remove 'as' when issue with CustomEvent and addEventListener will be resolved in TypeScript,
       // see https://github.com/microsoft/TypeScript/issues/28357
-      transport.on(handledType, channelEventHandler as EventListener);
+      transport.forEach(instance => instance.on(handledType, channelEventHandler as EventListener));
     }
     while (true) {
       yield queue.take();
@@ -88,17 +88,21 @@ export function channelCreator<TOutput extends OutputMessage>(
 
 /**
  * Creates picking function for receiving events from channel.
- * @param key Event types.
+ * @param keys Event types.
  * @param channel Events generator for picking events from queue.
  * @return Function for picking events from channel.
  */
-export function takeChannelCreator<TOutput extends OutputMessage>(
-  key: string,
+export function takeChannelCreator<TOutput extends Message>(
+  keys: string[],
   channel: MessageChannel<TOutput>,
 ) {
   return (type = '*') => {
     const notificator = new EventTargetTransport();
-    const iterator = channel(type, getTransport(key), notificator);
+    const iterator = channel(
+      type,
+      keys.map(key => getTransport(key)),
+      notificator,
+    );
     return channelEmitterCreator<TOutput>(iterator);
   };
 }

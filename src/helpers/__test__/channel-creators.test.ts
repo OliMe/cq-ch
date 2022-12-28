@@ -7,11 +7,11 @@ import {
 import EventTargetTransport from '../../event-transport/event-target-transport';
 import getTransport from '../../event-transport/get-transport';
 import Channel from '../../channel/channel';
-import { OutputMessage } from '../../types';
+import { Message } from '../../types';
 
 describe('createChannelEventHandler', () => {
   it('should create channel event handler function.', () => {
-    const mockChannel = new Channel<OutputMessage>();
+    const mockChannel = new Channel<Message>();
     mockChannel.put = jest.fn();
     const testContext = 'test';
     const eventHandler = createChannelEventHandler(mockChannel, testContext);
@@ -50,7 +50,7 @@ describe('channelCreator', () => {
     const rightTestType = 'test';
     const channelIterator = channelCreator(testTypesArray, 'test');
     expect(channelIterator).toBeInstanceOf(Function);
-    const gen = channelIterator(rightTestType, transport, notificator);
+    const gen = channelIterator(rightTestType, [transport], notificator);
     transport.trigger(rightTestType, { context: 'notTest', type: rightTestType });
     await expect((await gen.next(true)).value).resolves.toEqual({
       context: 'notTest',
@@ -61,7 +61,7 @@ describe('channelCreator', () => {
     const transport = new EventTargetTransport();
     jest.spyOn(transport, 'on');
     const wrongTestType = 'thirdTest';
-    const gen = channelCreator(testTypesArray, 'test')(wrongTestType, transport, notificator);
+    const gen = channelCreator(testTypesArray, 'test')(wrongTestType, [transport], notificator);
     gen.next();
     expect(transport.on).not.toHaveBeenCalled();
     transport.trigger(wrongTestType, { context: 'notTest', type: wrongTestType });
@@ -73,7 +73,7 @@ describe('takeChannelCreator', () => {
   const testTypesArray = ['test', 'secondTest'];
   const key = 'testEventChannel';
   const channel = channelCreator(testTypesArray, 'test');
-  const takeChannel = takeChannelCreator(key, channel);
+  const takeChannel = takeChannelCreator([key], channel);
   it('should create take channel correctly.', () => {
     expect(takeChannel).toBeInstanceOf(Function);
   });

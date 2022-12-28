@@ -15,5 +15,5 @@ export default function respond<TResponse>(
 ): Take<TResponse, OutputQuery<TResponse>> {
   checkChannelCreator('respond', types, context);
   const channel = channelCreator<OutputQuery<TResponse>>(types, context);
-  return takeChannelCreator<OutputQuery<TResponse>>(TYPE_QUERY, channel)();
+  return takeChannelCreator<OutputQuery<TResponse>>([TYPE_QUERY], channel)();
 }

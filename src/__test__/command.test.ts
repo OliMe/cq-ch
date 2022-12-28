@@ -1,4 +1,4 @@
-import command from '../command';
+import { command } from '..';
 import getTransport from '../event-transport/get-transport';
 import { TYPE_COMMAND } from '../constants';
 
