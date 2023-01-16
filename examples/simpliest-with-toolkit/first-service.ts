@@ -1,5 +1,5 @@
 import { createChannel } from '@olime/cq-ch/es/toolkit';
-import { testCommand, testQuery, pingQuery, payloadCommand } from './messages';
+import { testCommand, testQuery, pingQuery, payloadOnlyCommand } from './messages';
 
 const firstChannel = createChannel('test-2');
 const secondChannel = createChannel('test-3');
@@ -24,8 +24,8 @@ setInterval(async () => {
     console.log('test-3 query result:', result);
   }
 
-  const commandWithPayload = await secondChannel.take(payloadCommand);
-  if (commandWithPayload && payloadCommand.match(commandWithPayload)) {
+  const commandWithPayload = await secondChannel.take(payloadOnlyCommand);
+  if (commandWithPayload && payloadOnlyCommand.match(commandWithPayload)) {
     console.log('payload command foo:', commandWithPayload.payload?.foo);
   }
 }, 100);

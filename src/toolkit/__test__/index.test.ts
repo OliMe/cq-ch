@@ -111,9 +111,12 @@ describe('createQuery', () => {
     });
   });
   it('should create query with preparing', () => {
-    const testQueryWithPrepare = createQuery<string, string>('testQuery', (payload?: string) => ({
-      notice: payload,
-    }));
+    const testQueryWithPrepare = createQuery<string, string, { notice: string }>(
+      'testQuery',
+      (payload: string) => ({
+        notice: payload,
+      }),
+    );
     expect(testQueryWithPrepare('Test notice')).toEqual({
       notice: 'Test notice',
       payload: 'Test notice',

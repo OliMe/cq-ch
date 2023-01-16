@@ -6,34 +6,12 @@ import { Take, Message } from '../types';
 export type ChannelSegregation = 'query' | 'command';
 
 /**
- * Interface of channel object for sending and processing messages.
+ * Type for define message interface by base message interface and additional properties interface.
  */
-export interface Channel {
-  /**
-   * Gets the next message in the queue of the passed types.
-   * @param creators Type functions.
-   * @return The next input message.
-   */
-  take(
-    ...creators: (MessageCreatorWithPayload<any, any> | MessageCreatorWithoutPayload<any>)[]
-  ): ReturnType<TakeChannel<any, any>>;
-  /**
-   * Sends message.
-   * @param message Message.
-   * @param timeout Wait for response timeout of requests.
-   * @return Response on request message or nothing.
-   */
-  send<TPayload, TResponse>(
-    message: ExtendedMessage<TPayload, TResponse>,
-    timeout?: number,
-  ): Promise<TResponse | void>;
-  /**
-   * Responds on request message.
-   * @param query Query message.
-   * @param result Response data.
-   */
-  respond<TResponse>(query: Message<TResponse>, result: TResponse): void;
-}
+export type CreatorReturnType<
+  TPrepared extends { [key: string]: any } | undefined,
+  TMessage extends Message,
+> = TPrepared extends undefined ? TMessage : TMessage & TPrepared;
 
 /**
  * Extended message interface with additional data about the type of channel through which it can be sent.
@@ -62,47 +40,77 @@ export interface ExtendedMessageWithoutPayload<TResponse>
 /**
  * Function interface for creating a message.
  */
-export interface MessageCreator<TPayload, TResponse> {
-  (payload: TPayload): ExtendedMessage<TPayload, TResponse>;
+export interface MessageCreator<
+  TPayload,
+  TResponse,
+  TAdditionalProps extends { [key: string]: any } | undefined,
+> {
+  (payload: TPayload): CreatorReturnType<TAdditionalProps, ExtendedMessage<TPayload, TResponse>>;
   type: string;
   channelType: ChannelSegregation;
   toString: () => string;
-  match: (message: Message) => message is ExtendedMessage<TPayload, TResponse>;
+  match: (
+    message: Message,
+  ) => message is CreatorReturnType<TAdditionalProps, ExtendedMessage<TPayload, TResponse>>;
 }
 
 /**
  * Function interface for creating a message with the ability to pass payload when creating.
  */
-export interface MessageCreatorWithPayload<TPayload, TResponse>
-  extends MessageCreator<TPayload, TResponse> {
-  (payload: TPayload): ExtendedMessageWithPayload<TPayload, TResponse>;
-  match: (message: Message) => message is ExtendedMessageWithPayload<TPayload, TResponse>;
+export interface MessageCreatorWithPayload<
+  TPayload,
+  TResponse,
+  TAdditionalProps extends { [key: string]: any } | undefined = undefined,
+> extends MessageCreator<TPayload, TResponse, TAdditionalProps> {
+  (payload: TPayload): CreatorReturnType<
+    TAdditionalProps,
+    ExtendedMessageWithPayload<TPayload, TResponse>
+  >;
+  match: (
+    message: Message,
+  ) => message is CreatorReturnType<
+    TAdditionalProps,
+    ExtendedMessageWithPayload<TPayload, TResponse>
+  >;
 }
 
 /**
  * Function interface for creating a message without the ability to pass payload when creating.
  */
-export interface MessageCreatorWithoutPayload<TResponse>
-  extends MessageCreator<undefined, TResponse> {
-  (): ExtendedMessageWithoutPayload<TResponse>;
-  match: (message: Message) => message is ExtendedMessageWithoutPayload<TResponse>;
+export interface MessageCreatorWithoutPayload<
+  TResponse,
+  TAdditionalProps extends { [key: string]: any } | undefined = undefined,
+> extends MessageCreator<undefined, TResponse, TAdditionalProps> {
+  (): CreatorReturnType<TAdditionalProps, ExtendedMessageWithoutPayload<TResponse>>;
+  match: (
+    message: Message,
+  ) => message is CreatorReturnType<TAdditionalProps, ExtendedMessageWithoutPayload<TResponse>>;
 }
 
 /**
- * Function interface for adding payload beyond the main message interface.
+ * Common function interface for adding properties beyond the main message interface.
  * Accepts payload with a defined type.
  */
-export type PrepareMessageWithPayload<TPayload> = (
-  payload?: TPayload,
-  ...other: unknown[]
-) => { [key: string]: unknown };
+export interface PrepareMessage<TResult> {
+  (...other: any[]): TResult;
+}
 
 /**
- * Function interface for adding additional data beyond the main message interface.
+ * Function interface for adding properties beyond the main message interface.
+ * Accepts payload with a defined type.
+ */
+export interface PrepareMessageWithPayload<TPayload, TResult> extends PrepareMessage<TResult> {
+  (payload: TPayload, ...other: any[]): TResult;
+}
+
+/**
+ * Function interface for adding additional properties beyond the main message interface.
  * Does not accept payload,
  * but accepts any arguments passed to the creator function.
  */
-export type PrepareMessageWithoutPayload = (...args: unknown[]) => { [key: string]: unknown };
+export interface PrepareMessageWithoutPayload<TResult> extends PrepareMessage<TResult> {
+  (...args: any[]): TResult;
+}
 
 /**
  * Request channel.
@@ -115,7 +123,9 @@ export type RequestChannel<TPayload, TResponse> = (
 /**
  * Command channel.
  */
-export type CommandChannel<TPayload> = (command: ExtendedMessage<TPayload, void>) => Promise<void>;
+export type CommandChannel<TPayload, TResponse> = (
+  command: ExtendedMessage<TPayload, TResponse>,
+) => Promise<TResponse>;
 
 /**
  * Respond channel.
@@ -128,7 +138,10 @@ export type RespondChannel<TPayload, TResponse> = Take<
 /**
  * Execute channel.
  */
-export type ExecuteChannel<TPayload> = Take<void, ExtendedMessage<TPayload, void>>;
+export type ExecuteChannel<TPayload, TResponse> = Take<
+  TResponse,
+  ExtendedMessage<TPayload, TResponse>
+>;
 
 /**
  * Take channel.

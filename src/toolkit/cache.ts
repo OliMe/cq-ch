@@ -14,11 +14,11 @@ export type CacheValue<
   TPayload = any,
   TResponse = any,
 > = TInitiator extends 'command'
-  ? CommandChannel<TPayload>
+  ? CommandChannel<TPayload, TResponse>
   : TInitiator extends 'request'
   ? RequestChannel<TPayload, TResponse>
   : TInitiator extends 'execute'
-  ? ExecuteChannel<TPayload>
+  ? ExecuteChannel<TPayload, TResponse>
   : TInitiator extends 'respond'
   ? RespondChannel<TPayload, TResponse>
   : TInitiator extends 'take'
