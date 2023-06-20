@@ -11,7 +11,9 @@
     "lint": "eslint --cache --ext .js ./",
     "test": "cross-env NODE_ENV=test jest --coverage",
     "build": "rm -rf ./es && tsc --project tsconfig.build.json",
-    "build:examples": "npm run build && cd ./examples/react-backbone-example/ && npm i && npm run build",
+    "build:example-with-toolkit": "cd ./examples/simpliest-with-toolkit/ && npm i && npm run build",
+    "build:example-simpliest": "cd ./examples/simpliest/ && npm i && npm run build",
+    "build:examples": "npm run build && npm run build:example-simpliest && npm run build:example-with-toolkit",
     "prettier": "prettier --write \"./src/**/*.ts\" --loglevel error",
     "type-check": "tsc --noEmit -p ."
   },

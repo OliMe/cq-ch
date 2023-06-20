@@ -1,9 +1,11 @@
 import { Type, Types } from '../types';
 
+import EventTarget from './polyfill/event-target';
+
 /**
  * Event transport.
  */
-export default class EventTargetTransport<T = {}> {
+export default class EventTargetTransport<T = Record<string, unknown>> {
   target: EventTarget;
   listeners: { [key: Type]: boolean } = {};
   eventQueue: { [key: Type]: Event[] };
@@ -27,8 +29,8 @@ export default class EventTargetTransport<T = {}> {
    * @param type Type of event.
    * @param payload Data.
    */
-  trigger(type: Type, payload: T | {} = {}) {
-    const event = new CustomEvent<T | {}>(type, {
+  trigger(type: Type, payload: T | Record<string, unknown> = {}) {
+    const event = new CustomEvent<T | Record<string, unknown>>(type, {
       detail: payload,
     });
     if (this.listeners[type]) {
