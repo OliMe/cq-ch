@@ -45,6 +45,7 @@ describe('channel created by respond function', () => {
       ...firstTestQuery,
       context: 'second',
       resolve: expect.any(Function),
+      timestamp: expect.any(Number),
     });
     firstReceivedQuery && firstReceivedQuery.resolve(firstResult);
     const secondReceivedQuery = await channel();
@@ -52,6 +53,7 @@ describe('channel created by respond function', () => {
       ...secondTestQuery,
       context: 'second',
       resolve: expect.any(Function),
+      timestamp: expect.any(Number),
     });
     secondReceivedQuery && secondReceivedQuery.resolve(secondResult);
   });

@@ -50,6 +50,10 @@ describe('created by command function', () => {
     channel({ type: 'first_type' });
     expect(getTransport).toHaveBeenCalledWith(TYPE_COMMAND);
     const { trigger } = getTransport('command');
-    expect(trigger).toHaveBeenCalledWith('first_type', { type: 'first_type', context: 'test' });
+    expect(trigger).toHaveBeenCalledWith('first_type', {
+      type: 'first_type',
+      context: 'test',
+      timestamp: expect.any(Number),
+    });
   });
 });

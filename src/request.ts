@@ -28,6 +28,7 @@ export default function request(types: Types, context: Context) {
       const extendedQuery: Message<TResponse> = {
         ...query,
         context,
+        timestamp: Date.now(),
         resolve: (value: TResponse) => {
           clearTimeout(timeout);
           resolve(value);

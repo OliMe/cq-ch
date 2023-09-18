@@ -19,7 +19,7 @@ export default function command(
     if (!types.includes(command.type)) {
       throw new TypeError('Trying to send command with type not in interface.');
     }
-    const extendedCommand = { ...command, context };
+    const extendedCommand = { ...command, context, timestamp: Date.now() };
     getTransport(TYPE_COMMAND).trigger(extendedCommand.type, extendedCommand);
   };
 }

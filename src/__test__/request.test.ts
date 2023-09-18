@@ -50,6 +50,7 @@ describe('created by request function', () => {
       type: 'first_type',
       context: 'test',
       resolve: expect.any(Function),
+      timestamp: expect.any(Number),
     });
   });
   it('receives respond', done => {

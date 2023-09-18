@@ -36,8 +36,16 @@ describe('channel created by execute function', () => {
       commandChannel(firstTestCommand);
     }, 20);
     const firstReceivedCommand = await channel();
-    expect(firstReceivedCommand).toEqual({ ...firstTestCommand, context: 'second' });
+    expect(firstReceivedCommand).toEqual({
+      ...firstTestCommand,
+      context: 'second',
+      timestamp: expect.any(Number),
+    });
     const secondReceivedCommand = await channel();
-    expect(secondReceivedCommand).toEqual({ ...secondTestCommand, context: 'second' });
+    expect(secondReceivedCommand).toEqual({
+      ...secondTestCommand,
+      context: 'second',
+      timestamp: expect.any(Number),
+    });
   });
 });

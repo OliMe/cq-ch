@@ -10,6 +10,7 @@ export type Types = Type[];
 /** Common message interface. */
 export interface Message<TResponse = any> {
   type: Type;
+  timestamp?: number;
   context?: Context;
   resolve?: (value: TResponse) => void;
   [key: string]: unknown;
