@@ -10,6 +10,8 @@ import {
   PrepareMessage,
   MessageCreator,
   CreatorReturnType,
+  ExtendedMessageWithoutPayload,
+  ExtendedMessageWithPayload,
 } from './types';
 import { useCache } from './cache';
 
@@ -170,7 +172,7 @@ export function createCommand(
 function createMessage<
   TPayload,
   TResponse,
-  TAdditionalProps,
+  TAdditionalProps extends { [key: string]: any } | undefined,
   TPrepare extends PrepareMessage<TAdditionalProps> | undefined = undefined,
 >(
   messageType: string,
@@ -183,7 +185,12 @@ function createMessage<
       type: messageType,
       payload,
       channelType,
-    } as CreatorReturnType<TAdditionalProps, ExtendedMessage<TPayload, TResponse>>;
+    } as CreatorReturnType<
+      TAdditionalProps,
+      TPayload extends undefined
+        ? ExtendedMessageWithoutPayload<TResponse>
+        : ExtendedMessageWithPayload<TPayload, TResponse>
+    >;
   };
   creator.type = messageType;
   creator.channelType = channelType;

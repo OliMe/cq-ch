@@ -45,7 +45,12 @@ export interface MessageCreator<
   TResponse,
   TAdditionalProps extends { [key: string]: any } | undefined,
 > {
-  (payload: TPayload): CreatorReturnType<TAdditionalProps, ExtendedMessage<TPayload, TResponse>>;
+  (payload: TPayload): CreatorReturnType<
+    TAdditionalProps,
+    TPayload extends undefined
+      ? ExtendedMessageWithoutPayload<TResponse>
+      : ExtendedMessageWithPayload<TPayload, TResponse>
+  >;
   type: string;
   channelType: ChannelSegregation;
   toString: () => string;
