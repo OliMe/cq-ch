@@ -27,5 +27,9 @@ jobs:
         run: |
           npm test
       - name: Collect coverage
-        run: |
-          ./node_modules/.bin/codecov
+        uses: codecov/codecov-action@v5
+        with:
+          fail_ci_if_error: true
+          verbose: true
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
