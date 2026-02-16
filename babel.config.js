@@ -5,7 +5,8 @@ if (NODE_ENV === 'test') {
   config = {
     presets: [
       [
-        '@babel/preset-env', {
+        '@babel/preset-env',
+        {
           targets: {
             node: 'current',
           },
@@ -18,21 +19,17 @@ if (NODE_ENV === 'test') {
   config = {
     presets: [
       [
-        '@babel/preset-env', {
+        '@babel/preset-env',
+        {
           targets: {
             browsers: ['defaults', 'not ie > 0'],
           },
           modules: 'commonjs',
-          exclude: [
-            'transform-async-to-generator',
-            'transform-regenerator',
-          ],
+          exclude: ['transform-async-to-generator', 'transform-regenerator'],
         },
       ],
     ],
-    plugins: [
-      '@babel/plugin-proposal-class-properties',
-    ],
+    plugins: ['@babel/plugin-proposal-class-properties'],
   };
 }
 module.exports = config;

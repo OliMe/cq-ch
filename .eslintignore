@@ -1,8 +1,0 @@
-# Test directory
-coverage
-test
-*/__test__/*
-# Build directories
-es
-# Example directory
-examples

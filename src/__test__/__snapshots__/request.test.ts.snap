@@ -1,6 +1,6 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`created by request function throws error on wait timeout expires 1`] = `undefined`;
+exports[`created by request function throws error on wait timeout expires 1`] = `"Time to answer exhausted. Message type: first_type, request context: test."`;
 
 exports[`created by request function throws error when incorrect arguments passed 1`] = `"Failed to execute 'requestChannel': first argument must be an Object with defined property type."`;
 

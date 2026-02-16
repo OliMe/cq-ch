@@ -3,9 +3,7 @@ module.exports = {
   transform: {
     '.+\\.(js|ts)$': '@swc/jest',
   },
-  transformIgnorePatterns: [
-    '/node_modules/.*',
-  ],
+  transformIgnorePatterns: ['/node_modules/.*'],
   coverageThreshold: {
     global: {
       branches: 100,
@@ -14,4 +12,4 @@ module.exports = {
       statements: 100,
     },
   },
-}
+};

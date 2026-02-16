@@ -14,15 +14,14 @@ describe('command', () => {
     expect(command(['test_type'], 'test')).toBeInstanceOf(Function);
   });
   it('creates channel unsuccessfully', () => {
-    // TODO Ignore TS errors because for raw JS we need to test argument validation.
-    // @ts-ignore
+    // @ts-expect-error Ignore TS errors because for raw JS we need to test argument validation.
     const createChannelWithoutArguments = () => command();
-    // @ts-ignore
+    // @ts-expect-error Same as above.
     const createChannelWithFirstIncorrectArgument = () => command('not array');
     const createChannelWithFirstArgumentEmptyArray = () => command([], 'test');
-    // @ts-ignore
+    // @ts-expect-error Same as above.
     const createChannelWithoutSecondArgument = () => command(['test_type']);
-    // @ts-ignore
+    // @ts-expect-error Same as above.
     const createChannelWithSecondIncorrectArgument = () => command(['test_type'], 200);
     expect(createChannelWithoutArguments).toThrowErrorMatchingSnapshot();
     expect(createChannelWithFirstIncorrectArgument).toThrowErrorMatchingSnapshot();
@@ -35,10 +34,9 @@ describe('command', () => {
 describe('created by command function', () => {
   const channel = command(['first_type', 'second_type'], 'test');
   it('throws error when incorrect arguments passed', async () => {
-    // TODO Ignore TS errors because for raw JS we need to test argument validation.
-    // @ts-ignore
+    // @ts-expect-error Ignore TS errors because for raw JS we need to test argument validation.
     const callChannelWithoutArguments = async () => await channel();
-    // @ts-ignore
+    // @ts-expect-error Same as above.
     const callChannelWithCommandWithoutTypeProperty = async () => await channel({});
     const callChannelWithCommandWithUndefinedType = async () =>
       await channel({ type: 'third_type' });

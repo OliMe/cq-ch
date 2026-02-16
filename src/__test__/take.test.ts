@@ -6,14 +6,14 @@ describe('take', () => {
   });
   it('should create take channel unsuccessful', () => {
     // TODO Ignore TS errors because for raw JS we need to test argument validation.
-    // @ts-ignore
+    // @ts-expect-error Ignore TS errors because for raw JS we need to test argument validation.
     const createChannelWithoutArguments = () => take();
-    // @ts-ignore
+    // @ts-expect-error Same as above.
     const createChannelWithFirstIncorrectArgument = () => take('not array');
     const createChannelWithFirstArgumentEmptyArray = () => take([], 'test');
-    // @ts-ignore
+    // @ts-expect-error Same as above.
     const createChannelWithoutSecondArgument = () => take(['test_type']);
-    // @ts-ignore
+    // @ts-expect-error Same as above.
     const createChannelWithSecondIncorrectArgument = () => take(['test_type'], 200);
     expect(createChannelWithoutArguments).toThrowErrorMatchingSnapshot();
     expect(createChannelWithFirstIncorrectArgument).toThrowErrorMatchingSnapshot();

@@ -11,7 +11,5 @@
     "baseUrl": ".",
     "skipLibCheck": true
   },
-  "include": [
-    "./**/*"
-  ]
+  "include": ["./**/*"]
 }

@@ -1,10 +1,13 @@
-import { createChannel, createCommand, createQuery } from '../index';
+import { Channel, createChannel, createCommand, createQuery } from '../index';
 
 describe('createChannel', () => {
   describe('should create channel', () => {
     it('which sends and receives commands', async () => {
       const firstChannel = createChannel('first-service');
       const secondChannel = createChannel('second-service');
+
+      expect(firstChannel).toBeInstanceOf(Channel);
+      expect(secondChannel).toBeInstanceOf(Channel);
 
       const firstTestCommand = createCommand<string>('test');
       await firstChannel.send(firstTestCommand('test payload'));

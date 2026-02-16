@@ -24,16 +24,20 @@ export interface ExtendedMessage<TPayload, TResponse> extends Message<TResponse>
 /**
  * Extended message interface with payload.
  */
-export interface ExtendedMessageWithPayload<TPayload, TResponse>
-  extends ExtendedMessage<TPayload, TResponse> {
+export interface ExtendedMessageWithPayload<TPayload, TResponse> extends ExtendedMessage<
+  TPayload,
+  TResponse
+> {
   payload: TPayload;
 }
 
 /**
  * Extended message interface without payload.
  */
-export interface ExtendedMessageWithoutPayload<TResponse>
-  extends ExtendedMessage<undefined, TResponse> {
+export interface ExtendedMessageWithoutPayload<TResponse> extends ExtendedMessage<
+  undefined,
+  TResponse
+> {
   payload: undefined;
 }
 
@@ -45,7 +49,9 @@ export interface MessageCreator<
   TResponse,
   TAdditionalProps extends { [key: string]: any } | undefined,
 > {
-  (payload: TPayload): CreatorReturnType<
+  (
+    payload: TPayload,
+  ): CreatorReturnType<
     TAdditionalProps,
     TPayload extends undefined
       ? ExtendedMessageWithoutPayload<TResponse>
@@ -67,10 +73,9 @@ export interface MessageCreatorWithPayload<
   TResponse,
   TAdditionalProps extends { [key: string]: any } | undefined = undefined,
 > extends MessageCreator<TPayload, TResponse, TAdditionalProps> {
-  (payload: TPayload): CreatorReturnType<
-    TAdditionalProps,
-    ExtendedMessageWithPayload<TPayload, TResponse>
-  >;
+  (
+    payload: TPayload,
+  ): CreatorReturnType<TAdditionalProps, ExtendedMessageWithPayload<TPayload, TResponse>>;
   match: (
     message: Message,
   ) => message is CreatorReturnType<

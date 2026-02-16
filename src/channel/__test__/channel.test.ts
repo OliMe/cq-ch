@@ -35,7 +35,7 @@ describe('Channel', () => {
     const channel = new Channel(notificator);
     channel.put(5);
     await channel.take();
-    expect(changeListener).toBeCalledTimes(1);
+    expect(changeListener).toHaveBeenCalledTimes(1);
   });
   it('shouldn`t do anything, when was put undefined value.', () => {
     const channel = new Channel();

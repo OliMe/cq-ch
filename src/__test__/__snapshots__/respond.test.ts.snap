@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`respond should create respond channel unsuccessful 1`] = `"Failed to execute 'respond': first argument must be an Array with at least one element."`;
 

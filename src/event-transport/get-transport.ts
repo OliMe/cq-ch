@@ -3,7 +3,6 @@ import { IS_BROWSER } from '../constants';
 import { Message } from '../types';
 
 declare global {
-  // eslint-disable-next-line no-var
   var CQChannels:
     | {
         [key: string]: EventTargetTransport<Message<unknown>>;

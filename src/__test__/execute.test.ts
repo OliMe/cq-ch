@@ -5,15 +5,14 @@ describe('execute', () => {
     expect(execute(['test_type'], 'test')).toBeInstanceOf(Function);
   });
   it('should create execute channel unsuccessfully', () => {
-    // TODO Ignore TS errors because for raw JS we need to test argument validation.
-    // @ts-ignore
+    // @ts-expect-error Ignore TS errors because for raw JS we need to test argument validation.
     const createChannelWithoutArguments = () => execute();
-    // @ts-ignore
+    // @ts-expect-error Same as above.
     const createChannelWithFirstIncorrectArgument = () => execute('not array');
     const createChannelWithFirstArgumentEmptyArray = () => execute([], 'test');
-    // @ts-ignore
+    // @ts-expect-error Same as above.
     const createChannelWithoutSecondArgument = () => execute(['test_type']);
-    // @ts-ignore
+    // @ts-expect-error Same as above.
     const createChannelWithSecondIncorrectArgument = () => execute(['test_type'], 200);
     expect(createChannelWithoutArguments).toThrowErrorMatchingSnapshot();
     expect(createChannelWithFirstIncorrectArgument).toThrowErrorMatchingSnapshot();

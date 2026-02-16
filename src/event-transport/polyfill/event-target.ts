@@ -54,6 +54,7 @@ export function getEventTargetConstructor() {
   try {
     new window.EventTarget();
     constructor = window.EventTarget;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (e) {
     constructor = EventTargetPolyfill;
   }

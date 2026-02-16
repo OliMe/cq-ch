@@ -15,13 +15,13 @@ describe('EventTarget', () => {
     eventTarget.addEventListener('test', testListener);
     eventTarget.dispatchEvent(testEvent);
     expect(testListener).toHaveBeenCalledTimes(1);
-    expect(testListener).toBeCalledWith(testEvent);
+    expect(testListener).toHaveBeenCalledWith(testEvent);
     const anotherTestListener = jest.fn();
     eventTarget.addEventListener('test', { handleEvent: anotherTestListener });
     eventTarget.dispatchEvent(testEvent);
     expect(testListener).toHaveBeenCalledTimes(2);
     expect(anotherTestListener).toHaveBeenCalledTimes(1);
-    expect(anotherTestListener).toBeCalledWith(testEvent);
+    expect(anotherTestListener).toHaveBeenCalledWith(testEvent);
   });
   it('should not call event listener registered for one type o event if dispatches event with another type.', () => {
     const eventTarget = new EventTargetPolyfill();
@@ -39,7 +39,7 @@ describe('EventTarget', () => {
     eventTarget.addEventListener('test', testListener);
     eventTarget.dispatchEvent(testEvent);
     expect(testListener).toHaveBeenCalledTimes(1);
-    expect(testListener).toBeCalledWith(testEvent);
+    expect(testListener).toHaveBeenCalledWith(testEvent);
     eventTarget.removeEventListener('test', testListener);
     expect(window.Map.prototype.delete).toHaveBeenCalledTimes(1);
     expect(window.Map.prototype.delete).toHaveBeenCalledWith(testListener);

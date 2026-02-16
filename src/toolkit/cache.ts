@@ -16,14 +16,14 @@ export type CacheValue<
 > = TInitiator extends 'command'
   ? CommandChannel<TPayload, TResponse>
   : TInitiator extends 'request'
-  ? RequestChannel<TPayload, TResponse>
-  : TInitiator extends 'execute'
-  ? ExecuteChannel<TPayload, TResponse>
-  : TInitiator extends 'respond'
-  ? RespondChannel<TPayload, TResponse>
-  : TInitiator extends 'take'
-  ? TakeChannel<TPayload, TResponse>
-  : never;
+    ? RequestChannel<TPayload, TResponse>
+    : TInitiator extends 'execute'
+      ? ExecuteChannel<TPayload, TResponse>
+      : TInitiator extends 'respond'
+        ? RespondChannel<TPayload, TResponse>
+        : TInitiator extends 'take'
+          ? TakeChannel<TPayload, TResponse>
+          : never;
 
 export type Creator<TInitiator extends Initiator> = (
   types: Types,
